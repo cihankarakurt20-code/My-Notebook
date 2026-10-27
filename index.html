@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -40,10 +40,10 @@ a{color:inherit}
 .lead{color:var(--muted);margin:2px 0 0;font-size:15px}
 
 /* home */
-.due-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;margin:14px 0 14px;border:0;width:100%;text-align:left}
+.due-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;margin:0 0 14px;border:0;width:100%;text-align:left}
 .due-strip b{font-size:17px}
-.due-strip span{font-size:14px;opacity:.8}
-.due-strip .go{background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;flex:none}
+.due-strip span{font-size:14px;opacity:.85}
+.due-strip .go{background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;flex:none;opacity:1}
 .due-strip.calm{background:var(--soft);color:var(--ink)}
 .due-strip.calm .go{background:var(--ink);color:#fff}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -58,6 +58,41 @@ a{color:inherit}
 .tile .txt{min-width:0}
 .backup{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
 .backup p{margin:0;font-size:14px;color:var(--muted)}
+
+/* composer + notes */
+.composer{border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:16px 0 8px;display:flex;flex-direction:column;gap:10px}
+.composer textarea{border:0;resize:none;width:100%;min-height:48px;font-size:17px;line-height:1.45;padding:2px 0;background:transparent;overflow:hidden}
+.composer textarea:focus{outline:none}
+.composer .tools{display:flex;align-items:center;gap:6px}
+.composer .tools .sp{flex:1}
+.ibtn{border:0;background:var(--soft);border-radius:999px;height:34px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--ink)}
+.ibtn svg{width:18px;height:18px}
+.post{border:0;background:var(--ink);color:#fff;border-radius:999px;height:34px;padding:0 16px;font-weight:700;font-size:14px}
+.post:disabled{opacity:.35}
+.thumbs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.thumb{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;background:var(--soft);flex:none}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:999px;border:0;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center;padding:0}
+.thumb .rm svg{width:12px;height:12px}
+.thumb .vtag{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px}
+.busy{font-size:13px;color:var(--muted)}
+.notes-link{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;padding:6px 2px 14px;font-size:14px;font-weight:600;color:var(--muted)}
+.note-card{border-bottom:1px solid var(--line);padding:16px 0;display:flex;flex-direction:column;gap:10px}
+.note-card .when{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.note-card .body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:17px;line-height:1.5}
+.media{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.media.one{grid-template-columns:1fr}
+.media .m{border-radius:12px;overflow:hidden;background:var(--soft);aspect-ratio:1/1;border:0;padding:0;display:block;width:100%}
+.media.one .m{aspect-ratio:auto;max-height:480px}
+.media img{width:100%;height:100%;object-fit:cover;display:block}
+.media.one img{object-fit:contain;max-height:480px;background:var(--soft)}
+.media video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
+.media .missing{display:grid;place-items:center;color:var(--muted);font-size:13px;padding:12px;text-align:center}
+.note-edit{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:17px;min-height:100px}
+.viewer{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.92);display:grid;place-items:center;padding:calc(20px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px))}
+.viewer img{max-width:100%;max-height:100%;object-fit:contain}
+.viewer button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:999px;border:0;background:rgba(255,255,255,.15);color:#fff;display:grid;place-items:center}
+.viewer button svg{width:20px;height:20px}
 
 /* shared */
 .tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted);white-space:nowrap}
@@ -85,9 +120,6 @@ a{color:inherit}
 .section-title{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
 
 /* review */
-.stats{display:flex;gap:22px;margin:0 0 16px}
-.stat b{display:block;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
-.stat span{font-size:13px;color:var(--muted)}
 .rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .progress{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
 .chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
@@ -111,7 +143,7 @@ a{color:inherit}
 .done .row-btns{justify-content:center}
 
 /* forms */
-form,.form{display:flex;flex-direction:column;gap:16px}
+form{display:flex;flex-direction:column;gap:16px}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:14px;font-weight:600}
 .field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;background:var(--bg)}
@@ -183,7 +215,7 @@ form,.form{display:flex;flex-direction:column;gap:16px}
 .count.full{color:var(--again);font-weight:700}
 .past{white-space:pre-wrap;font-size:17px;line-height:1.6;overflow-wrap:anywhere}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:30;width:max-content;max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:50;width:max-content;max-width:calc(100% - 32px);text-align:center}
 .toast.up{bottom:calc(250px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
@@ -191,12 +223,14 @@ form,.form{display:flex;flex-direction:column;gap:16px}
 <div class="wrap" id="app"></div>
 <div class="toast" id="toast" hidden></div>
 <input type="file" id="file" accept="application/json,.json" hidden>
+<input type="file" id="pick-photo" accept="image/*" multiple hidden>
+<input type="file" id="pick-video" accept="video/*" hidden>
 
 <script src="chunks.js"></script>
 <script>
 (function(){
 "use strict";
-const KEY = "kalip-defteri-v1", DAY = 86400000, MAX_WORDS = 250;
+const KEY = "kalip-defteri-v1", DAY = 86400000, MAX_WORDS = 250, MAX_VIDEO_MB = 250, MAX_MEDIA = 10;
 const DATA = window.CHUNK_DATA || { categories: [], daily: [] };
 const CHUNKS = {}; DATA.categories.forEach(c => c.items.forEach(i => { i.cat = c.id; CHUNKS[i.id] = i; }));
 const $ = s => document.querySelector(s);
@@ -205,25 +239,59 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const fold = s => String(s ?? "").toLowerCase().replace(/ı/g,"i").normalize("NFD").replace(/[̀-ͯ]/g,"");
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 const countWords = s => (String(s).match(/\S+/g) || []).length;
+const plural = (n, w, ws) => n + " " + (n === 1 ? w : (ws || w + "s"));
 const pad = n => String(n).padStart(2, "0");
 const dateKey = (t = Date.now()) => { const d = new Date(t); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); };
 const dayNo = (t = Date.now()) => { const d = new Date(t); return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY); };
-const AYLAR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-const prettyDate = k => { const [y, m, d] = k.split("-").map(Number); return d + " " + AYLAR[m - 1] + " " + y; };
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const prettyDate = k => { const [y, m, d] = k.split("-").map(Number); return d + " " + MONTHS[m - 1] + " " + y; };
+function when(t){
+  const d = new Date(t), now = Date.now(), diff = now - t;
+  const hm = pad(d.getHours()) + ":" + pad(d.getMinutes());
+  if (diff < 60000) return "Just now";
+  if (dateKey(t) === dateKey(now)) return "Today, " + hm;
+  if (dateKey(t) === dateKey(now - DAY)) return "Yesterday, " + hm;
+  return prettyDate(dateKey(t)) + ", " + hm;
+}
 
 /* ---------------- storage ---------------- */
 function read(k, fb){ try { const v = JSON.parse(localStorage.getItem(k)); return v ?? fb; } catch(e){ return fb; } }
-function write(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ toast("Kaydedilemedi: telefonda yer kalmamış olabilir"); return false; } }
+function write(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ toast("Couldn't save. Your phone may be out of space."); return false; } }
 let cards = read(KEY, []); if (!Array.isArray(cards)) cards = [];
 let texts = read(KEY + "-texts", []); if (!Array.isArray(texts)) texts = [];
 let writes = read(KEY + "-writes", {}); if (typeof writes !== "object" || !writes) writes = {};
+let notes = read(KEY + "-notes", []); if (!Array.isArray(notes)) notes = [];
 let prefs = read(KEY + "-prefs", {}); if (typeof prefs !== "object" || !prefs) prefs = {};
 if (!prefs.dir) { try { prefs.dir = localStorage.getItem(KEY + "-dir") || "en"; } catch(e){ prefs.dir = "en"; } }
 const saveCards = () => write(KEY, cards);
 const saveTexts = () => write(KEY + "-texts", texts);
 const saveWrites = () => write(KEY + "-writes", writes);
+const saveNotes = () => write(KEY + "-notes", notes);
 const savePrefs = () => write(KEY + "-prefs", prefs);
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+/* media files live in IndexedDB (photos and videos are too big for normal storage) */
+let idb = null;
+function openDB(){
+  if (idb) return idb;
+  idb = new Promise((res, rej) => {
+    try {
+      const r = indexedDB.open("my-notebook-media", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("media");
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    } catch(e){ rej(e); }
+  });
+  return idb;
+}
+async function mediaPut(id, blob){ const db = await openDB(); return new Promise((res, rej) => { const tx = db.transaction("media", "readwrite"); tx.objectStore("media").put(blob, id); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error); }); }
+async function mediaGet(id){ const db = await openDB(); return new Promise((res, rej) => { const r = db.transaction("media").objectStore("media").get(id); r.onsuccess = () => res(r.result || null); r.onerror = () => rej(r.error); }); }
+async function mediaDel(id){ const db = await openDB(); return new Promise(res => { const tx = db.transaction("media", "readwrite"); tx.objectStore("media").delete(id); tx.oncomplete = () => res(); tx.onerror = () => res(); }); }
+const urlCache = new Map();
+async function mediaURL(id){
+  if (urlCache.has(id)) return urlCache.get(id);
+  try { const b = await mediaGet(id); if (!b) return null; const u = URL.createObjectURL(b); urlCache.set(id, u); return u; } catch(e){ return null; }
+}
 
 /* ---------------- icons ---------------- */
 const I = {
@@ -238,7 +306,9 @@ const I = {
   daily: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
-  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  photo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>',
+  video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="M16 10l6-3v10l-6-3z"/></svg>',
 };
 
 /* ---------------- toast ---------------- */
@@ -287,34 +357,30 @@ function playAudio(text){
   });
 }
 function speak(text){
-  if (IS_APP && navigator.onLine !== false){
-    playAudio(text).catch(() => speakSynth(text));
-    return;
-  }
+  if (IS_APP && navigator.onLine !== false){ playAudio(text).catch(() => speakSynth(text)); return; }
   speakSynth(text);
 }
 function speakSynth(text){
   const synth = window.speechSynthesis;
-  if (!synth || typeof SpeechSynthesisUtterance === "undefined"){ toast("Bu tarayıcı sesli okumayı desteklemiyor. Sözlükteki ses düğmesini kullan."); return; }
+  if (!synth || typeof SpeechSynthesisUtterance === "undefined"){ toast("This browser can't read aloud. Use the sound button in the dictionary."); return; }
   const say = () => {
     const u = new SpeechSynthesisUtterance(forSpeech(text));
     u.lang = "en-US"; u.rate = 0.9; u.pitch = 1; u.volume = 1;
     const v = pickVoice(); if (v){ u.voice = v; u.lang = v.lang; }
     let started = false;
     u.onstart = () => { started = true; };
-    u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") toast("Ses çalınamadı (" + e.error + ")"); };
+    u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") toast("Couldn't play the sound (" + e.error + ")"); };
     synth.speak(u);
     try { if (synth.paused) synth.resume(); } catch(e){}
     setTimeout(() => {
       if (!started && !synth.speaking){
         const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
-        toast(ios ? "Ses gelmiyorsa telefonun yanındaki sessiz mod düğmesini kapat ve sesi aç." : "Ses gelmiyorsa telefonun sesini aç. Olmazsa Ayarlar'da 'Metin okuma' motorunu kontrol et.", 4200);
+        toast(ios ? "No sound? Turn off silent mode on the side of your iPhone and turn the volume up." : "No sound? Turn the volume up, or check the text-to-speech engine in Settings.", 4200);
       }
     }, 1800);
   };
-  try {
-    if (synth.speaking || synth.pending){ synth.cancel(); setTimeout(say, 150); } else say();
-  } catch(e){ toast("Ses çalınamadı"); }
+  try { if (synth.speaking || synth.pending){ synth.cancel(); setTimeout(say, 150); } else say(); }
+  catch(e){ toast("Couldn't play the sound"); }
 }
 
 /* ---------------- dictionary ---------------- */
@@ -333,27 +399,27 @@ function schedule(c, g, now){
   return { ease: Math.round(ease * 100) / 100, interval, reps: reps + 1, lapses, due: startOfDay(now) + interval * DAY };
 }
 function fmtInterval(s){
-  if (s.minutes) return s.minutes + " dk";
+  if (s.minutes) return s.minutes + " min";
   const d = s.interval;
-  if (d < 30) return d + " gün";
-  if (d < 365) return Math.round(d / 30) + " ay";
-  return Math.round(d / 36.5) / 10 + " yıl";
+  if (d < 30) return plural(d, "day");
+  if (d < 365) return Math.round(d / 30) + " mo";
+  return Math.round(d / 36.5) / 10 + " yr";
 }
 function fmtDue(due){
   const now = Date.now();
-  if (!due || due <= now) return "tekrar zamanı";
-  if (due - now < 3600000) return Math.ceil((due - now) / 60000) + " dk sonra";
+  if (!due || due <= now) return "due now";
+  if (due - now < 3600000) return "in " + Math.ceil((due - now) / 60000) + " min";
   const days = Math.round((startOfDay(due) - startOfDay(now)) / DAY);
-  if (days <= 0) return "bugün";
-  if (days === 1) return "yarın";
-  if (days < 30) return days + " gün sonra";
-  return Math.round(days / 30) + " ay sonra";
+  if (days <= 0) return "later today";
+  if (days === 1) return "tomorrow";
+  if (days < 30) return "in " + days + " days";
+  return "in " + plural(Math.round(days / 30), "month");
 }
 const isDue = c => (c.due || 0) <= Date.now();
 const dueCount = () => cards.filter(isDue).length;
 function newCard(o){ const now = Date.now(); return Object.assign({ id: uid(), en: "", tr: "", note: "", type: "kelime", createdAt: now, due: now, interval: 0, ease: 2.5, reps: 0, lapses: 0 }, o); }
 const chunkCard = id => cards.find(c => c.chunkId === id);
-const typeLabel = t => t === "kelime" ? "Kelime" : t === "chunk" ? "Chunk" : "Kalıp";
+const typeLabel = t => t === "kelime" ? "Word" : t === "chunk" ? "Chunk" : "Phrase";
 
 /* ---------------- daily picks ---------------- */
 const DAILY_IDS = [...new Set(DATA.daily.flatMap(g => g.ids))].filter(id => CHUNKS[id]);
@@ -363,7 +429,7 @@ function todaysChunks(n = 3){
   return Array.from({ length: n }, (_, k) => CHUNKS[DAILY_IDS[(start + k * 37) % DAILY_IDS.length]]);
 }
 
-/* ---------------- writing prompts ---------------- */
+/* ---------------- writing prompts (with Turkish meaning) ---------------- */
 const PROMPTS = [
   ["Describe your morning routine.", "Sabah rutinini anlat."],
   ["What did you do last weekend?", "Geçen hafta sonu ne yaptın?"],
@@ -419,13 +485,11 @@ function streak(){
 /* ---------------- routing ---------------- */
 let route = "", params = "";
 function go(h){ if (location.hash.slice(1) === h) render(); else location.hash = h; }
-const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing" };
+const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "" };
 function parseHash(){ const h = decodeURIComponent(location.hash.slice(1)); const i = h.indexOf("/"); route = i === -1 ? h : h.slice(0, i); params = i === -1 ? "" : h.slice(i + 1); }
-window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); render(); window.scrollTo(0, 0); });
+window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); closeViewer(); render(); window.scrollTo(0, 0); });
 function bar(title){
-  const parent = PARENT[route];
-  const target = route === "read" || route === "readedit" ? "reading" : route === "chunk" ? "chunks" : parent;
-  return '<div class="bar"><button class="back" type="button" data-go="' + esc(target || "") + '" aria-label="Geri">' + I.back + '</button><h1>' + esc(title) + '</h1></div>';
+  return '<div class="bar"><button class="back" type="button" data-go="' + esc(PARENT[route] || "") + '" aria-label="Back">' + I.back + '</button><h1>' + esc(title) + '</h1></div>';
 }
 
 /* ---------------- render ---------------- */
@@ -439,6 +503,7 @@ function render(){
   if (route === "readedit") return renderTextEditor(params);
   if (route === "writing") return renderWriting();
   if (route === "write") return renderWritePast(params);
+  if (route === "notes") return renderNotes();
   renderHome();
 }
 
@@ -448,22 +513,110 @@ function renderHome(){
   const inReview = cards.filter(c => c.type === "chunk").length;
   const tk = dateKey(), wroteToday = writes[tk] && countWords(writes[tk].text) > 0, st = streak();
   const tc = todaysChunks(1)[0];
-  const tile = (r, ic, color, title, sub, wide) =>
-    '<button class="tile' + (wide ? " wide" : "") + '" type="button" data-go="' + r + '"><span class="ic" style="background:var(--t-' + color + ')">' + I[ic] + '</span><span class="txt"><span class="tt">' + title + '</span><br><span class="ts">' + sub + '</span></span></button>';
+  const tile = (r, ic, title, sub, wide) =>
+    '<button class="tile' + (wide ? " wide" : "") + '" type="button" data-go="' + r + '"><span class="ic" style="background:var(--t-' + ic + ')">' + I[ic] + '</span><span class="txt"><span class="tt">' + title + '</span><br><span class="ts">' + sub + '</span></span></button>';
   app.innerHTML =
-    '<div style="padding-top:calc(22px + env(safe-area-inset-top,0px))"><h1 class="home-title">My Notebook</h1><p class="lead">Kelimelerin, kalıpların, okuma ve yazma defterin.</p></div>' +
+    '<div style="padding-top:calc(22px + env(safe-area-inset-top,0px))"><h1 class="home-title">My Notebook</h1><p class="lead">Your words, chunks, reading and writing.</p></div>' +
+    composerHTML() +
+    (notes.length ? '<button class="notes-link" type="button" data-go="notes"><span>Your notes · ' + notes.length + '</span>' + I.chev + '</button>' : '<div style="height:6px"></div>') +
     (due
-      ? '<button class="due-strip" type="button" data-go="words" data-wt="review"><span><b>' + due + ' kart</b><br><span>bugün tekrar bekliyor</span></span><span class="go">Başla</span></button>'
-      : '<button class="due-strip calm" type="button" data-go="words" data-wt="' + (cards.length ? "review" : "add") + '"><span><b>' + (cards.length ? "Bugünlük tekrar bitti" : "Defterin boş") + '</b><br><span>' + (cards.length ? "Yeni bir kelime ya da kalıp ekleyebilirsin" : "İlk kelimeni ya da kalıbını ekle") + '</span></span><span class="go">' + (cards.length ? "Ekle" : "Başla") + '</span></button>') +
+      ? '<button class="due-strip" type="button" data-go="words" data-wt="review"><span><b>' + plural(due, "card") + '</b><br><span>waiting for review today</span></span><span class="go">Start</span></button>'
+      : '<button class="due-strip calm" type="button" data-go="words" data-wt="' + (cards.length ? "review" : "add") + '"><span><b>' + (cards.length ? "All done for today" : "Your notebook is empty") + '</b><br><span>' + (cards.length ? "You can add a new word or phrase" : "Add your first word or phrase") + '</span></span><span class="go">' + (cards.length ? "Add" : "Start") + '</span></button>') +
     '<div class="tiles">' +
-      tile("words", "words", "words", "Words", cards.length + " kart" + (due ? " · " + due + " bekliyor" : "")) +
-      tile("chunks", "chunks", "chunks", "Chunks", Object.keys(CHUNKS).length + " kalıp · " + inReview + " tekrarda") +
-      tile("reading", "reading", "reading", "Reading", texts.length ? texts.length + " metin" : "Okuyacağın metni ekle") +
-      tile("writing", "writing", "writing", "Writing", wroteToday ? "Bugün yazdın" + (st > 1 ? " · " + st + " günlük seri" : "") : (st ? st + " günlük seri · bugün yazmadın" : "Bugünün konusu hazır")) +
-      tile("daily", "daily", "daily", "Daily", tc ? "Bugünün kalıbı: " + esc(tc.en) : "Günlük hayat kalıpları", true) +
+      tile("words", "words", "Words", plural(cards.length, "card") + (due ? " · " + due + " due" : "")) +
+      tile("chunks", "chunks", "Chunks", Object.keys(CHUNKS).length + " chunks · " + inReview + " in review") +
+      tile("reading", "reading", "Reading", texts.length ? plural(texts.length, "text") : "Add a text to read") +
+      tile("writing", "writing", "Writing", wroteToday ? "Done today" + (st > 1 ? " · " + st + "-day streak" : "") : (st ? st + "-day streak · not done today" : "Today's topic is ready")) +
+      tile("daily", "daily", "Daily", tc ? "Today's phrase: " + esc(tc.en) : "Everyday phrases", true) +
     '</div>' +
-    '<div class="backup"><p>Her şey bu telefonda saklanıyor. Ara sıra yedek alırsan telefon değişse bile kaybolmaz.</p><div class="row-btns"><button class="btn light" type="button" data-act="export">Yedek al</button><button class="btn light" type="button" data-act="import">Yedekten yükle</button></div></div>';
+    '<div class="backup"><p>Everything is saved on this phone. Make a backup now and then so nothing is lost if you change phones. Videos are not included in backups.</p><div class="row-btns"><button class="btn light" type="button" data-act="export">Back up</button><button class="btn light" type="button" data-act="import">Restore backup</button></div></div>';
+  hydrateComposer();
 }
+
+/* ---------------- notes ("What's on your mind?") ---------------- */
+let draft = { text: read(KEY + "-draft", ""), media: [] }, posting = false, editingNote = null;
+function composerHTML(){
+  return '<div class="composer"><textarea id="nt" rows="2" placeholder="What\'s on your mind?">' + esc(draft.text) + '</textarea>' +
+    '<div class="thumbs" id="nthumbs"' + (draft.media.length ? "" : " hidden") + '></div>' +
+    '<div class="tools"><button class="ibtn" type="button" data-act="pick-photo">' + I.photo + 'Photo</button><button class="ibtn" type="button" data-act="pick-video">' + I.video + 'Video</button><span class="sp"></span>' +
+    '<span class="busy" id="nbusy" hidden>Saving…</span><button class="post" type="button" data-act="post" id="npost"' + (canPost() ? "" : " disabled") + '>Post</button></div></div>';
+}
+const canPost = () => !posting && (draft.text.trim() || draft.media.length);
+function hydrateComposer(){
+  const ta = $("#nt"); if (ta) autoGrow(ta);
+  const box = $("#nthumbs"); if (!box) return;
+  box.hidden = !draft.media.length;
+  box.innerHTML = draft.media.map((m, i) =>
+    '<div class="thumb">' + (m.type === "video" ? '<video src="' + m.url + '#t=0.1" muted playsinline preload="metadata"></video><span class="vtag">VIDEO</span>' : '<img src="' + m.url + '" alt="">') +
+    '<button class="rm" type="button" data-act="rm-draft" data-id="' + i + '" aria-label="Remove">' + I.x + '</button></div>').join("");
+  const p = $("#npost"); if (p) p.disabled = !canPost();
+}
+function autoGrow(ta){ ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 320) + "px"; }
+async function compressImage(file){
+  try {
+    const bmp = await createImageBitmap(file);
+    const max = 1600, scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.85));
+    return blob && blob.size < file.size ? blob : file;
+  } catch(e){ return file; }
+}
+async function addFiles(files, type){
+  for (const f of files){
+    if (draft.media.length >= MAX_MEDIA){ toast("You can add up to " + MAX_MEDIA + " photos or videos to one note"); break; }
+    if (type === "video" && f.size > MAX_VIDEO_MB * 1024 * 1024){ toast("This video is too big (max " + MAX_VIDEO_MB + " MB). Try a shorter one."); continue; }
+    const blob = type === "image" ? await compressImage(f) : f;
+    draft.media.push({ type, blob, mime: blob.type || f.type, url: URL.createObjectURL(blob) });
+  }
+  hydrateComposer();
+}
+async function postNote(){
+  if (!canPost()) return;
+  posting = true; const busy = $("#nbusy"); if (busy) busy.hidden = false; hydrateComposer();
+  const media = [];
+  try {
+    for (const m of draft.media){ const id = uid(); await mediaPut(id, m.blob); media.push({ id, type: m.type, mime: m.mime }); urlCache.set(id, m.url); }
+  } catch(e){
+    for (const m of media){ urlCache.delete(m.id); await mediaDel(m.id); }
+    posting = false; if (busy) busy.hidden = true; hydrateComposer();
+    toast("Couldn't save the media. Your phone may be out of space.", 3500); return;
+  }
+  notes.unshift({ id: uid(), text: draft.text.trim(), media, createdAt: Date.now() });
+  if (!saveNotes()){ notes.shift(); posting = false; return; }
+  draft = { text: "", media: [] }; write(KEY + "-draft", ""); posting = false;
+  toast("Posted"); render();
+}
+function noteHTML(n){
+  const media = n.media || [];
+  const editing = editingNote === n.id;
+  return '<div class="note-card"><div class="when"><span>' + when(n.createdAt) + (n.editedAt ? " · edited" : "") + '</span><span class="row-btns">' +
+      (editing ? "" : '<button class="mini" type="button" data-act="edit-note" data-id="' + n.id + '">Edit</button>') +
+      '<button class="mini del' + (armed === "n" + n.id ? " armed" : "") + '" type="button" data-act="del-note" data-id="' + n.id + '">' + (armed === "n" + n.id ? "Sure?" : "Delete") + '</button></span></div>' +
+    (editing
+      ? '<textarea class="note-edit" id="ne-' + n.id + '">' + esc(n.text) + '</textarea><div class="row-btns"><button class="mini primary" type="button" data-act="save-note" data-id="' + n.id + '">Save</button><button class="mini" type="button" data-act="cancel-note">Cancel</button></div>'
+      : (n.text ? '<div class="body">' + esc(n.text) + '</div>' : "")) +
+    (media.length ? '<div class="media' + (media.length === 1 ? " one" : "") + '">' + media.map(m =>
+      m.type === "video"
+        ? '<div class="m" data-media="' + m.id + '" data-type="video"></div>'
+        : '<button class="m" type="button" data-act="view" data-id="' + m.id + '" data-media="' + m.id + '" data-type="image" aria-label="Open photo"></button>').join("") + '</div>' : "") +
+  '</div>';
+}
+async function hydrateMedia(){
+  for (const el of document.querySelectorAll("[data-media]")){
+    if (el.dataset.done) continue; el.dataset.done = "1";
+    const u = await mediaURL(el.dataset.media);
+    if (!u){ el.classList.add("missing"); el.innerHTML = '<span class="missing">' + (el.dataset.type === "video" ? "Video not on this device" : "Photo not on this device") + '</span>'; continue; }
+    el.innerHTML = el.dataset.type === "video" ? '<video src="' + u + '#t=0.1" controls playsinline preload="metadata"></video>' : '<img src="' + u + '" alt="" loading="lazy">';
+  }
+}
+function renderNotes(){
+  app.innerHTML = bar("Notes") + composerHTML() +
+    (notes.length ? notes.map(noteHTML).join("") : '<div class="empty">Nothing here yet. Write down whatever is on your mind, in English if you can.</div>');
+  hydrateComposer(); hydrateMedia();
+}
+function openViewer(url){ closeViewer(); const v = document.createElement("div"); v.className = "viewer"; v.innerHTML = '<img src="' + url + '" alt=""><button type="button" data-act="close-viewer" aria-label="Close">' + I.x + '</button>'; document.body.appendChild(v); }
+function closeViewer(){ const v = $(".viewer"); if (v) v.remove(); }
 
 /* ---------------- words ---------------- */
 let wordsTab = "review", queue = null, pos = 0, revealed = false, doneCount = 0;
@@ -473,9 +626,9 @@ function current(){ while (queue && pos < queue.length){ const c = cards.find(x 
 function renderWords(){
   const due = dueCount();
   app.innerHTML = bar("Words") +
-    '<div class="seg" role="group"><button type="button" data-wt="review" aria-pressed="' + (wordsTab === "review") + '">Tekrar' + (due ? '<span class="badge">' + due + '</span>' : '') + '</button>' +
-    '<button type="button" data-wt="add" aria-pressed="' + (wordsTab === "add") + '">' + (editing ? "Düzenle" : "Ekle") + '</button>' +
-    '<button type="button" data-wt="list" aria-pressed="' + (wordsTab === "list") + '">Liste</button></div>' +
+    '<div class="seg" role="group"><button type="button" data-wt="review" aria-pressed="' + (wordsTab === "review") + '">Review' + (due ? '<span class="badge">' + due + '</span>' : '') + '</button>' +
+    '<button type="button" data-wt="add" aria-pressed="' + (wordsTab === "add") + '">' + (editing ? "Edit" : "Add") + '</button>' +
+    '<button type="button" data-wt="list" aria-pressed="' + (wordsTab === "list") + '">List</button></div>' +
     '<div id="wbody"></div>';
   if (wordsTab === "review") renderReview();
   else if (wordsTab === "add") renderAddForm();
@@ -483,16 +636,16 @@ function renderWords(){
 }
 function renderReview(){
   const v = $("#wbody"); if (!v) return;
-  if (!cards.length){ v.innerHTML = '<div class="done"><h2>Defterin boş</h2><p>Bir kelime ekle ya da Chunks bölümünden kalıpları tekrara ekle.</p><div class="row-btns"><button class="btn" type="button" data-wt="add">Kelime ekle</button><button class="btn light" type="button" data-go="chunks">Chunks</button></div></div>'; return; }
+  if (!cards.length){ v.innerHTML = '<div class="done"><h2>Your notebook is empty</h2><p>Add a word, or add some chunks to your review from the Chunks section.</p><div class="row-btns"><button class="btn" type="button" data-wt="add">Add a word</button><button class="btn light" type="button" data-go="chunks">Chunks</button></div></div>'; return; }
   if (!queue) buildQueue();
   const c = current();
   if (!c){
     const dueNow = dueCount();
     const next = cards.filter(x => !isDue(x)).sort((a, b) => a.due - b.due)[0];
-    v.innerHTML = '<div class="done"><h2>' + (doneCount ? "Bugünlük bu kadar" : "Şu an tekrar edilecek kart yok") + '</h2><p>' +
-      (doneCount ? doneCount + " kart tekrar ettin. " : "") + (dueNow ? dueNow + " kart yeniden hazır." : next ? "Sıradaki kart " + fmtDue(next.due) + "." : "") + '</p><div class="row-btns">' +
-      (dueNow ? '<button class="btn" type="button" data-act="restart">Devam et</button>' : "") +
-      '<button class="btn light" type="button" data-wt="add">Yeni ekle</button></div></div>';
+    v.innerHTML = '<div class="done"><h2>' + (doneCount ? "That's it for today" : "Nothing to review right now") + '</h2><p>' +
+      (doneCount ? "You reviewed " + plural(doneCount, "card") + ". " : "") + (dueNow ? plural(dueNow, "card") + " ready again." : next ? "Next card " + fmtDue(next.due) + "." : "") + '</p><div class="row-btns">' +
+      (dueNow ? '<button class="btn" type="button" data-act="restart">Keep going</button>' : "") +
+      '<button class="btn light" type="button" data-wt="add">Add new</button></div></div>';
     return;
   }
   const en = prefs.dir !== "tr", now = Date.now();
@@ -500,15 +653,15 @@ function renderReview(){
   v.innerHTML =
     '<div class="rhead"><span class="progress">' + (pos + 1) + " / " + queue.length + '</span><button class="chip" type="button" data-act="dir">' + (en ? "EN → TR" : "TR → EN") + '</button></div>' +
     '<div class="card"><div class="card-top"><span class="tag">' + typeLabel(c.type) + '</span>' +
-      (showEnglish ? '<span class="row-btns"><a class="round" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Sözlükte aç">' + I.book + '</a><button class="round" type="button" data-say="' + esc(c.en) + '" aria-label="Dinle">' + I.speak + '</button></span>' : "") + '</div>' +
+      (showEnglish ? '<span class="row-btns"><a class="round" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Open in dictionary">' + I.book + '</a><button class="round" type="button" data-say="' + esc(c.en) + '" aria-label="Listen">' + I.speak + '</button></span>' : "") + '</div>' +
       '<p class="front">' + esc(en ? c.en : (c.tr || c.en)) + '</p>' +
       (revealed
         ? '<p class="ans">' + esc(en ? (c.tr || "—") : c.en) + '</p>' + (c.note ? '<p class="note">' + esc(c.note) + '</p>' : "")
-        : '<button class="reveal" type="button" data-act="reveal">Cevabı göster</button>') +
+        : '<button class="reveal" type="button" data-act="reveal">Show answer</button>') +
     '</div>' +
     (revealed
-      ? '<div class="grades">' + ["Bilemedim", "Zor", "İyi", "Kolay"].map((l, g) => '<button class="grade" type="button" data-g="' + g + '">' + l + '<small>' + fmtInterval(schedule(c, g, now)) + '</small></button>').join("") + '</div><p class="hint">Alttaki süre, kartın tekrar ne zaman geleceğini gösterir.</p>'
-      : '<p class="hint">Önce kendin hatırlamaya çalış, sonra cevaba bak.</p>');
+      ? '<div class="grades">' + ["Again", "Hard", "Good", "Easy"].map((l, g) => '<button class="grade" type="button" data-g="' + g + '">' + l + '<small>' + fmtInterval(schedule(c, g, now)) + '</small></button>').join("") + '</div><p class="hint">The time under each button is when you\'ll see this card again.</p>'
+      : '<p class="hint">Try to remember it first, then check the answer.</p>');
 }
 function grade(g){
   const c = current(); if (!c) return;
@@ -523,12 +676,12 @@ function renderAddForm(){
   const t = c ? (c.type || "kalip") : "kelime";
   $("#wbody").innerHTML =
     '<form id="f" autocomplete="off" novalidate>' +
-      '<div class="seg" style="margin:0"><label><input type="radio" name="type" value="kelime"' + (t === "kelime" ? " checked" : "") + '>Kelime</label><label><input type="radio" name="type" value="kalip"' + (t === "kalip" ? " checked" : "") + '>Kalıp / cümle</label>' + (t === "chunk" ? '<label><input type="radio" name="type" value="chunk" checked>Chunk</label>' : "") + '</div>' +
-      '<div class="field"><label for="f-en">İngilizcesi</label><input id="f-en" value="' + esc(c ? c.en : "") + '" placeholder="reluctant" autocapitalize="off"></div>' +
-      '<div class="row-btns"><button class="mini" type="button" data-act="form-say">' + I.speak + 'Dinle</button><button class="mini" type="button" data-act="form-dict">' + I.book + 'Sözlükte bak</button></div>' +
-      '<div class="field"><label for="f-tr">Türkçe anlamı</label><input id="f-tr" value="' + esc(c ? c.tr : "") + '" placeholder="isteksiz, gönülsüz"></div>' +
-      '<div class="field"><label for="f-note">Örnek cümle veya not</label><textarea id="f-note" placeholder="She was reluctant to ask for help.">' + esc(c ? c.note : "") + '</textarea></div>' +
-      '<div class="row-btns"><button class="btn" type="submit" style="flex:1">' + (c ? "Değişiklikleri kaydet" : "Kaydet") + '</button>' + (c ? '<button class="btn light" type="button" data-act="cancel-edit">Vazgeç</button>' : "") + '</div>' +
+      '<div class="seg" style="margin:0"><label><input type="radio" name="type" value="kelime"' + (t === "kelime" ? " checked" : "") + '>Word</label><label><input type="radio" name="type" value="kalip"' + (t === "kalip" ? " checked" : "") + '>Phrase / sentence</label>' + (t === "chunk" ? '<label><input type="radio" name="type" value="chunk" checked>Chunk</label>' : "") + '</div>' +
+      '<div class="field"><label for="f-en">English</label><input id="f-en" value="' + esc(c ? c.en : "") + '" placeholder="reluctant" autocapitalize="off"></div>' +
+      '<div class="row-btns"><button class="mini" type="button" data-act="form-say">' + I.speak + 'Listen</button><button class="mini" type="button" data-act="form-dict">' + I.book + 'Look it up</button></div>' +
+      '<div class="field"><label for="f-tr">Turkish meaning</label><input id="f-tr" value="' + esc(c ? c.tr : "") + '" placeholder="isteksiz, gönülsüz"></div>' +
+      '<div class="field"><label for="f-note">Example sentence or note</label><textarea id="f-note" placeholder="She was reluctant to ask for help.">' + esc(c ? c.note : "") + '</textarea></div>' +
+      '<div class="row-btns"><button class="btn" type="submit" style="flex:1">' + (c ? "Save changes" : "Save") + '</button>' + (c ? '<button class="btn light" type="button" data-act="cancel-edit">Cancel</button>' : "") + '</div>' +
     '</form>';
 }
 function renderWordList(){
@@ -537,29 +690,29 @@ function renderWordList(){
     .filter(c => (wFilter === "all" || (c.type || "kalip") === wFilter) && (!q || fold(c.en).includes(q) || fold(c.tr).includes(q) || fold(c.note).includes(q)));
   const f = (k, l) => '<button type="button" data-wf="' + k + '" aria-pressed="' + (wFilter === k) + '">' + l + '</button>';
   $("#wbody").innerHTML =
-    '<input class="search" id="wq" type="search" placeholder="Ara" value="' + esc(wQuery) + '">' +
-    '<div class="filters">' + f("all", "Hepsi") + f("kelime", "Kelimeler") + f("kalip", "Kalıplar") + f("chunk", "Chunk'lar") + '</div>' +
-    '<ul class="items" id="witems">' + (list.length ? list.map(wordItem).join("") : '<li class="empty">' + (cards.length ? "Aramaya uyan kayıt yok." : "Henüz kayıt yok.") + '</li>') + '</ul>';
+    '<input class="search" id="wq" type="search" placeholder="Search" value="' + esc(wQuery) + '">' +
+    '<div class="filters">' + f("all", "All") + f("kelime", "Words") + f("kalip", "Phrases") + f("chunk", "Chunks") + '</div>' +
+    '<ul class="items" id="witems">' + (list.length ? list.map(wordItem).join("") : '<li class="empty">' + (cards.length ? "Nothing matches your search." : "Nothing here yet.") + '</li>') + '</ul>';
 }
 function wordItem(c){
   return '<li class="item"><span class="en">' + esc(c.en) + '</span>' + (c.tr ? '<span>' + esc(c.tr) + '</span>' : "") +
     (c.note ? '<span class="nt">' + esc(c.note) + '</span>' : "") +
     '<div class="meta"><span class="tag">' + typeLabel(c.type) + '</span><span class="due">' + fmtDue(c.due) + '</span><span class="acts">' +
-    '<button class="mini" type="button" data-say="' + esc(c.en) + '" aria-label="Dinle">' + I.speak + '</button>' +
-    '<a class="mini" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Sözlük">' + I.book + '</a>' +
-    '<button class="mini" type="button" data-act="edit" data-id="' + c.id + '">Düzenle</button>' +
-    '<button class="mini del' + (armed === c.id ? " armed" : "") + '" type="button" data-act="del" data-id="' + c.id + '">' + (armed === c.id ? "Emin misin?" : "Sil") + '</button></span></div></li>';
+    '<button class="mini" type="button" data-say="' + esc(c.en) + '" aria-label="Listen">' + I.speak + '</button>' +
+    '<a class="mini" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Dictionary">' + I.book + '</a>' +
+    '<button class="mini" type="button" data-act="edit" data-id="' + c.id + '">Edit</button>' +
+    '<button class="mini del' + (armed === c.id ? " armed" : "") + '" type="button" data-act="del" data-id="' + c.id + '">' + (armed === c.id ? "Sure?" : "Delete") + '</button></span></div></li>';
 }
 function submitForm(){
   const en = $("#f-en").value.trim(), tr = $("#f-tr").value.trim(), note = $("#f-note").value.trim();
   const type = document.querySelector('input[name="type"]:checked').value;
-  if (!en){ toast("İngilizcesini yazmalısın"); $("#f-en").focus(); return; }
+  if (!en){ toast("Type the English first"); $("#f-en").focus(); return; }
   if (editing){
     const c = cards.find(x => x.id === editing); if (c) Object.assign(c, { en, tr, note, type });
-    saveCards(); toast("Güncellendi"); editing = null; wordsTab = "list"; renderWords();
+    saveCards(); toast("Saved"); editing = null; wordsTab = "list"; renderWords();
   } else {
-    if (cards.some(c => fold(c.en) === fold(en))){ toast("Bu zaten defterinde var"); return; }
-    cards.push(newCard({ en, tr, note, type })); saveCards(); toast("Deftere eklendi");
+    if (cards.some(c => fold(c.en) === fold(en))){ toast("That's already in your notebook"); return; }
+    cards.push(newCard({ en, tr, note, type })); saveCards(); toast("Added to your notebook");
     if (queue && pos === 0 && doneCount === 0) queue = null;
     renderWords(); $("#f-en").focus();
   }
@@ -570,25 +723,25 @@ const openChunks = new Set();
 function chunkItem(ch){
   const c = chunkCard(ch.id), open = openChunks.has(ch.id);
   return '<div class="ch"><button class="ch-head" type="button" data-act="toggle-chunk" data-id="' + ch.id + '" aria-expanded="' + open + '"><span class="t"><b>' + esc(ch.en) + '</b><span>' + esc(ch.tr) + '</span></span>' +
-    (c ? '<span class="st tag ok">Tekrarda</span>' : "") + '</button>' +
+    (c ? '<span class="st tag ok">In review</span>' : "") + '</button>' +
     (open
-      ? '<div class="ch-body"><ul class="exs">' + ch.ex.map(e => '<li><span>' + esc(e) + '</span><button class="say" type="button" data-say="' + esc(e) + '" aria-label="Cümleyi dinle">' + I.speak + '</button></li>').join("") + '</ul>' +
-        '<div class="row-btns"><button class="mini" type="button" data-say="' + esc(ch.en) + '">' + I.speak + 'Dinle</button>' +
-        '<a class="mini" href="' + tureng(ch.en) + '" target="_blank" rel="noopener">' + I.book + 'Sözlük</a>' +
-        (c ? '<button class="mini on" type="button" data-act="unreview-chunk" data-id="' + ch.id + '">' + I.check + 'Tekrarda</button>'
-           : '<button class="mini primary" type="button" data-act="review-chunk" data-id="' + ch.id + '">' + I.plus + 'Tekrara ekle</button>') +
+      ? '<div class="ch-body"><ul class="exs">' + ch.ex.map(e => '<li><span>' + esc(e) + '</span><button class="say" type="button" data-say="' + esc(e) + '" aria-label="Listen to the sentence">' + I.speak + '</button></li>').join("") + '</ul>' +
+        '<div class="row-btns"><button class="mini" type="button" data-say="' + esc(ch.en) + '">' + I.speak + 'Listen</button>' +
+        '<a class="mini" href="' + tureng(ch.en) + '" target="_blank" rel="noopener">' + I.book + 'Dictionary</a>' +
+        (c ? '<button class="mini on" type="button" data-act="unreview-chunk" data-id="' + ch.id + '">' + I.check + 'In review</button>'
+           : '<button class="mini primary" type="button" data-act="review-chunk" data-id="' + ch.id + '">' + I.plus + 'Add to review</button>') +
         '</div></div>'
       : "") + '</div>';
 }
 function renderChunks(){
   const mine = cards.filter(c => c.type === "kalip");
   app.innerHTML = bar("Chunks") +
-    '<p class="lead" style="margin:0 0 6px">Günde 5–10 chunk seç, örnek cümleleriyle birlikte sesli tekrar et ve tekrara ekle.</p>' +
+    '<p class="lead" style="margin:0 0 6px">Pick 5–10 chunks a day, say the examples out loud and add them to your review.</p>' +
     '<ul class="cats">' +
-      (mine.length ? '<li><button type="button" data-go="chunk/mine"><span class="num">★</span><span class="ct"><b>Benim kalıplarım</b><span>' + mine.length + ' kalıp</span></span><span class="chev">' + I.chev + '</span></button></li>' : "") +
+      (mine.length ? '<li><button type="button" data-go="chunk/mine"><span class="num">★</span><span class="ct"><b>My phrases</b><span>' + plural(mine.length, "phrase") + '</span></span><span class="chev">' + I.chev + '</span></button></li>' : "") +
       DATA.categories.map(c => {
         const n = c.items.filter(i => chunkCard(i.id)).length;
-        return '<li><button type="button" data-go="chunk/' + c.id + '"><span class="num">' + c.id + '</span><span class="ct"><b>' + esc(c.title) + '</b><span>' + c.items.length + ' kalıp' + (n ? ' · ' + n + ' tekrarda' : '') + '</span>' +
+        return '<li><button type="button" data-go="chunk/' + c.id + '"><span class="num">' + c.id + '</span><span class="ct"><b>' + esc(c.title) + '</b><span>' + c.items.length + ' chunks' + (n ? ' · ' + n + ' in review' : '') + '</span>' +
           (n ? '<div class="prog"><i style="width:' + Math.round(n / c.items.length * 100) + '%"></i></div>' : '') + '</span><span class="chev">' + I.chev + '</span></button></li>';
       }).join("") +
     '</ul>';
@@ -596,15 +749,15 @@ function renderChunks(){
 function renderChunkCat(id){
   if (id === "mine"){
     const mine = cards.filter(c => c.type === "kalip").sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-    app.innerHTML = bar("Benim kalıplarım") + '<p class="lead" style="margin:0 0 6px">Words bölümünde "Kalıp" olarak eklediklerin.</p><ul class="items">' + (mine.length ? mine.map(wordItem).join("") : '<li class="empty">Henüz kalıp eklemedin.</li>') + '</ul>';
+    app.innerHTML = bar("My phrases") + '<p class="lead" style="margin:0 0 6px">Phrases you saved in Words.</p><ul class="items">' + (mine.length ? mine.map(wordItem).join("") : '<li class="empty">You haven\'t saved any phrases yet.</li>') + '</ul>';
     return;
   }
   const c = DATA.categories.find(x => String(x.id) === String(id));
   if (!c){ go("chunks"); return; }
   const left = c.items.filter(i => !chunkCard(i.id)).length;
-  app.innerHTML = bar(c.title) + '<p class="lead" style="margin:0 0 6px">' + esc(c.desc) + ' Bir kalıba dokun, örnekleri açılsın.</p>' +
+  app.innerHTML = bar(c.title) + '<p class="lead" style="margin:0 0 6px">' + esc(c.desc) + ' Tap a chunk to see examples.</p>' +
     c.items.map(chunkItem).join("") +
-    (left ? '<div style="margin-top:18px"><button class="btn light" type="button" data-act="review-cat" data-id="' + c.id + '">' + (armed === "cat" + c.id ? "Emin misin? " + left + " kalıp eklenecek" : "Kalan " + left + " kalıbın hepsini tekrara ekle") + '</button></div>' : "");
+    (left ? '<div style="margin-top:18px"><button class="btn light" type="button" data-act="review-cat" data-id="' + c.id + '">' + (armed === "cat" + c.id ? "Sure? " + plural(left, "chunk") + " will be added" : "Add the remaining " + plural(left, "chunk") + " to review") + '</button></div>' : "");
 }
 function addChunkToReview(id){
   const ch = CHUNKS[id]; if (!ch || chunkCard(id)) return;
@@ -616,9 +769,9 @@ let openGroup = null;
 function renderDaily(){
   const tc = todaysChunks(3);
   app.innerHTML = bar("Daily") +
-    '<div class="today"><h2>Bugünün kalıpları</h2><p>Bugün bunları konuşurken ya da yazarken kullanmayı dene. Her gün değişir.</p></div>' +
+    '<div class="today"><h2>Today\'s phrases</h2><p>Try to use these when you speak or write today. They change every day.</p></div>' +
     tc.map(chunkItem).join("") +
-    '<div class="section-title">Durumlara göre</div>' +
+    '<div class="section-title">By situation</div>' +
     '<ul class="cats">' + DATA.daily.map((g, i) => {
       const items = g.ids.map(id => CHUNKS[id]).filter(Boolean);
       const open = openGroup === i;
@@ -631,20 +784,20 @@ function renderDaily(){
 function renderReading(){
   const list = texts.slice().sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
   app.innerHTML = bar("Reading") +
-    '<button class="btn" type="button" data-go="readedit/new" style="width:100%;margin-bottom:8px">Yeni metin ekle</button>' +
-    '<p class="lead" style="margin:4px 0 6px;font-size:14px">Okurken bilmediğin kelimeye dokun, Türkçesini yazıp tek dokunuşla Words\'e ekle.</p>' +
+    '<button class="btn" type="button" data-go="readedit/new" style="width:100%;margin-bottom:8px">Add a new text</button>' +
+    '<p class="lead" style="margin:4px 0 6px;font-size:14px">While reading, tap a word you don\'t know, write its Turkish meaning and add it to Words.</p>' +
     (list.length
-      ? '<ul class="cats">' + list.map(t => '<li><button type="button" data-go="read/' + t.id + '"><span class="ct"><b>' + esc(t.title || "Adsız metin") + '</b><span>' + countWords(t.body) + ' kelime · ' + prettyDate(dateKey(t.createdAt)) + (t.added ? ' · ' + t.added + ' kelime eklendi' : '') + '</span></span><span class="chev">' + I.chev + '</span></button></li>').join("") + '</ul>'
-      : '<div class="empty">Henüz metin yok. Bir haber, blog yazısı ya da kitaptan bir sayfa yapıştır.</div>');
+      ? '<ul class="cats">' + list.map(t => '<li><button type="button" data-go="read/' + t.id + '"><span class="ct"><b>' + esc(t.title || "Untitled") + '</b><span>' + plural(countWords(t.body), "word") + ' · ' + prettyDate(dateKey(t.createdAt)) + (t.added ? ' · ' + t.added + ' added' : '') + '</span></span><span class="chev">' + I.chev + '</span></button></li>').join("") + '</ul>'
+      : '<div class="empty">No texts yet. Paste a news article, a blog post or a page from a book.</div>');
 }
 function renderTextEditor(id){
   const t = id !== "new" ? texts.find(x => x.id === id) : null;
-  app.innerHTML = bar(t ? "Metni düzenle" : "Yeni metin") +
+  app.innerHTML = bar(t ? "Edit text" : "New text") +
     '<form id="tf" autocomplete="off" novalidate>' +
-      '<div class="field"><label for="t-title">Başlık</label><input id="t-title" value="' + esc(t ? t.title : "") + '" placeholder="Örn. BBC haberi, roman 3. bölüm"></div>' +
-      '<div class="field"><label for="t-body">Metin</label><textarea id="t-body" style="min-height:300px" placeholder="İngilizce metni buraya yapıştır">' + esc(t ? t.body : "") + '</textarea></div>' +
-      '<div class="row-btns"><button class="btn" type="submit" style="flex:1">Kaydet ve oku</button>' +
-      (t ? '<button class="btn light" type="button" data-act="del-text" data-id="' + t.id + '" style="color:var(--again)">' + (armed === "t" + t.id ? "Emin misin?" : "Sil") + '</button>' : "") + '</div>' +
+      '<div class="field"><label for="t-title">Title</label><input id="t-title" value="' + esc(t ? t.title : "") + '" placeholder="e.g. BBC article, novel chapter 3"></div>' +
+      '<div class="field"><label for="t-body">Text</label><textarea id="t-body" style="min-height:300px" placeholder="Paste the English text here">' + esc(t ? t.body : "") + '</textarea></div>' +
+      '<div class="row-btns"><button class="btn" type="submit" style="flex:1">Save and read</button>' +
+      (t ? '<button class="btn light" type="button" data-act="del-text" data-id="' + t.id + '" style="color:var(--again)">' + (armed === "t" + t.id ? "Sure?" : "Delete") + '</button>' : "") + '</div>' +
       '<input type="hidden" id="t-id" value="' + esc(t ? t.id : "") + '">' +
     '</form>';
 }
@@ -654,8 +807,9 @@ function renderReader(id){
   const t = texts.find(x => x.id === id);
   if (!t){ go("reading"); return; }
   const known = new Set(cards.map(c => fold(c.en)));
+  const paras = t.body.split(/\n\s*\n|\n/).filter(p => p.trim());
   const tokens = []; let html = "";
-  t.body.split(/\n\s*\n|\n/).filter(p => p.trim()).forEach((p, pi) => {
+  paras.forEach((p, pi) => {
     let out = "", last = 0, m;
     WORD_RE.lastIndex = 0;
     while ((m = WORD_RE.exec(p))){
@@ -668,9 +822,9 @@ function renderReader(id){
     out += esc(p.slice(last));
     html += "<p>" + out + "</p>";
   });
-  rd = { id, tokens, paras: t.body.split(/\n\s*\n|\n/).filter(p => p.trim()) };
-  app.innerHTML = bar(t.title || "Metin") +
-    '<div class="row-btns" style="margin-bottom:14px"><button class="mini" type="button" data-say="' + esc(t.body.slice(0, 3000)) + '">' + I.speak + 'Metni dinle</button><button class="mini" type="button" data-go="readedit/' + t.id + '">Düzenle</button></div>' +
+  rd = { id, tokens, paras };
+  app.innerHTML = bar(t.title || "Text") +
+    '<div class="row-btns" style="margin-bottom:14px"><button class="mini" type="button" data-say="' + esc(t.body.slice(0, 3000)) + '">' + I.speak + 'Listen to text</button><button class="mini" type="button" data-go="readedit/' + t.id + '">Edit</button></div>' +
     '<div class="reader" id="reader">' + html + '</div><div class="reader-pad"></div>';
 }
 function sentenceOf(tok){
@@ -691,13 +845,13 @@ function openSheet(){
   if (!s){ s = document.createElement("div"); s.className = "sheet"; document.body.appendChild(s); }
   const canPrev = sel.a > 0 && rd.tokens[sel.a - 1].p === rd.tokens[sel.a].p, canNext = sel.b < rd.tokens.length - 1 && rd.tokens[sel.b + 1].p === rd.tokens[sel.b].p;
   s.innerHTML = '<div class="in">' +
-    '<div class="top"><span class="phrase">' + esc(phrase) + '</span><button class="round" type="button" data-act="close-sheet" aria-label="Kapat">' + I.x + '</button></div>' +
-    '<div class="row-btns"><button class="mini" type="button" data-act="sel-prev"' + (canPrev ? "" : " disabled") + '>+ önceki kelime</button><button class="mini" type="button" data-act="sel-next"' + (canNext ? "" : " disabled") + '>+ sonraki kelime</button>' + (sel.b > sel.a ? '<button class="mini" type="button" data-act="sel-one">Tek kelime</button>' : "") + '</div>' +
+    '<div class="top"><span class="phrase">' + esc(phrase) + '</span><button class="round" type="button" data-act="close-sheet" aria-label="Close">' + I.x + '</button></div>' +
+    '<div class="row-btns"><button class="mini" type="button" data-act="sel-prev"' + (canPrev ? "" : " disabled") + '>+ previous word</button><button class="mini" type="button" data-act="sel-next"' + (canNext ? "" : " disabled") + '>+ next word</button>' + (sel.b > sel.a ? '<button class="mini" type="button" data-act="sel-one">Single word</button>' : "") + '</div>' +
     '<p class="ctx">' + esc(ctx) + '</p>' +
-    '<div class="row-btns"><button class="mini" type="button" data-say="' + esc(phrase) + '">' + I.speak + 'Dinle</button><a class="mini" href="' + tureng(phrase) + '" target="_blank" rel="noopener">' + I.book + 'Tureng</a><a class="mini" href="' + cambridge(phrase) + '" target="_blank" rel="noopener">' + I.book + 'Cambridge</a></div>' +
+    '<div class="row-btns"><button class="mini" type="button" data-say="' + esc(phrase) + '">' + I.speak + 'Listen</button><a class="mini" href="' + tureng(phrase) + '" target="_blank" rel="noopener">' + I.book + 'Tureng</a><a class="mini" href="' + cambridge(phrase) + '" target="_blank" rel="noopener">' + I.book + 'Cambridge</a></div>' +
     (exist
-      ? '<p class="ctx" style="font-style:normal;color:var(--good)">Zaten defterinde' + (exist.tr ? ': ' + esc(exist.tr) : '') + '</p>'
-      : '<input id="s-tr" placeholder="Türkçe anlamı" value="' + esc(keepTr) + '" autocomplete="off"><button class="btn" type="button" data-act="add-word">Words\'e ekle</button>') +
+      ? '<p class="ctx" style="font-style:normal;color:var(--good)">Already in your notebook' + (exist.tr ? ': ' + esc(exist.tr) : '') + '</p>'
+      : '<input id="s-tr" placeholder="Turkish meaning" value="' + esc(keepTr) + '" autocomplete="off"><button class="btn" type="button" data-act="add-word">Add to Words</button>') +
     '</div>';
 }
 function closeSheet(silent){ const s = $(".sheet"); if (s) s.remove(); sel = null; if (!silent) document.querySelectorAll(".w.sel").forEach(e => e.classList.remove("sel")); }
@@ -709,14 +863,14 @@ function renderWriting(){
   const n = countWords(w.text || ""), st = streak();
   const past = Object.keys(writes).filter(d => d !== k && countWords(writes[d].text)).sort().reverse();
   app.innerHTML = bar("Writing") +
-    '<div class="prompt"><small>Bugünün konusu · ' + prettyDate(k) + '</small><b>' + esc(p) + '</b>' + (tr ? '<span class="ts" style="color:var(--muted);font-size:14px">' + esc(tr) + '</span>' : '') +
-      (w.text ? '' : '<div class="row-btns"><button class="mini" type="button" data-act="next-prompt">Başka konu</button></div>') + '</div>' +
+    '<div class="prompt"><small>Today\'s topic · ' + prettyDate(k) + '</small><b>' + esc(p) + '</b>' + (tr ? '<span style="color:var(--muted);font-size:14px">' + esc(tr) + '</span>' : '') +
+      (w.text ? '' : '<div class="row-btns"><button class="mini" type="button" data-act="next-prompt">Another topic</button></div>') + '</div>' +
     '<div class="use">' + todaysChunks(3).map(c => '<span class="tag" title="' + esc(c.tr) + '">' + esc(c.en) + '</span>').join("") + '</div>' +
-    '<textarea class="wbox" id="wbox" placeholder="Yazmaya başla… En fazla 250 kelime." spellcheck="true" autocapitalize="sentences">' + esc(w.text || "") + '</textarea>' +
-    '<div class="wfoot"><span class="count' + (n >= MAX_WORDS ? " full" : "") + '" id="wcount">' + n + ' / ' + MAX_WORDS + ' kelime</span>' +
-      '<span class="row-btns"><button class="mini" type="button" data-act="copy-writing">Kopyala</button></span></div>' +
-    '<p class="lead" style="font-size:13px;margin-top:10px">Yazdıkların otomatik kaydedilir. Düzeltme istersen "Kopyala"ya basıp Claude\'a yapıştır.' + (st ? ' Seri: ' + st + ' gün.' : '') + '</p>' +
-    (past.length ? '<div class="section-title">Önceki yazıların</div><ul class="cats">' + past.map(d => '<li><button type="button" data-go="write/' + d + '"><span class="ct"><b>' + prettyDate(d) + '</b><span>' + countWords(writes[d].text) + ' kelime · ' + esc((writes[d].prompt || "").slice(0, 60)) + '</span></span><span class="chev">' + I.chev + '</span></button></li>').join("") + '</ul>' : "");
+    '<textarea class="wbox" id="wbox" placeholder="Start writing… 250 words max." spellcheck="true" autocapitalize="sentences">' + esc(w.text || "") + '</textarea>' +
+    '<div class="wfoot"><span class="count' + (n >= MAX_WORDS ? " full" : "") + '" id="wcount">' + n + ' / ' + MAX_WORDS + ' words</span>' +
+      '<span class="row-btns"><button class="mini" type="button" data-act="copy-writing">Copy</button></span></div>' +
+    '<p class="lead" style="font-size:13px;margin-top:10px">Your writing saves automatically. For feedback, tap Copy and paste it to Claude.' + (st ? ' Streak: ' + plural(st, "day") + '.' : '') + '</p>' +
+    (past.length ? '<div class="section-title">Your past writing</div><ul class="cats">' + past.map(d => '<li><button type="button" data-go="write/' + d + '"><span class="ct"><b>' + prettyDate(d) + '</b><span>' + plural(countWords(writes[d].text), "word") + ' · ' + esc((writes[d].prompt || "").slice(0, 60)) + '</span></span><span class="chev">' + I.chev + '</span></button></li>').join("") + '</ul>' : "");
 }
 function trimToMax(text){
   const re = /\S+/g; let m, n = 0, end = text.length;
@@ -725,9 +879,9 @@ function trimToMax(text){
 }
 function onWritingInput(e){
   const ta = e.target; let text = ta.value;
-  if (countWords(text) > MAX_WORDS){ text = trimToMax(text); ta.value = text; toast("En fazla 250 kelime yazabilirsin"); }
+  if (countWords(text) > MAX_WORDS){ text = trimToMax(text); ta.value = text; toast("You can write up to 250 words"); }
   const n = countWords(text), c = $("#wcount");
-  c.textContent = n + " / " + MAX_WORDS + " kelime"; c.classList.toggle("full", n >= MAX_WORDS);
+  c.textContent = n + " / " + MAX_WORDS + " words"; c.classList.toggle("full", n >= MAX_WORDS);
   clearTimeout(saveT);
   saveT = setTimeout(() => {
     const k = dateKey();
@@ -739,22 +893,25 @@ function onWritingInput(e){
 function renderWritePast(k){
   const w = writes[k]; if (!w){ go("writing"); return; }
   app.innerHTML = bar(prettyDate(k)) +
-    '<div class="prompt"><small>Konu</small><b>' + esc(w.prompt || "") + '</b></div>' +
+    '<div class="prompt"><small>Topic</small><b>' + esc(w.prompt || "") + '</b></div>' +
     '<div class="past">' + esc(w.text) + '</div>' +
-    '<div class="wfoot"><span class="count">' + countWords(w.text) + ' kelime</span><span class="row-btns"><button class="mini" type="button" data-act="copy-past" data-id="' + k + '">Kopyala</button><button class="mini" type="button" data-say="' + esc(w.text) + '">' + I.speak + 'Dinle</button></span></div>';
+    '<div class="wfoot"><span class="count">' + plural(countWords(w.text), "word") + '</span><span class="row-btns"><button class="mini" type="button" data-act="copy-past" data-id="' + k + '">Copy</button><button class="mini" type="button" data-say="' + esc(w.text) + '">' + I.speak + 'Listen</button></span></div>';
 }
 async function copyText(text){
-  try { await navigator.clipboard.writeText(text); toast("Kopyalandı"); }
-  catch(e){ const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast("Kopyalandı"); } catch(_){ toast("Kopyalanamadı, metni elle seç"); } ta.remove(); }
+  try { await navigator.clipboard.writeText(text); toast("Copied"); }
+  catch(e){ const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast("Copied"); } catch(_){ toast("Couldn't copy. Select the text by hand."); } ta.remove(); }
 }
 
 /* ---------------- backup ---------------- */
+const blobToDataURL = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
 async function exportBackup(){
-  const d = new Date(), name = "my-notebook-yedek-" + dateKey() + ".json";
-  const blob = new Blob([JSON.stringify({ app: "kalip-defteri", version: 2, exportedAt: d.toISOString(), cards, texts, writes }, null, 2)], { type: "application/json" });
+  const d = new Date(), name = "my-notebook-backup-" + dateKey() + ".json";
+  const photos = {};
+  for (const n of notes) for (const m of (n.media || [])) if (m.type === "image"){ try { const b = await mediaGet(m.id); if (b) photos[m.id] = await blobToDataURL(b); } catch(e){} }
+  const blob = new Blob([JSON.stringify({ app: "kalip-defteri", version: 3, exportedAt: d.toISOString(), cards, texts, writes, notes, photos })], { type: "application/json" });
   try {
     const file = new File([blob], name, { type: "application/json" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: "My Notebook yedeği" }); return; }
+    if (navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: "My Notebook backup" }); return; }
   } catch(e){ if (e && e.name === "AbortError") return; }
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
@@ -769,19 +926,24 @@ $("#file").addEventListener("change", async e => {
     for (const c of inc){ if (!c || !c.en) continue; const i = cards.findIndex(x => x.id === c.id); if (i === -1){ cards.push(Object.assign({ id: uid() }, c)); added++; } else cards[i] = c; }
     if (Array.isArray(data.texts)) for (const t of data.texts){ if (t && t.id && !texts.some(x => x.id === t.id)) texts.push(t); }
     if (data.writes && typeof data.writes === "object") for (const k in data.writes){ if (!writes[k]) writes[k] = data.writes[k]; }
-    saveCards(); saveTexts(); saveWrites(); queue = null; render();
-    toast(added + " yeni kart yüklendi");
-  } catch(err){ toast("Bu dosya bir My Notebook yedeği değil"); }
+    if (Array.isArray(data.notes)){
+      for (const n of data.notes){ if (n && n.id && !notes.some(x => x.id === n.id)) notes.push(n); }
+      notes.sort((a, b) => b.createdAt - a.createdAt);
+      if (data.photos) for (const id in data.photos){ try { const b = await (await fetch(data.photos[id])).blob(); await mediaPut(id, b); } catch(e){} }
+    }
+    saveCards(); saveTexts(); saveWrites(); saveNotes(); queue = null; render();
+    toast(plural(added, "new card") + " restored");
+  } catch(err){ toast("That file isn't a My Notebook backup"); }
 });
 
 /* ---------------- events ---------------- */
-document.addEventListener("click", e => {
+document.addEventListener("click", async e => {
   const t = e.target;
   const sayB = t.closest("[data-say]"); if (sayB){ speak(sayB.dataset.say); return; }
   const goB = t.closest("[data-go]");
   if (goB){
     if (goB.dataset.wt){ wordsTab = goB.dataset.wt; if (wordsTab === "review" && queue && !current()) queue = null; }
-    armed = null; go(goB.dataset.go); return;
+    armed = null; editingNote = null; go(goB.dataset.go); return;
   }
   const wt = t.closest("[data-wt]");
   if (wt){ wordsTab = wt.dataset.wt; if (wordsTab !== "add") editing = null; if (wordsTab === "review" && queue && !current()) queue = null; armed = null; renderWords(); return; }
@@ -800,21 +962,21 @@ document.addEventListener("click", e => {
     case "cancel-edit": editing = null; wordsTab = "list"; renderWords(); break;
     case "del":
       if (armed !== id){ armed = id; render(); return; }
-      armed = null; cards = cards.filter(x => x.id !== id); saveCards(); toast("Silindi"); render(); break;
-    case "form-say": { const v = $("#f-en").value.trim(); if (v) speak(v); else toast("Önce İngilizcesini yaz"); break; }
-    case "form-dict": { const v = $("#f-en").value.trim(); if (v) window.open(tureng(v), "_blank", "noopener"); else toast("Önce İngilizcesini yaz"); break; }
+      armed = null; cards = cards.filter(x => x.id !== id); saveCards(); toast("Deleted"); render(); break;
+    case "form-say": { const v = $("#f-en").value.trim(); if (v) speak(v); else toast("Type the English first"); break; }
+    case "form-dict": { const v = $("#f-en").value.trim(); if (v) window.open(tureng(v), "_blank", "noopener"); else toast("Type the English first"); break; }
     case "toggle-chunk": openChunks.has(id) ? openChunks.delete(id) : openChunks.add(id); render(); break;
-    case "review-chunk": addChunkToReview(id); saveCards(); toast("Tekrara eklendi"); render(); break;
-    case "unreview-chunk": cards = cards.filter(c => c.chunkId !== id); saveCards(); toast("Tekrardan çıkarıldı"); render(); break;
+    case "review-chunk": addChunkToReview(id); saveCards(); toast("Added to review"); render(); break;
+    case "unreview-chunk": cards = cards.filter(c => c.chunkId !== id); saveCards(); toast("Removed from review"); render(); break;
     case "review-cat": {
       if (armed !== "cat" + id){ armed = "cat" + id; render(); return; }
       armed = null; const c = DATA.categories.find(x => String(x.id) === id); let n = 0;
-      c.items.forEach(i => { if (!chunkCard(i.id)){ addChunkToReview(i.id); n++; } }); saveCards(); toast(n + " kalıp tekrara eklendi"); render(); break;
+      c.items.forEach(i => { if (!chunkCard(i.id)){ addChunkToReview(i.id); n++; } }); saveCards(); toast(plural(n, "chunk") + " added to review"); render(); break;
     }
     case "toggle-group": openGroup = openGroup === +id ? null : +id; render(); break;
     case "del-text":
       if (armed !== "t" + id){ armed = "t" + id; render(); return; }
-      armed = null; texts = texts.filter(x => x.id !== id); saveTexts(); toast("Metin silindi"); go("reading"); break;
+      armed = null; texts = texts.filter(x => x.id !== id); saveTexts(); toast("Text deleted"); go("reading"); break;
     case "close-sheet": closeSheet(); break;
     case "sel-prev": sel.a--; openSheet(); break;
     case "sel-next": sel.b++; openSheet(); break;
@@ -826,29 +988,58 @@ document.addEventListener("click", e => {
       saveCards();
       const txt = texts.find(x => x.id === rd.id); if (txt){ txt.added = (txt.added || 0) + 1; saveTexts(); }
       if (!multi) document.querySelectorAll(".w").forEach(el => { if (fold(el.textContent) === fold(phrase)) el.classList.add("known"); });
-      toast(tr ? "Words'e eklendi" : "Eklendi. Türkçesini sonra Words'ten yazabilirsin");
+      toast(tr ? "Added to Words" : "Added. You can fill in the Turkish meaning later in Words.");
       closeSheet(); break;
     }
     case "next-prompt": { const k = dateKey(); prefs.promptOffset = { [k]: ((prefs.promptOffset && prefs.promptOffset[k]) || 0) + 1 }; savePrefs(); renderWriting(); break; }
-    case "copy-writing": { const v = $("#wbox").value.trim(); if (!v) return toast("Henüz bir şey yazmadın"); copyText("Today's topic: " + promptFor(dateKey()) + "\n\n" + v); break; }
+    case "copy-writing": { const v = $("#wbox").value.trim(); if (!v) return toast("You haven't written anything yet"); copyText("Today's topic: " + promptFor(dateKey()) + "\n\n" + v); break; }
     case "copy-past": copyText("Topic: " + (writes[id].prompt || "") + "\n\n" + writes[id].text); break;
     case "export": exportBackup(); break;
     case "import": $("#file").click(); break;
+    case "pick-photo": $("#pick-photo").click(); break;
+    case "pick-video": $("#pick-video").click(); break;
+    case "rm-draft": { const m = draft.media.splice(+id, 1)[0]; if (m) URL.revokeObjectURL(m.url); hydrateComposer(); break; }
+    case "post": postNote(); break;
+    case "view": { const u = await mediaURL(id); if (u) openViewer(u); break; }
+    case "close-viewer": closeViewer(); break;
+    case "edit-note": editingNote = id; armed = null; render(); { const ta = $("#ne-" + id); if (ta){ ta.focus(); } } break;
+    case "cancel-note": editingNote = null; render(); break;
+    case "save-note": {
+      const n = notes.find(x => x.id === id), v = $("#ne-" + id).value.trim();
+      if (n){ if (!v && !(n.media || []).length){ toast("A note can't be empty"); return; } n.text = v; n.editedAt = Date.now(); saveNotes(); }
+      editingNote = null; toast("Saved"); render(); break;
+    }
+    case "del-note": {
+      if (armed !== "n" + id){ armed = "n" + id; render(); return; }
+      armed = null; const n = notes.find(x => x.id === id);
+      notes = notes.filter(x => x.id !== id); saveNotes();
+      if (n) for (const m of (n.media || [])){ const u = urlCache.get(m.id); if (u){ URL.revokeObjectURL(u); urlCache.delete(m.id); } mediaDel(m.id); }
+      toast("Note deleted"); render(); break;
+    }
   }
 });
+document.addEventListener("click", e => { if (e.target.classList && e.target.classList.contains("viewer")) closeViewer(); });
+$("#pick-photo").addEventListener("change", e => { const f = [...e.target.files]; e.target.value = ""; addFiles(f, "image"); });
+$("#pick-video").addEventListener("change", e => { const f = [...e.target.files]; e.target.value = ""; addFiles(f, "video"); });
 document.addEventListener("submit", e => {
   e.preventDefault();
   if (e.target.id === "f") submitForm();
   if (e.target.id === "tf"){
     const title = $("#t-title").value.trim(), body = $("#t-body").value.trim(), id = $("#t-id").value;
-    if (!body){ toast("Metni yapıştırmalısın"); return; }
+    if (!body){ toast("Paste the text first"); return; }
     if (id){ const t = texts.find(x => x.id === id); Object.assign(t, { title, body, updatedAt: Date.now() }); saveTexts(); go("read/" + id); }
     else { const t = { id: uid(), title, body, createdAt: Date.now(), updatedAt: Date.now(), added: 0 }; texts.push(t); saveTexts(); go("read/" + t.id); }
   }
 });
+let draftT = null;
 document.addEventListener("input", e => {
-  if (e.target.id === "wq"){ wQuery = e.target.value; const pos = e.target.selectionStart; renderWordList(); const q = $("#wq"); q.focus(); try { q.setSelectionRange(pos, pos); } catch(_){} }
+  if (e.target.id === "wq"){ wQuery = e.target.value; const p = e.target.selectionStart; renderWordList(); const q = $("#wq"); q.focus(); try { q.setSelectionRange(p, p); } catch(_){} }
   if (e.target.id === "wbox") onWritingInput(e);
+  if (e.target.id === "nt"){
+    draft.text = e.target.value; autoGrow(e.target);
+    const p = $("#npost"); if (p) p.disabled = !canPost();
+    clearTimeout(draftT); draftT = setTimeout(() => write(KEY + "-draft", draft.text), 400);
+  }
 });
 document.addEventListener("keydown", e => {
   if (route !== "words" || wordsTab !== "review" || e.target.closest("input,textarea")) return;
@@ -856,7 +1047,7 @@ document.addEventListener("keydown", e => {
   else if (revealed && /^[1-4]$/.test(e.key)) grade(+e.key - 1);
 });
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible" && (route === "" || (route === "words" && wordsTab === "review" && !revealed))){ if (queue && !current()) queue = null; render(); }
+  if (document.visibilityState === "visible" && route === "words" && wordsTab === "review" && !revealed){ if (queue && !current()) queue = null; render(); }
 });
 
 parseHash(); render();

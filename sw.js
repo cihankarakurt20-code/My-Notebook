@@ -1,6 +1,6 @@
 // Uygulamayı internetsiz de açılabilir yapar.
 // İnternet varken her açılışta en yeni sürümü alır, yokken kayıtlı kopyayı açar.
-const CACHE = "kalip-defteri-v4";
+const CACHE = "kalip-defteri-v5";
 const FILES = ["./", "./index.html", "./chunks.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
 
 self.addEventListener("install", e => {

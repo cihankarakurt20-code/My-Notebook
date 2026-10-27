@@ -1,8 +1,8 @@
 {
   "name": "My Notebook",
   "short_name": "My Notebook",
-  "description": "Kelimeler, chunk'lar, okuma ve yazma için kişisel İngilizce defterim.",
-  "lang": "tr",
+  "description": "My personal English notebook: words, chunks, reading and writing.",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
