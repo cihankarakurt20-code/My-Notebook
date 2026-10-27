@@ -17,7 +17,7 @@
 :root{
   --bg:#ffffff; --ink:#111111; --muted:#6b6b6b; --faint:#9a9a9a; --line:#e8e8e8; --soft:#f6f6f6;
   --accent:#2a55e5; --again:#d0342c; --hard:#b26b00; --good:#1f8a4c; --easy:#2a55e5;
-  --t-words:#eaf0ff; --t-chunks:#e9f6ee; --t-reading:#fff3e3; --t-writing:#f3ecff; --t-daily:#fdeeee;
+  --t-words:#eaf0ff; --t-chunks:#e9f6ee; --t-reading:#fff3e3; --t-writing:#f3ecff; --t-daily:#fdeeee; --t-speaking:#e6f6f7;
   color-scheme:light;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -185,6 +185,21 @@ form{display:flex;flex-direction:column;gap:16px}
 .today h2{font-size:15px;margin:0 0 4px}
 .today p{margin:0;font-size:14px;color:var(--muted)}
 
+/* speaking */
+.steps{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.steps li::before{counter-increment:s;content:counter(s);width:24px;height:24px;border-radius:999px;background:var(--ink);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex:none;margin-top:1px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
+.chips button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.incl{background:var(--soft);border-radius:14px;padding:12px 14px;font-size:14px;display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.incl b{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.incl span{overflow-wrap:anywhere}
+.cta{display:block;width:100%;text-align:center;text-decoration:none;margin-top:18px}
+details.preview{margin-top:14px}
+details.preview summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--muted)}
+details.preview pre{white-space:pre-wrap;font-family:inherit;font-size:14px;background:var(--soft);border-radius:12px;padding:12px;margin:8px 0 0;overflow-wrap:anywhere}
+
 /* reading */
 .reader{font-size:19px;line-height:1.75}
 .reader p{margin:0 0 1em}
@@ -304,6 +319,7 @@ const I = {
   reading: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>',
   writing: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
   daily: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg>',
+  speaking: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
   x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
@@ -485,7 +501,7 @@ function streak(){
 /* ---------------- routing ---------------- */
 let route = "", params = "";
 function go(h){ if (location.hash.slice(1) === h) render(); else location.hash = h; }
-const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "" };
+const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "", speaking: "" };
 function parseHash(){ const h = decodeURIComponent(location.hash.slice(1)); const i = h.indexOf("/"); route = i === -1 ? h : h.slice(0, i); params = i === -1 ? "" : h.slice(i + 1); }
 window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); closeViewer(); render(); window.scrollTo(0, 0); });
 function bar(title){
@@ -504,6 +520,7 @@ function render(){
   if (route === "writing") return renderWriting();
   if (route === "write") return renderWritePast(params);
   if (route === "notes") return renderNotes();
+  if (route === "speaking") return renderSpeaking();
   renderHome();
 }
 
@@ -527,7 +544,8 @@ function renderHome(){
       tile("chunks", "chunks", "Chunks", Object.keys(CHUNKS).length + " chunks · " + inReview + " in review") +
       tile("reading", "reading", "Reading", texts.length ? plural(texts.length, "text") : "Add a text to read") +
       tile("writing", "writing", "Writing", wroteToday ? "Done today" + (st > 1 ? " · " + st + "-day streak" : "") : (st ? st + "-day streak · not done today" : "Today's topic is ready")) +
-      tile("daily", "daily", "Daily", tc ? "Today's phrase: " + esc(tc.en) : "Everyday phrases", true) +
+      tile("speaking", "speaking", "Speaking", "Talk with ChatGPT using what you've learned") +
+      tile("daily", "daily", "Daily", tc ? "Today's phrase: " + esc(tc.en) : "Everyday phrases") +
     '</div>' +
     '<div class="backup"><p>Everything is saved on this phone. Make a backup now and then so nothing is lost if you change phones. Videos are not included in backups.</p><div class="row-btns"><button class="btn light" type="button" data-act="export">Back up</button><button class="btn light" type="button" data-act="import">Restore backup</button></div></div>';
   hydrateComposer();
@@ -780,6 +798,65 @@ function renderDaily(){
     }).join("") + '</ul>';
 }
 
+/* ---------------- speaking (practice with ChatGPT) ---------------- */
+const TOPICS = [
+  ["free", "Free chat", "anything I want to talk about; ask me about my life, my day and my interests"],
+  ["day", "My day", "my day today: what I did, how I felt and my plans for tomorrow"],
+  ["writing", "Today's writing topic", null],
+  ["cafe", "At a café", "a role-play: you are a waiter in a café in London and I am a customer"],
+  ["interview", "Job interview", "a role-play: you interview me for a job I would like; ask typical interview questions"],
+  ["travel", "Travel", "travelling: a trip I took or a trip I want to take; you can also play a hotel receptionist"],
+  ["friend", "Meeting a friend", "a role-play: we are old friends who meet by chance after a long time"],
+];
+const LEVELS = ["A2", "B1", "B2", "C1"];
+const ord = c => (isDue(c) ? 0 : 1) * 1e15 + (1e15 - (c.createdAt || 0));
+function practiceMaterial(){
+  const learning = cards.filter(c => (c.interval || 0) < 21).sort((a, b) => ord(a) - ord(b));
+  const words = learning.filter(c => c.type === "kelime").slice(0, 12).map(c => c.en);
+  const phrases = learning.filter(c => c.type !== "kelime").slice(0, 10).map(c => c.en);
+  const today = todaysChunks(3).map(c => c.en).filter(e => !phrases.includes(e));
+  return { words, phrases, today };
+}
+function practicePrompt(){
+  const t = TOPICS.find(x => x[0] === (prefs.speakTopic || "free")) || TOPICS[0];
+  const topic = t[0] === "writing" ? "this question: \"" + promptFor(dateKey()) + "\"" : t[2];
+  const level = prefs.level || "B1";
+  const m = practiceMaterial();
+  const list = a => a.map(x => "- " + x).join("\n");
+  return [
+    "You are my English speaking partner. I'm a Turkish speaker learning English, and my level is about " + level + ".",
+    "We are going to talk in voice mode, so please:",
+    "- Keep every reply short (1–3 sentences) and end with a question so I keep talking.",
+    "- Speak naturally but a little slower than normal, with words that fit my level.",
+    "- Our topic is " + topic + ".",
+    "- Use the words and phrases below in the conversation and give me chances to use them. When I use one correctly, tell me briefly.",
+    "- If I make a mistake, first reply to what I said, then give me the correct version in one short sentence. Only correct important mistakes, not every small one.",
+    "- If I get stuck or say something in Turkish, help me say it in English.",
+    "- When I say \"stop\", give me a short summary: the phrases I used well, my 3 most important mistakes with corrections, and 3 useful new phrases for next time.",
+    m.words.length ? "\nWords I'm learning:\n" + list(m.words) : "",
+    m.phrases.length ? "\nPhrases and chunks I'm learning:\n" + list(m.phrases) : "",
+    m.today.length ? "\nToday's phrases:\n" + list(m.today) : "",
+    "\nStart by greeting me and asking your first question.",
+  ].filter(Boolean).join("\n");
+}
+function renderSpeaking(){
+  const m = practiceMaterial(), topic = prefs.speakTopic || "free", level = prefs.level || "B1";
+  const incl = (label, a) => a.length ? '<div><b>' + label + ' · ' + a.length + '</b><br><span>' + a.map(esc).join(" · ") + '</span></div>' : "";
+  app.innerHTML = bar("Speaking") +
+    '<p class="lead" style="margin:0 0 16px">Have a voice conversation with ChatGPT that uses the words and chunks you\'re learning.</p>' +
+    '<ol class="steps"><li>Pick a topic and tap the button below. Your practice instructions are copied.</li><li>In ChatGPT, paste them into a new chat and send.</li><li>Tap the voice button in ChatGPT and start talking. Say "stop" when you\'re done to get feedback.</li></ol>' +
+    '<div class="section-title" style="margin-top:0">Topic</div>' +
+    '<div class="chips">' + TOPICS.map(t => '<button type="button" data-topic="' + t[0] + '" aria-pressed="' + (topic === t[0]) + '">' + t[1] + '</button>').join("") + '</div>' +
+    (topic === "writing" ? '<p class="lead" style="font-size:14px;margin:4px 0 0">"' + esc(promptFor(dateKey())) + '"</p>' : "") +
+    '<div class="section-title">My level</div>' +
+    '<div class="chips">' + LEVELS.map(l => '<button type="button" data-level="' + l + '" aria-pressed="' + (level === l) + '">' + l + '</button>').join("") + '</div>' +
+    '<div class="section-title">What ChatGPT will practise with you</div>' +
+    '<div class="incl">' + (incl("Words", m.words) + incl("Phrases and chunks", m.phrases) + incl("Today's phrases", m.today) || '<span>Today\'s phrases only. Add words or chunks to your review to practise them here.</span>') + '</div>' +
+    '<a class="btn cta" href="https://chatgpt.com/" target="_blank" rel="noopener" data-act="copy-practice">Copy and open ChatGPT</a>' +
+    '<div class="row-btns" style="margin-top:8px"><button class="mini" type="button" data-act="copy-practice-only">Just copy</button></div>' +
+    '<details class="preview"><summary>See what gets copied</summary><pre>' + esc(practicePrompt()) + '</pre></details>';
+}
+
 /* ---------------- reading ---------------- */
 function renderReading(){
   const list = texts.slice().sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
@@ -897,9 +974,9 @@ function renderWritePast(k){
     '<div class="past">' + esc(w.text) + '</div>' +
     '<div class="wfoot"><span class="count">' + plural(countWords(w.text), "word") + '</span><span class="row-btns"><button class="mini" type="button" data-act="copy-past" data-id="' + k + '">Copy</button><button class="mini" type="button" data-say="' + esc(w.text) + '">' + I.speak + 'Listen</button></span></div>';
 }
-async function copyText(text){
-  try { await navigator.clipboard.writeText(text); toast("Copied"); }
-  catch(e){ const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast("Copied"); } catch(_){ toast("Couldn't copy. Select the text by hand."); } ta.remove(); }
+async function copyText(text, msg = "Copied"){
+  try { await navigator.clipboard.writeText(text); toast(msg, 3000); }
+  catch(e){ const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast(msg, 3000); } catch(_){ toast("Couldn't copy. Open \"See what gets copied\" and copy it by hand."); } ta.remove(); }
 }
 
 /* ---------------- backup ---------------- */
@@ -948,6 +1025,10 @@ document.addEventListener("click", async e => {
   const wt = t.closest("[data-wt]");
   if (wt){ wordsTab = wt.dataset.wt; if (wordsTab !== "add") editing = null; if (wordsTab === "review" && queue && !current()) queue = null; armed = null; renderWords(); return; }
   const wf = t.closest("[data-wf]"); if (wf){ wFilter = wf.dataset.wf; renderWordList(); return; }
+  const tp = t.closest("[data-topic]"); if (tp){ prefs.speakTopic = tp.dataset.topic; savePrefs(); renderSpeaking(); return; }
+  const lv = t.closest("[data-level]"); if (lv){ prefs.level = lv.dataset.level; savePrefs(); renderSpeaking(); return; }
+  const cp = t.closest('[data-act="copy-practice"]');
+  if (cp){ copyText(practicePrompt(), "Copied. Paste it into ChatGPT and send."); return; } /* the link itself opens ChatGPT */
   const gb = t.closest(".grade"); if (gb){ grade(+gb.dataset.g); return; }
   const w = t.closest(".w");
   if (w && rd){ const i = +w.dataset.i; sel = { a: i, b: i }; openSheet(); return; }
@@ -994,6 +1075,7 @@ document.addEventListener("click", async e => {
     case "next-prompt": { const k = dateKey(); prefs.promptOffset = { [k]: ((prefs.promptOffset && prefs.promptOffset[k]) || 0) + 1 }; savePrefs(); renderWriting(); break; }
     case "copy-writing": { const v = $("#wbox").value.trim(); if (!v) return toast("You haven't written anything yet"); copyText("Today's topic: " + promptFor(dateKey()) + "\n\n" + v); break; }
     case "copy-past": copyText("Topic: " + (writes[id].prompt || "") + "\n\n" + writes[id].text); break;
+    case "copy-practice-only": copyText(practicePrompt(), "Copied. Paste it into ChatGPT and send."); break;
     case "export": exportBackup(); break;
     case "import": $("#file").click(); break;
     case "pick-photo": $("#pick-photo").click(); break;
