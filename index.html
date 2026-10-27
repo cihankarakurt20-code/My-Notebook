@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kalıp Defteri</title>
+<title>My Notebook</title>
 <meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Kalıp Defteri">
+<meta name="apple-mobile-web-app-title" content="My Notebook">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 :root{
-  --bg:#ffffff; --ink:#111111; --muted:#6b6b6b; --line:#e8e8e8; --soft:#f6f6f6;
+  --bg:#ffffff; --ink:#111111; --muted:#6b6b6b; --faint:#9a9a9a; --line:#e8e8e8; --soft:#f6f6f6;
   --accent:#2a55e5; --again:#d0342c; --hard:#b26b00; --good:#1f8a4c; --easy:#2a55e5;
+  --t-words:#eaf0ff; --t-chunks:#e9f6ee; --t-reading:#fff3e3; --t-writing:#f3ecff; --t-daily:#fdeeee;
   color-scheme:light;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -23,171 +24,269 @@ html,body{margin:0;background:var(--bg);color:var(--ink)}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
+a{color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 [hidden]{display:none!important}
 
-.wrap{max-width:560px;margin:0 auto;
-  padding-top:calc(16px + env(safe-area-inset-top,0px));
+.wrap{max-width:600px;margin:0 auto;
   padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));
-  padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
-h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:0 0 14px}
-.stats{display:flex;gap:22px;padding:0 0 14px;margin:0 0 18px;border-bottom:1px solid var(--line)}
-.stat b{display:block;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
-.stat span{font-size:13px;color:var(--muted)}
+  padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;min-height:52px}
+.bar h1{font-size:20px;font-weight:700;margin:0;letter-spacing:-.01em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.back{border:0;background:var(--soft);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;padding:0;flex:none}
+.back svg{width:20px;height:20px}
+.home-title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0}
+.lead{color:var(--muted);margin:2px 0 0;font-size:15px}
 
-.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted)}
+/* home */
+.due-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;margin:14px 0 14px;border:0;width:100%;text-align:left}
+.due-strip b{font-size:17px}
+.due-strip span{font-size:14px;opacity:.8}
+.due-strip .go{background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;flex:none}
+.due-strip.calm{background:var(--soft);color:var(--ink)}
+.due-strip.calm .go{background:var(--ink);color:#fff}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{border:1px solid var(--line);background:var(--bg);border-radius:18px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;aspect-ratio:1/1;min-width:0}
+.tile.wide{grid-column:1/-1;aspect-ratio:auto;flex-direction:row;align-items:center}
+.tile .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none}
+.tile .ic svg{width:24px;height:24px}
+.tile .tt{font-size:20px;font-weight:700;margin-top:auto;line-height:1.2}
+.tile.wide .tt{margin-top:0}
+.tile .ts{font-size:13px;color:var(--muted);line-height:1.35}
+.tile:active{transform:scale(.98)}
+.tile .txt{min-width:0}
+.backup{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.backup p{margin:0;font-size:14px;color:var(--muted)}
+
+/* shared */
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted);white-space:nowrap}
+.tag.ok{background:#e9f6ee;color:var(--good)}
+.btn{border:0;border-radius:12px;padding:12px 18px;background:var(--ink);color:#fff;font-weight:600}
+.btn.light{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45}
+.row-btns{display:flex;gap:8px;flex-wrap:wrap}
+.mini{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:5px;text-decoration:none;white-space:nowrap}
+.mini svg{width:15px;height:15px}
+.mini.del{color:var(--again)}
+.mini.del.armed{background:var(--again);color:#fff;border-color:var(--again)}
+.mini.on{background:#e9f6ee;color:var(--good);border-color:#cfe9d9}
+.mini.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.empty{color:var(--muted);text-align:center;padding:32px 10px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:4px;border-radius:12px;background:var(--soft);margin-bottom:16px}
+.seg button,.seg label{border:0;background:none;text-align:center;padding:8px 4px;border-radius:9px;font-weight:600;font-size:15px;color:var(--muted);position:relative}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg [aria-pressed="true"],.seg label:has(input:checked){background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.badge{background:var(--again);color:#fff;border-radius:999px;font-size:11px;padding:0 6px;margin-left:4px;font-variant-numeric:tabular-nums}
+.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:16px;background:var(--soft)}
+.filters{display:flex;gap:6px;margin:10px 0 4px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600}
+.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.section-title{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
 
 /* review */
+.stats{display:flex;gap:22px;margin:0 0 16px}
+.stat b{display:block;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
 .rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .progress{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
 .chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
-.card{border:1px solid var(--line);border-radius:16px;min-height:280px;padding:20px;display:flex;flex-direction:column;gap:14px}
-.card-top{display:flex;justify-content:space-between;align-items:center}
+.card{border:1px solid var(--line);border-radius:16px;min-height:270px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card-top .row-btns{gap:6px}
 .front{font-size:26px;font-weight:700;line-height:1.25;margin:4px 0 0;overflow-wrap:anywhere}
-.ans{font-size:19px;font-weight:600;margin:0;overflow-wrap:anywhere;padding-top:14px;border-top:1px solid var(--line)}
+.ans{font-size:19px;font-weight:600;margin:0;overflow-wrap:anywhere;padding-top:12px;border-top:1px solid var(--line)}
 .note{margin:0;color:var(--muted);font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
-.speak{border:1px solid var(--line);background:var(--bg);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;padding:0}
-.speak svg{width:18px;height:18px}
+.round{border:1px solid var(--line);background:var(--bg);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;padding:0;text-decoration:none;flex:none}
+.round svg{width:18px;height:18px}
 .reveal{margin-top:auto;border:0;border-radius:12px;padding:14px;background:var(--ink);color:#fff;font-weight:600}
 .grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .grade{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 2px;display:flex;flex-direction:column;align-items:center;font-weight:600;font-size:15px}
 .grade small{font-weight:400;font-size:12px;color:var(--muted)}
 .grade[data-g="0"]{color:var(--again)}.grade[data-g="1"]{color:var(--hard)}.grade[data-g="2"]{color:var(--good)}.grade[data-g="3"]{color:var(--easy)}
 .hint{color:var(--muted);font-size:13px;text-align:center;margin:12px 0 0}
-.done{text-align:center;padding:48px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.done{text-align:center;padding:40px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .done h2{font-size:21px;margin:0}
 .done p{margin:0;color:var(--muted);max-width:34ch}
+.done .row-btns{justify-content:center}
 
-.btn{border:0;border-radius:12px;padding:13px 18px;background:var(--ink);color:#fff;font-weight:600}
-.btn.light{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
-.row-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-
-/* form */
-form{display:flex;flex-direction:column;gap:16px}
-h2.t{font-size:19px;margin:0}
-.seg{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:var(--soft)}
-.seg label{text-align:center;padding:9px;border-radius:9px;font-weight:600;font-size:15px;color:var(--muted);position:relative}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg label:has(input:checked){background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+/* forms */
+form,.form{display:flex;flex-direction:column;gap:16px}
 .field{display:flex;flex-direction:column;gap:6px}
 .field label{font-size:14px;font-weight:600}
 .field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;background:var(--bg)}
 .field textarea{min-height:80px;resize:vertical}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
 
-/* list */
-.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:16px;background:var(--soft)}
-.filters{display:flex;gap:6px;margin:10px 0 4px}
-.filters button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600}
-.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* lists */
 .items{list-style:none;margin:0;padding:0}
-.item{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.item{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px;min-width:0}
 .item .en{font-weight:600;font-size:17px;overflow-wrap:anywhere}
 .item .nt{color:var(--muted);font-size:14px;font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
-.item .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px}
+.item .meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px}
 .item .due{font-size:13px;color:var(--muted)}
-.item .acts{margin-left:auto;display:flex;gap:6px}
-.mini{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
-.mini.del{color:var(--again)}
-.mini.del.armed{background:var(--again);color:#fff;border-color:var(--again)}
-.empty{color:var(--muted);text-align:center;padding:32px 0}
-.backup{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
-.backup p{margin:0;font-size:14px;color:var(--muted)}
-.backup .row-btns{justify-content:flex-start}
+.item .acts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.cats{list-style:none;margin:0;padding:0}
+.cats button{width:100%;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;padding:14px 0;display:flex;align-items:center;gap:12px}
+.cats .num{width:30px;height:30px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
+.cats .ct{flex:1;min-width:0}
+.cats .ct b{display:block;font-weight:600;font-size:16px;line-height:1.3}
+.cats .ct span{font-size:13px;color:var(--muted)}
+.cats .chev{color:var(--faint);flex:none}
+.prog{height:3px;border-radius:2px;background:var(--soft);margin-top:6px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--good)}
 
-/* tab bar */
-nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);z-index:10;
-  padding:6px max(12px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
-nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
-nav button{border:0;background:none;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:600;color:#9a9a9a}
-nav button svg{width:24px;height:24px}
-nav button[aria-current="page"]{color:var(--ink)}
-.badge{background:var(--again);color:#fff;border-radius:999px;font-size:11px;padding:0 6px;margin-left:3px;font-variant-numeric:tabular-nums}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:20;max-width:calc(100% - 32px);text-align:center}
+/* chunk item */
+.ch{border-bottom:1px solid var(--line)}
+.ch-head{width:100%;border:0;background:none;text-align:left;padding:13px 0;display:flex;align-items:flex-start;gap:10px}
+.ch-head .t{flex:1;min-width:0}
+.ch-head b{display:block;font-size:17px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.ch-head .t > span{font-size:14px;color:var(--muted)}
+.ch-head .st{flex:none;margin-top:2px}
+.ch-body{padding:0 0 14px;display:flex;flex-direction:column;gap:10px}
+.exs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.exs li{display:flex;gap:8px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:8px 10px}
+.exs li span{flex:1;min-width:0;overflow-wrap:anywhere}
+.exs .say{border:0;background:none;padding:2px;color:var(--muted);flex:none;display:grid;place-items:center}
+.exs .say svg{width:17px;height:17px}
+.today{background:var(--soft);border-radius:16px;padding:14px 16px;margin-bottom:6px}
+.today h2{font-size:15px;margin:0 0 4px}
+.today p{margin:0;font-size:14px;color:var(--muted)}
+
+/* reading */
+.reader{font-size:19px;line-height:1.75}
+.reader p{margin:0 0 1em}
+.w{border-radius:4px;cursor:pointer}
+.w.known{text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--good);text-underline-offset:4px}
+.w.sel{background:#ffe57a}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -8px 30px rgba(0,0,0,.08);border-radius:18px 18px 0 0;
+  padding:14px max(18px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px))}
+.sheet .in{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.sheet .top{display:flex;align-items:center;gap:8px}
+.sheet .phrase{font-size:22px;font-weight:700;flex:1;min-width:0;overflow-wrap:anywhere}
+.sheet .ctx{font-size:14px;color:var(--muted);font-style:italic;margin:0;overflow-wrap:anywhere}
+.sheet input{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:17px}
+.sheet input:focus{outline:none;border-color:var(--ink)}
+.reader-pad{height:300px}
+
+/* writing */
+.prompt{background:var(--soft);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.prompt small{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.prompt b{font-size:18px;line-height:1.35}
+.prompt .row-btns{margin-top:4px}
+.use{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.use .tag{background:#f3ecff;color:#5b3cc4;font-size:13px;padding:3px 10px}
+.wbox{width:100%;min-height:260px;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:17px;line-height:1.6;resize:vertical}
+.wbox:focus{outline:none;border-color:var(--ink)}
+.wfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.count{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.count.full{color:var(--again);font-weight:700}
+.past{white-space:pre-wrap;font-size:17px;line-height:1.6;overflow-wrap:anywhere}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:30;width:max-content;max-width:calc(100% - 32px);text-align:center}
+.toast.up{bottom:calc(250px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Kalıp Defteri</h1>
-  <div class="stats">
-    <div class="stat"><b id="s-due">0</b><span>Bugün tekrar</span></div>
-    <div class="stat"><b id="s-total">0</b><span>Toplam</span></div>
-    <div class="stat"><b id="s-solid">0</b><span>Kalıcı</span></div>
-  </div>
-
-  <section id="v-review"></section>
-
-  <section id="v-add" hidden>
-    <form id="f" autocomplete="off" novalidate>
-      <h2 class="t" id="f-title">Yeni ekle</h2>
-      <div class="seg">
-        <label><input type="radio" name="type" id="t-kalip" value="kalip" checked>Kalıp / cümle</label>
-        <label><input type="radio" name="type" id="t-kelime" value="kelime">Kelime</label>
-      </div>
-      <div class="field"><label for="f-en">İngilizcesi</label><input id="f-en" placeholder="I'm looking forward to …" autocapitalize="sentences"></div>
-      <div class="field"><label for="f-tr">Türkçe anlamı</label><input id="f-tr" placeholder="… için sabırsızlanıyorum"></div>
-      <div class="field"><label for="f-note">Örnek cümle veya not</label><textarea id="f-note" placeholder="I'm looking forward to seeing you."></textarea></div>
-      <div class="row-btns" style="justify-content:stretch">
-        <button class="btn" type="submit" id="f-save" style="flex:1">Kaydet</button>
-        <button class="btn light" type="button" id="f-cancel" hidden>Vazgeç</button>
-      </div>
-    </form>
-  </section>
-
-  <section id="v-list" hidden>
-    <input class="search" id="q" type="search" placeholder="Ara">
-    <div class="filters">
-      <button type="button" data-f="all" aria-pressed="true">Hepsi</button>
-      <button type="button" data-f="kalip" aria-pressed="false">Kalıplar</button>
-      <button type="button" data-f="kelime" aria-pressed="false">Kelimeler</button>
-    </div>
-    <ul class="items" id="items"></ul>
-    <div class="backup">
-      <p>Kayıtların bu telefonda saklanıyor. Ara sıra yedek alırsan telefon değişse bile kaybolmaz.</p>
-      <div class="row-btns">
-        <button class="btn light" type="button" id="b-export">Yedek al</button>
-        <button class="btn light" type="button" id="b-import">Yedekten yükle</button>
-        <input type="file" id="file" accept="application/json,.json" hidden>
-      </div>
-    </div>
-  </section>
-</div>
-
-<nav>
-  <div class="in">
-    <button type="button" data-tab="review" aria-current="page">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="15" height="12" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V9"/></svg>
-      <span>Tekrar<span class="badge" id="b-due" hidden></span></span>
-    </button>
-    <button type="button" data-tab="add">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
-      <span>Ekle</span>
-    </button>
-    <button type="button" data-tab="list">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
-      <span>Defter</span>
-    </button>
-  </div>
-</nav>
+<div class="wrap" id="app"></div>
 <div class="toast" id="toast" hidden></div>
+<input type="file" id="file" accept="application/json,.json" hidden>
 
+<script src="chunks.js"></script>
 <script>
 (function(){
-const KEY = "kalip-defteri-v1", DAY = 86400000;
+"use strict";
+const KEY = "kalip-defteri-v1", DAY = 86400000, MAX_WORDS = 250;
+const DATA = window.CHUNK_DATA || { categories: [], daily: [] };
+const CHUNKS = {}; DATA.categories.forEach(c => c.items.forEach(i => { i.cat = c.id; CHUNKS[i.id] = i; }));
 const $ = s => document.querySelector(s);
+const app = $("#app");
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fold = s => String(s ?? "").toLowerCase().replace(/ı/g,"i").normalize("NFD").replace(/[̀-ͯ]/g,"");
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const countWords = s => (String(s).match(/\S+/g) || []).length;
+const pad = n => String(n).padStart(2, "0");
+const dateKey = (t = Date.now()) => { const d = new Date(t); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); };
+const dayNo = (t = Date.now()) => { const d = new Date(t); return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY); };
+const AYLAR = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const prettyDate = k => { const [y, m, d] = k.split("-").map(Number); return d + " " + AYLAR[m - 1] + " " + y; };
 
-/* ---------- storage ---------- */
-let cards = [];
-function load(){ try { cards = JSON.parse(localStorage.getItem(KEY) || "[]"); if (!Array.isArray(cards)) cards = []; } catch(e){ cards = []; } }
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(cards)); return true; } catch(e){ toast("Kaydedilemedi: telefonda yer kalmamış olabilir"); return false; } }
-load();
+/* ---------------- storage ---------------- */
+function read(k, fb){ try { const v = JSON.parse(localStorage.getItem(k)); return v ?? fb; } catch(e){ return fb; } }
+function write(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ toast("Kaydedilemedi: telefonda yer kalmamış olabilir"); return false; } }
+let cards = read(KEY, []); if (!Array.isArray(cards)) cards = [];
+let texts = read(KEY + "-texts", []); if (!Array.isArray(texts)) texts = [];
+let writes = read(KEY + "-writes", {}); if (typeof writes !== "object" || !writes) writes = {};
+let prefs = read(KEY + "-prefs", {}); if (typeof prefs !== "object" || !prefs) prefs = {};
+if (!prefs.dir) { try { prefs.dir = localStorage.getItem(KEY + "-dir") || "en"; } catch(e){ prefs.dir = "en"; } }
+const saveCards = () => write(KEY, cards);
+const saveTexts = () => write(KEY + "-texts", texts);
+const saveWrites = () => write(KEY + "-writes", writes);
+const savePrefs = () => write(KEY + "-prefs", prefs);
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 
-/* ---------- scheduling ---------- */
-function startOfDay(t){ const d = new Date(t); d.setHours(4,0,0,0); if (d.getTime() > t) d.setDate(d.getDate() - 1); return d.getTime(); }
+/* ---------------- icons ---------------- */
+const I = {
+  back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+  chev: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  speak: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6.5A2.5 2.5 0 0 0 4 21.5 2.5 2.5 0 0 0 6.5 24"/><path d="M8 7h8M8 11h6"/></svg>',
+  words: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="15" height="12" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V9"/></svg>',
+  chunks: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/></svg>',
+  reading: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>',
+  writing: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  daily: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14h4"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+};
+
+/* ---------------- toast ---------------- */
+let toastT;
+function toast(m, ms = 2400){ const t = $("#toast"); t.textContent = m; t.hidden = false; t.classList.toggle("up", !!$(".sheet")); clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, ms); }
+
+/* ---------------- speech ---------------- */
+let voices = [];
+function loadVoices(){ try { voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; } catch(e){ voices = []; } }
+if ("speechSynthesis" in window){ loadVoices(); try { speechSynthesis.addEventListener("voiceschanged", loadVoices); } catch(e){ speechSynthesis.onvoiceschanged = loadVoices; } }
+function pickVoice(){
+  if (!voices.length) loadVoices();
+  const en = voices.filter(v => /^en([-_]|$)/i.test(v.lang));
+  const pref = ["Samantha","Google US English","Microsoft Aria","Microsoft Jenny","Karen","Daniel","Moira","Tessa","Google UK English Female"];
+  for (const n of pref){ const v = en.find(v => v.name.indexOf(n) === 0); if (v) return v; }
+  return en.find(v => /en[-_]US/i.test(v.lang) && v.localService) || en.find(v => /en[-_]US/i.test(v.lang)) || en.find(v => /en[-_]GB/i.test(v.lang)) || en[0] || null;
+}
+const forSpeech = s => String(s).replace(/\.\.\.|…/g, " ").replace(/\s\/\s/g, ", ").replace(/[()]/g, "").replace(/\s+/g, " ").trim();
+function speak(text){
+  const synth = window.speechSynthesis;
+  if (!synth || typeof SpeechSynthesisUtterance === "undefined"){ toast("Bu tarayıcı sesli okumayı desteklemiyor. Sözlükteki ses düğmesini kullan."); return; }
+  const say = () => {
+    const u = new SpeechSynthesisUtterance(forSpeech(text));
+    u.lang = "en-US"; u.rate = 0.9; u.pitch = 1; u.volume = 1;
+    const v = pickVoice(); if (v){ u.voice = v; u.lang = v.lang; }
+    let started = false;
+    u.onstart = () => { started = true; };
+    u.onerror = e => { if (e.error !== "interrupted" && e.error !== "canceled") toast("Ses çalınamadı (" + e.error + ")"); };
+    synth.speak(u);
+    try { if (synth.paused) synth.resume(); } catch(e){}
+    setTimeout(() => {
+      if (!started && !synth.speaking){
+        const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        toast(ios ? "Ses gelmiyorsa telefonun yanındaki sessiz mod düğmesini kapat ve sesi aç." : "Ses gelmiyorsa telefonun sesini aç. Olmazsa Ayarlar'da 'Metin okuma' motorunu kontrol et.", 4200);
+      }
+    }, 1800);
+  };
+  try {
+    if (synth.speaking || synth.pending){ synth.cancel(); setTimeout(say, 150); } else say();
+  } catch(e){ toast("Ses çalınamadı"); }
+}
+
+/* ---------------- dictionary ---------------- */
+const dictQuery = s => forSpeech(s).replace(/[?!.,"]/g, "").trim();
+const tureng = s => "https://tureng.com/tr/turkce-ingilizce/" + encodeURIComponent(dictQuery(s).toLowerCase());
+const cambridge = s => "https://dictionary.cambridge.org/dictionary/english-turkish/" + encodeURIComponent(dictQuery(s).toLowerCase().replace(/\s+/g, "-"));
+
+/* ---------------- scheduling ---------------- */
+function startOfDay(t){ const d = new Date(t); d.setHours(4, 0, 0, 0); if (d.getTime() > t) d.setDate(d.getDate() - 1); return d.getTime(); }
 function schedule(c, g, now){
   let ease = c.ease || 2.5, interval = c.interval || 0, reps = c.reps || 0, lapses = c.lapses || 0;
   if (g === 0) return { ease: Math.max(1.3, ease - 0.2), interval: 0, reps: 0, lapses: lapses + 1, due: now + 10 * 60000, minutes: 10 };
@@ -214,60 +313,157 @@ function fmtDue(due){
   return Math.round(days / 30) + " ay sonra";
 }
 const isDue = c => (c.due || 0) <= Date.now();
+const dueCount = () => cards.filter(isDue).length;
+function newCard(o){ const now = Date.now(); return Object.assign({ id: uid(), en: "", tr: "", note: "", type: "kelime", createdAt: now, due: now, interval: 0, ease: 2.5, reps: 0, lapses: 0 }, o); }
+const chunkCard = id => cards.find(c => c.chunkId === id);
+const typeLabel = t => t === "kelime" ? "Kelime" : t === "chunk" ? "Chunk" : "Kalıp";
 
-/* ---------- ui helpers ---------- */
-let toastT;
-function toast(m){ const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
-function speak(text){
-  try {
-    if (!("speechSynthesis" in window)) return toast("Bu cihazda sesli okuma yok");
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = 0.92;
-    const v = speechSynthesis.getVoices().find(v => /^en[-_]US/i.test(v.lang)) || speechSynthesis.getVoices().find(v => /^en/i.test(v.lang));
-    if (v) u.voice = v;
-    speechSynthesis.speak(u);
-  } catch(e){ toast("Sesli okuma çalışmadı"); }
-}
-const speakIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
-const typeTag = c => '<span class="tag">' + (c.type === "kelime" ? "Kelime" : "Kalıp") + '</span>';
-
-function renderStats(){
-  const due = cards.filter(isDue).length;
-  $("#s-due").textContent = due;
-  $("#s-total").textContent = cards.length;
-  $("#s-solid").textContent = cards.filter(c => (c.interval || 0) >= 21).length;
-  const b = $("#b-due"); b.textContent = due; b.hidden = due === 0;
+/* ---------------- daily picks ---------------- */
+const DAILY_IDS = [...new Set(DATA.daily.flatMap(g => g.ids))].filter(id => CHUNKS[id]);
+function todaysChunks(n = 3){
+  if (!DAILY_IDS.length) return [];
+  const start = (dayNo() * 7) % DAILY_IDS.length;
+  return Array.from({ length: n }, (_, k) => CHUNKS[DAILY_IDS[(start + k * 37) % DAILY_IDS.length]]);
 }
 
-/* ---------- review ---------- */
-let tab = "review", queue = null, pos = 0, revealed = false, doneCount = 0;
-let dir = "en"; try { dir = localStorage.getItem(KEY + "-dir") || "en"; } catch(e){}
+/* ---------------- writing prompts ---------------- */
+const PROMPTS = [
+  ["Describe your morning routine.", "Sabah rutinini anlat."],
+  ["What did you do last weekend?", "Geçen hafta sonu ne yaptın?"],
+  ["Describe your best friend.", "En yakın arkadaşını anlat."],
+  ["What is your favourite place in your city? Why?", "Şehrinde en sevdiğin yer neresi, neden?"],
+  ["Write about a book or film you enjoyed recently.", "Son zamanlarda sevdiğin bir kitabı ya da filmi anlat."],
+  ["What are your plans for next month?", "Gelecek ay için planların neler?"],
+  ["Describe your job or school day.", "İş ya da okul gününü anlat."],
+  ["Write about a happy memory from your childhood.", "Çocukluğundan mutlu bir anını yaz."],
+  ["What do you do to relax after a long day?", "Yorucu bir günün ardından nasıl dinlenirsin?"],
+  ["Describe a trip you would like to take.", "Yapmak istediğin bir yolculuğu anlat."],
+  ["Why are you learning English?", "Neden İngilizce öğreniyorsun?"],
+  ["Write about something that made you laugh this week.", "Bu hafta seni güldüren bir şeyi yaz."],
+  ["What is a habit you want to change? How?", "Değiştirmek istediğin bir alışkanlık ve nasıl?"],
+  ["Describe your home.", "Evini anlat."],
+  ["Write an email to a friend you haven't seen for ages.", "Uzun zamandır görmediğin bir arkadaşına e-posta yaz."],
+  ["What is the best advice you have ever received?", "Aldığın en iyi tavsiye neydi?"],
+  ["Describe a typical meal in your family.", "Ailende tipik bir yemeği anlat."],
+  ["Is it better to live in a city or in the countryside?", "Şehirde mi köyde mi yaşamak daha iyi?"],
+  ["Write about a difficult day and how it ended.", "Zor bir günü ve nasıl bittiğini yaz."],
+  ["What do you usually do on Sundays?", "Pazar günleri genelde ne yaparsın?"],
+  ["Describe a person you admire.", "Hayranlık duyduğun birini anlat."],
+  ["What would you do with a free day tomorrow?", "Yarın boş bir günün olsa ne yapardın?"],
+  ["Write about your favourite season and why.", "En sevdiğin mevsimi ve nedenini yaz."],
+  ["What technology could you not live without?", "Hangi teknoloji olmadan yaşayamazdın?"],
+  ["Tell the story of how you met a close friend.", "Yakın bir arkadaşınla nasıl tanıştığını anlat."],
+  ["Describe your perfect weekend.", "Mükemmel bir hafta sonunu anlat."],
+  ["What did you learn this week?", "Bu hafta ne öğrendin?"],
+  ["Write a short review of a café or restaurant.", "Bir kafe ya da restoran için kısa bir yorum yaz."],
+  ["What are you looking forward to this year?", "Bu yıl neyi dört gözle bekliyorsun?"],
+  ["Describe a problem you solved recently.", "Yakın zamanda çözdüğün bir sorunu anlat."],
+  ["Write about your hometown.", "Memleketini anlat."],
+  ["What makes a good teacher?", "İyi bir öğretmeni ne iyi yapar?"],
+  ["Describe today in five moments.", "Bugünü beş anla anlat."],
+  ["Write a message inviting friends to a dinner.", "Arkadaşlarını yemeğe davet eden bir mesaj yaz."],
+  ["What would you tell yourself ten years ago?", "On yıl önceki kendine ne söylerdin?"],
+];
+function promptFor(k){
+  if (writes[k] && writes[k].prompt) return writes[k].prompt;
+  const off = (prefs.promptOffset && prefs.promptOffset[k]) || 0;
+  const [y, m, d] = k.split("-").map(Number);
+  const n = Math.floor(Date.UTC(y, m - 1, d) / DAY);
+  return PROMPTS[(n + off) % PROMPTS.length][0];
+}
+const promptTr = p => (PROMPTS.find(x => x[0] === p) || [, ""])[1];
+function streak(){
+  let n = 0, t = Date.now();
+  if (!(writes[dateKey(t)] && countWords(writes[dateKey(t)].text))) t -= DAY;
+  while (writes[dateKey(t)] && countWords(writes[dateKey(t)].text)){ n++; t -= DAY; }
+  return n;
+}
+
+/* ---------------- routing ---------------- */
+let route = "", params = "";
+function go(h){ if (location.hash.slice(1) === h) render(); else location.hash = h; }
+const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing" };
+function parseHash(){ const h = decodeURIComponent(location.hash.slice(1)); const i = h.indexOf("/"); route = i === -1 ? h : h.slice(0, i); params = i === -1 ? "" : h.slice(i + 1); }
+window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); render(); window.scrollTo(0, 0); });
+function bar(title){
+  const parent = PARENT[route];
+  const target = route === "read" || route === "readedit" ? "reading" : route === "chunk" ? "chunks" : parent;
+  return '<div class="bar"><button class="back" type="button" data-go="' + esc(target || "") + '" aria-label="Geri">' + I.back + '</button><h1>' + esc(title) + '</h1></div>';
+}
+
+/* ---------------- render ---------------- */
+function render(){
+  if (route === "words") return renderWords();
+  if (route === "chunks") return renderChunks();
+  if (route === "chunk") return renderChunkCat(params);
+  if (route === "daily") return renderDaily();
+  if (route === "reading") return renderReading();
+  if (route === "read") return renderReader(params);
+  if (route === "readedit") return renderTextEditor(params);
+  if (route === "writing") return renderWriting();
+  if (route === "write") return renderWritePast(params);
+  renderHome();
+}
+
+/* ---------------- home ---------------- */
+function renderHome(){
+  const due = dueCount();
+  const inReview = cards.filter(c => c.type === "chunk").length;
+  const tk = dateKey(), wroteToday = writes[tk] && countWords(writes[tk].text) > 0, st = streak();
+  const tc = todaysChunks(1)[0];
+  const tile = (r, ic, color, title, sub, wide) =>
+    '<button class="tile' + (wide ? " wide" : "") + '" type="button" data-go="' + r + '"><span class="ic" style="background:var(--t-' + color + ')">' + I[ic] + '</span><span class="txt"><span class="tt">' + title + '</span><br><span class="ts">' + sub + '</span></span></button>';
+  app.innerHTML =
+    '<div style="padding-top:calc(22px + env(safe-area-inset-top,0px))"><h1 class="home-title">My Notebook</h1><p class="lead">Kelimelerin, kalıpların, okuma ve yazma defterin.</p></div>' +
+    (due
+      ? '<button class="due-strip" type="button" data-go="words" data-wt="review"><span><b>' + due + ' kart</b><br><span>bugün tekrar bekliyor</span></span><span class="go">Başla</span></button>'
+      : '<button class="due-strip calm" type="button" data-go="words" data-wt="' + (cards.length ? "review" : "add") + '"><span><b>' + (cards.length ? "Bugünlük tekrar bitti" : "Defterin boş") + '</b><br><span>' + (cards.length ? "Yeni bir kelime ya da kalıp ekleyebilirsin" : "İlk kelimeni ya da kalıbını ekle") + '</span></span><span class="go">' + (cards.length ? "Ekle" : "Başla") + '</span></button>') +
+    '<div class="tiles">' +
+      tile("words", "words", "words", "Words", cards.length + " kart" + (due ? " · " + due + " bekliyor" : "")) +
+      tile("chunks", "chunks", "chunks", "Chunks", Object.keys(CHUNKS).length + " kalıp · " + inReview + " tekrarda") +
+      tile("reading", "reading", "reading", "Reading", texts.length ? texts.length + " metin" : "Okuyacağın metni ekle") +
+      tile("writing", "writing", "writing", "Writing", wroteToday ? "Bugün yazdın" + (st > 1 ? " · " + st + " günlük seri" : "") : (st ? st + " günlük seri · bugün yazmadın" : "Bugünün konusu hazır")) +
+      tile("daily", "daily", "daily", "Daily", tc ? "Bugünün kalıbı: " + esc(tc.en) : "Günlük hayat kalıpları", true) +
+    '</div>' +
+    '<div class="backup"><p>Her şey bu telefonda saklanıyor. Ara sıra yedek alırsan telefon değişse bile kaybolmaz.</p><div class="row-btns"><button class="btn light" type="button" data-act="export">Yedek al</button><button class="btn light" type="button" data-act="import">Yedekten yükle</button></div></div>';
+}
+
+/* ---------------- words ---------------- */
+let wordsTab = "review", queue = null, pos = 0, revealed = false, doneCount = 0;
+let wFilter = "all", wQuery = "", armed = null, editing = null;
 function buildQueue(){ queue = cards.filter(isDue).sort((a, b) => (a.due || 0) - (b.due || 0)).map(c => c.id); pos = 0; revealed = false; doneCount = 0; }
 function current(){ while (queue && pos < queue.length){ const c = cards.find(x => x.id === queue[pos]); if (c) return c; pos++; } return null; }
+function renderWords(){
+  const due = dueCount();
+  app.innerHTML = bar("Words") +
+    '<div class="seg" role="group"><button type="button" data-wt="review" aria-pressed="' + (wordsTab === "review") + '">Tekrar' + (due ? '<span class="badge">' + due + '</span>' : '') + '</button>' +
+    '<button type="button" data-wt="add" aria-pressed="' + (wordsTab === "add") + '">' + (editing ? "Düzenle" : "Ekle") + '</button>' +
+    '<button type="button" data-wt="list" aria-pressed="' + (wordsTab === "list") + '">Liste</button></div>' +
+    '<div id="wbody"></div>';
+  if (wordsTab === "review") renderReview();
+  else if (wordsTab === "add") renderAddForm();
+  else renderWordList();
+}
 function renderReview(){
-  const v = $("#v-review");
-  if (!cards.length){
-    v.innerHTML = '<div class="done"><h2>Defterin boş</h2><p>Bugün öğrendiğin ilk kalıbı ekle. Ertesi gün tekrar karşına çıkacak.</p><button class="btn" type="button" data-go="add">İlk kaydı ekle</button></div>';
-    return;
-  }
+  const v = $("#wbody"); if (!v) return;
+  if (!cards.length){ v.innerHTML = '<div class="done"><h2>Defterin boş</h2><p>Bir kelime ekle ya da Chunks bölümünden kalıpları tekrara ekle.</p><div class="row-btns"><button class="btn" type="button" data-wt="add">Kelime ekle</button><button class="btn light" type="button" data-go="chunks">Chunks</button></div></div>'; return; }
   if (!queue) buildQueue();
   const c = current();
   if (!c){
-    const dueNow = cards.filter(isDue).length;
+    const dueNow = dueCount();
     const next = cards.filter(x => !isDue(x)).sort((a, b) => a.due - b.due)[0];
     v.innerHTML = '<div class="done"><h2>' + (doneCount ? "Bugünlük bu kadar" : "Şu an tekrar edilecek kart yok") + '</h2><p>' +
-      (doneCount ? doneCount + " kart tekrar ettin. " : "") +
-      (dueNow ? dueNow + " kart yeniden hazır." : next ? "Sıradaki kart " + fmtDue(next.due) + "." : "") + '</p><div class="row-btns">' +
+      (doneCount ? doneCount + " kart tekrar ettin. " : "") + (dueNow ? dueNow + " kart yeniden hazır." : next ? "Sıradaki kart " + fmtDue(next.due) + "." : "") + '</p><div class="row-btns">' +
       (dueNow ? '<button class="btn" type="button" data-act="restart">Devam et</button>' : "") +
-      '<button class="btn light" type="button" data-go="add">Yeni ekle</button></div></div>';
+      '<button class="btn light" type="button" data-wt="add">Yeni ekle</button></div></div>';
     return;
   }
-  const en = dir === "en";
-  const now = Date.now();
+  const en = prefs.dir !== "tr", now = Date.now();
+  const showEnglish = en || revealed;
   v.innerHTML =
     '<div class="rhead"><span class="progress">' + (pos + 1) + " / " + queue.length + '</span><button class="chip" type="button" data-act="dir">' + (en ? "EN → TR" : "TR → EN") + '</button></div>' +
-    '<div class="card"><div class="card-top">' + typeTag(c) +
-      (en || revealed ? '<button class="speak" type="button" data-act="speak" aria-label="Sesli oku">' + speakIcon + '</button>' : "") + '</div>' +
+    '<div class="card"><div class="card-top"><span class="tag">' + typeLabel(c.type) + '</span>' +
+      (showEnglish ? '<span class="row-btns"><a class="round" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Sözlükte aç">' + I.book + '</a><button class="round" type="button" data-say="' + esc(c.en) + '" aria-label="Dinle">' + I.speak + '</button></span>' : "") + '</div>' +
       '<p class="front">' + esc(en ? c.en : (c.tr || c.en)) + '</p>' +
       (revealed
         ? '<p class="ans">' + esc(en ? (c.tr || "—") : c.en) + '</p>' + (c.note ? '<p class="note">' + esc(c.note) + '</p>' : "")
@@ -280,126 +476,353 @@ function renderReview(){
 function grade(g){
   const c = current(); if (!c) return;
   const s = schedule(c, g, Date.now()); delete s.minutes;
-  Object.assign(c, s); save();
+  Object.assign(c, s); saveCards();
   if (g === 0) queue.push(c.id);
   pos++; revealed = false; doneCount++;
-  renderReview(); renderStats();
+  renderWords();
 }
-
-/* ---------- list ---------- */
-let filter = "all", query = "", armed = null, editing = null;
-function renderList(){
-  const q = fold(query.trim());
+function renderAddForm(){
+  const c = editing ? cards.find(x => x.id === editing) : null;
+  const t = c ? (c.type || "kalip") : "kelime";
+  $("#wbody").innerHTML =
+    '<form id="f" autocomplete="off" novalidate>' +
+      '<div class="seg" style="margin:0"><label><input type="radio" name="type" value="kelime"' + (t === "kelime" ? " checked" : "") + '>Kelime</label><label><input type="radio" name="type" value="kalip"' + (t === "kalip" ? " checked" : "") + '>Kalıp / cümle</label>' + (t === "chunk" ? '<label><input type="radio" name="type" value="chunk" checked>Chunk</label>' : "") + '</div>' +
+      '<div class="field"><label for="f-en">İngilizcesi</label><input id="f-en" value="' + esc(c ? c.en : "") + '" placeholder="reluctant" autocapitalize="off"></div>' +
+      '<div class="row-btns"><button class="mini" type="button" data-act="form-say">' + I.speak + 'Dinle</button><button class="mini" type="button" data-act="form-dict">' + I.book + 'Sözlükte bak</button></div>' +
+      '<div class="field"><label for="f-tr">Türkçe anlamı</label><input id="f-tr" value="' + esc(c ? c.tr : "") + '" placeholder="isteksiz, gönülsüz"></div>' +
+      '<div class="field"><label for="f-note">Örnek cümle veya not</label><textarea id="f-note" placeholder="She was reluctant to ask for help.">' + esc(c ? c.note : "") + '</textarea></div>' +
+      '<div class="row-btns"><button class="btn" type="submit" style="flex:1">' + (c ? "Değişiklikleri kaydet" : "Kaydet") + '</button>' + (c ? '<button class="btn light" type="button" data-act="cancel-edit">Vazgeç</button>' : "") + '</div>' +
+    '</form>';
+}
+function renderWordList(){
+  const q = fold(wQuery.trim());
   const list = cards.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
-    .filter(c => (filter === "all" || (c.type || "kalip") === filter) && (!q || fold(c.en).includes(q) || fold(c.tr).includes(q) || fold(c.note).includes(q)));
-  $("#items").innerHTML = list.length ? list.map(c =>
-    '<li class="item"><span class="en">' + esc(c.en) + '</span>' + (c.tr ? '<span>' + esc(c.tr) + '</span>' : "") +
+    .filter(c => (wFilter === "all" || (c.type || "kalip") === wFilter) && (!q || fold(c.en).includes(q) || fold(c.tr).includes(q) || fold(c.note).includes(q)));
+  const f = (k, l) => '<button type="button" data-wf="' + k + '" aria-pressed="' + (wFilter === k) + '">' + l + '</button>';
+  $("#wbody").innerHTML =
+    '<input class="search" id="wq" type="search" placeholder="Ara" value="' + esc(wQuery) + '">' +
+    '<div class="filters">' + f("all", "Hepsi") + f("kelime", "Kelimeler") + f("kalip", "Kalıplar") + f("chunk", "Chunk'lar") + '</div>' +
+    '<ul class="items" id="witems">' + (list.length ? list.map(wordItem).join("") : '<li class="empty">' + (cards.length ? "Aramaya uyan kayıt yok." : "Henüz kayıt yok.") + '</li>') + '</ul>';
+}
+function wordItem(c){
+  return '<li class="item"><span class="en">' + esc(c.en) + '</span>' + (c.tr ? '<span>' + esc(c.tr) + '</span>' : "") +
     (c.note ? '<span class="nt">' + esc(c.note) + '</span>' : "") +
-    '<div class="meta">' + typeTag(c) + '<span class="due">' + fmtDue(c.due) + '</span><span class="acts">' +
-    '<button class="mini" type="button" data-act="say" data-id="' + c.id + '">Dinle</button>' +
+    '<div class="meta"><span class="tag">' + typeLabel(c.type) + '</span><span class="due">' + fmtDue(c.due) + '</span><span class="acts">' +
+    '<button class="mini" type="button" data-say="' + esc(c.en) + '" aria-label="Dinle">' + I.speak + '</button>' +
+    '<a class="mini" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Sözlük">' + I.book + '</a>' +
     '<button class="mini" type="button" data-act="edit" data-id="' + c.id + '">Düzenle</button>' +
-    '<button class="mini del' + (armed === c.id ? " armed" : "") + '" type="button" data-act="del" data-id="' + c.id + '">' + (armed === c.id ? "Emin misin?" : "Sil") + '</button></span></div></li>'
-  ).join("") : '<li class="empty">' + (cards.length ? "Aramaya uyan kayıt yok." : "Henüz kayıt yok.") + '</li>';
+    '<button class="mini del' + (armed === c.id ? " armed" : "") + '" type="button" data-act="del" data-id="' + c.id + '">' + (armed === c.id ? "Emin misin?" : "Sil") + '</button></span></div></li>';
 }
-
-/* ---------- form ---------- */
-function resetForm(){ editing = null; $("#f").reset(); $("#t-kalip").checked = true; $("#f-title").textContent = "Yeni ekle"; $("#f-save").textContent = "Kaydet"; $("#f-cancel").hidden = true; }
-function startEdit(id){
-  const c = cards.find(x => x.id === id); if (!c) return;
-  editing = id; $("#t-" + (c.type === "kelime" ? "kelime" : "kalip")).checked = true;
-  $("#f-en").value = c.en || ""; $("#f-tr").value = c.tr || ""; $("#f-note").value = c.note || "";
-  $("#f-title").textContent = "Kaydı düzenle"; $("#f-save").textContent = "Değişiklikleri kaydet"; $("#f-cancel").hidden = false;
-  setTab("add");
-}
-$("#f").addEventListener("submit", e => {
-  e.preventDefault();
+function submitForm(){
   const en = $("#f-en").value.trim(), tr = $("#f-tr").value.trim(), note = $("#f-note").value.trim();
   const type = document.querySelector('input[name="type"]:checked').value;
   if (!en){ toast("İngilizcesini yazmalısın"); $("#f-en").focus(); return; }
   if (editing){
     const c = cards.find(x => x.id === editing); if (c) Object.assign(c, { en, tr, note, type });
-    if (save()) toast("Güncellendi"); resetForm(); setTab("list");
+    saveCards(); toast("Güncellendi"); editing = null; wordsTab = "list"; renderWords();
   } else {
-    const now = Date.now();
-    cards.push({ id: uid(), en, tr, note, type, createdAt: now, due: now, interval: 0, ease: 2.5, reps: 0, lapses: 0 });
-    if (save()) toast("Deftere eklendi");
-    resetForm(); $("#f-en").focus();
+    if (cards.some(c => fold(c.en) === fold(en))){ toast("Bu zaten defterinde var"); return; }
+    cards.push(newCard({ en, tr, note, type })); saveCards(); toast("Deftere eklendi");
+    if (queue && pos === 0 && doneCount === 0) queue = null;
+    renderWords(); $("#f-en").focus();
   }
-  if (queue && pos === 0 && doneCount === 0) queue = null;
-  renderStats();
-});
-$("#f-cancel").addEventListener("click", () => { resetForm(); setTab("list"); });
+}
 
-/* ---------- backup ---------- */
-$("#b-export").addEventListener("click", async () => {
-  const d = new Date(), name = "kalip-defteri-yedek-" + d.toISOString().slice(0, 10) + ".json";
-  const blob = new Blob([JSON.stringify({ app: "kalip-defteri", version: 1, exportedAt: d.toISOString(), cards }, null, 2)], { type: "application/json" });
+/* ---------------- chunks ---------------- */
+const openChunks = new Set();
+function chunkItem(ch){
+  const c = chunkCard(ch.id), open = openChunks.has(ch.id);
+  return '<div class="ch"><button class="ch-head" type="button" data-act="toggle-chunk" data-id="' + ch.id + '" aria-expanded="' + open + '"><span class="t"><b>' + esc(ch.en) + '</b><span>' + esc(ch.tr) + '</span></span>' +
+    (c ? '<span class="st tag ok">Tekrarda</span>' : "") + '</button>' +
+    (open
+      ? '<div class="ch-body"><ul class="exs">' + ch.ex.map(e => '<li><span>' + esc(e) + '</span><button class="say" type="button" data-say="' + esc(e) + '" aria-label="Cümleyi dinle">' + I.speak + '</button></li>').join("") + '</ul>' +
+        '<div class="row-btns"><button class="mini" type="button" data-say="' + esc(ch.en) + '">' + I.speak + 'Dinle</button>' +
+        '<a class="mini" href="' + tureng(ch.en) + '" target="_blank" rel="noopener">' + I.book + 'Sözlük</a>' +
+        (c ? '<button class="mini on" type="button" data-act="unreview-chunk" data-id="' + ch.id + '">' + I.check + 'Tekrarda</button>'
+           : '<button class="mini primary" type="button" data-act="review-chunk" data-id="' + ch.id + '">' + I.plus + 'Tekrara ekle</button>') +
+        '</div></div>'
+      : "") + '</div>';
+}
+function renderChunks(){
+  const mine = cards.filter(c => c.type === "kalip");
+  app.innerHTML = bar("Chunks") +
+    '<p class="lead" style="margin:0 0 6px">Günde 5–10 chunk seç, örnek cümleleriyle birlikte sesli tekrar et ve tekrara ekle.</p>' +
+    '<ul class="cats">' +
+      (mine.length ? '<li><button type="button" data-go="chunk/mine"><span class="num">★</span><span class="ct"><b>Benim kalıplarım</b><span>' + mine.length + ' kalıp</span></span><span class="chev">' + I.chev + '</span></button></li>' : "") +
+      DATA.categories.map(c => {
+        const n = c.items.filter(i => chunkCard(i.id)).length;
+        return '<li><button type="button" data-go="chunk/' + c.id + '"><span class="num">' + c.id + '</span><span class="ct"><b>' + esc(c.title) + '</b><span>' + c.items.length + ' kalıp' + (n ? ' · ' + n + ' tekrarda' : '') + '</span>' +
+          (n ? '<div class="prog"><i style="width:' + Math.round(n / c.items.length * 100) + '%"></i></div>' : '') + '</span><span class="chev">' + I.chev + '</span></button></li>';
+      }).join("") +
+    '</ul>';
+}
+function renderChunkCat(id){
+  if (id === "mine"){
+    const mine = cards.filter(c => c.type === "kalip").sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    app.innerHTML = bar("Benim kalıplarım") + '<p class="lead" style="margin:0 0 6px">Words bölümünde "Kalıp" olarak eklediklerin.</p><ul class="items">' + (mine.length ? mine.map(wordItem).join("") : '<li class="empty">Henüz kalıp eklemedin.</li>') + '</ul>';
+    return;
+  }
+  const c = DATA.categories.find(x => String(x.id) === String(id));
+  if (!c){ go("chunks"); return; }
+  const left = c.items.filter(i => !chunkCard(i.id)).length;
+  app.innerHTML = bar(c.title) + '<p class="lead" style="margin:0 0 6px">' + esc(c.desc) + ' Bir kalıba dokun, örnekleri açılsın.</p>' +
+    c.items.map(chunkItem).join("") +
+    (left ? '<div style="margin-top:18px"><button class="btn light" type="button" data-act="review-cat" data-id="' + c.id + '">' + (armed === "cat" + c.id ? "Emin misin? " + left + " kalıp eklenecek" : "Kalan " + left + " kalıbın hepsini tekrara ekle") + '</button></div>' : "");
+}
+function addChunkToReview(id){
+  const ch = CHUNKS[id]; if (!ch || chunkCard(id)) return;
+  cards.push(newCard({ en: ch.en, tr: ch.tr, note: ch.ex.join("\n"), type: "chunk", chunkId: id }));
+}
+
+/* ---------------- daily ---------------- */
+let openGroup = null;
+function renderDaily(){
+  const tc = todaysChunks(3);
+  app.innerHTML = bar("Daily") +
+    '<div class="today"><h2>Bugünün kalıpları</h2><p>Bugün bunları konuşurken ya da yazarken kullanmayı dene. Her gün değişir.</p></div>' +
+    tc.map(chunkItem).join("") +
+    '<div class="section-title">Durumlara göre</div>' +
+    '<ul class="cats">' + DATA.daily.map((g, i) => {
+      const items = g.ids.map(id => CHUNKS[id]).filter(Boolean);
+      const open = openGroup === i;
+      return '<li><button type="button" data-act="toggle-group" data-id="' + i + '" aria-expanded="' + open + '"><span class="ct"><b>' + esc(g.title) + '</b><span>' + esc(g.desc) + ' · ' + items.length + '</span></span><span class="chev" style="transform:rotate(' + (open ? 90 : 0) + 'deg)">' + I.chev + '</span></button>' +
+        (open ? '<div style="padding-left:8px">' + items.map(chunkItem).join("") + '</div>' : "") + '</li>';
+    }).join("") + '</ul>';
+}
+
+/* ---------------- reading ---------------- */
+function renderReading(){
+  const list = texts.slice().sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  app.innerHTML = bar("Reading") +
+    '<button class="btn" type="button" data-go="readedit/new" style="width:100%;margin-bottom:8px">Yeni metin ekle</button>' +
+    '<p class="lead" style="margin:4px 0 6px;font-size:14px">Okurken bilmediğin kelimeye dokun, Türkçesini yazıp tek dokunuşla Words\'e ekle.</p>' +
+    (list.length
+      ? '<ul class="cats">' + list.map(t => '<li><button type="button" data-go="read/' + t.id + '"><span class="ct"><b>' + esc(t.title || "Adsız metin") + '</b><span>' + countWords(t.body) + ' kelime · ' + prettyDate(dateKey(t.createdAt)) + (t.added ? ' · ' + t.added + ' kelime eklendi' : '') + '</span></span><span class="chev">' + I.chev + '</span></button></li>').join("") + '</ul>'
+      : '<div class="empty">Henüz metin yok. Bir haber, blog yazısı ya da kitaptan bir sayfa yapıştır.</div>');
+}
+function renderTextEditor(id){
+  const t = id !== "new" ? texts.find(x => x.id === id) : null;
+  app.innerHTML = bar(t ? "Metni düzenle" : "Yeni metin") +
+    '<form id="tf" autocomplete="off" novalidate>' +
+      '<div class="field"><label for="t-title">Başlık</label><input id="t-title" value="' + esc(t ? t.title : "") + '" placeholder="Örn. BBC haberi, roman 3. bölüm"></div>' +
+      '<div class="field"><label for="t-body">Metin</label><textarea id="t-body" style="min-height:300px" placeholder="İngilizce metni buraya yapıştır">' + esc(t ? t.body : "") + '</textarea></div>' +
+      '<div class="row-btns"><button class="btn" type="submit" style="flex:1">Kaydet ve oku</button>' +
+      (t ? '<button class="btn light" type="button" data-act="del-text" data-id="' + t.id + '" style="color:var(--again)">' + (armed === "t" + t.id ? "Emin misin?" : "Sil") + '</button>' : "") + '</div>' +
+      '<input type="hidden" id="t-id" value="' + esc(t ? t.id : "") + '">' +
+    '</form>';
+}
+let rd = null, sel = null;
+const WORD_RE = /[A-Za-z]+(?:['’-][A-Za-z]+)*/g;
+function renderReader(id){
+  const t = texts.find(x => x.id === id);
+  if (!t){ go("reading"); return; }
+  const known = new Set(cards.map(c => fold(c.en)));
+  const tokens = []; let html = "";
+  t.body.split(/\n\s*\n|\n/).filter(p => p.trim()).forEach((p, pi) => {
+    let out = "", last = 0, m;
+    WORD_RE.lastIndex = 0;
+    while ((m = WORD_RE.exec(p))){
+      out += esc(p.slice(last, m.index));
+      const i = tokens.length;
+      tokens.push({ w: m[0], p: pi, s: m.index });
+      out += '<span class="w' + (known.has(fold(m[0])) ? " known" : "") + '" data-i="' + i + '">' + esc(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    out += esc(p.slice(last));
+    html += "<p>" + out + "</p>";
+  });
+  rd = { id, tokens, paras: t.body.split(/\n\s*\n|\n/).filter(p => p.trim()) };
+  app.innerHTML = bar(t.title || "Metin") +
+    '<div class="row-btns" style="margin-bottom:14px"><button class="mini" type="button" data-say="' + esc(t.body.slice(0, 3000)) + '">' + I.speak + 'Metni dinle</button><button class="mini" type="button" data-go="readedit/' + t.id + '">Düzenle</button></div>' +
+    '<div class="reader" id="reader">' + html + '</div><div class="reader-pad"></div>';
+}
+function sentenceOf(tok){
+  const p = rd.paras[tok.p];
+  let a = 0, b = p.length;
+  const re = /[.!?]+["'’”)\]]*\s+/g; let m;
+  while ((m = re.exec(p))){ const end = m.index + m[0].length; if (end <= tok.s) a = end; else { b = m.index + m[0].trimEnd().length; break; } }
+  return p.slice(a, b).trim();
+}
+function selPhrase(){ return rd.tokens.slice(sel.a, sel.b + 1).map(t => t.w).join(" "); }
+function openSheet(){
+  document.querySelectorAll(".w.sel").forEach(e => e.classList.remove("sel"));
+  for (let i = sel.a; i <= sel.b; i++){ const e = document.querySelector('.w[data-i="' + i + '"]'); if (e) e.classList.add("sel"); }
+  const phrase = selPhrase(), ctx = sentenceOf(rd.tokens[sel.a]);
+  const exist = cards.find(c => fold(c.en) === fold(phrase));
+  let s = $(".sheet");
+  const keepTr = s && $("#s-tr") ? $("#s-tr").value : "";
+  if (!s){ s = document.createElement("div"); s.className = "sheet"; document.body.appendChild(s); }
+  const canPrev = sel.a > 0 && rd.tokens[sel.a - 1].p === rd.tokens[sel.a].p, canNext = sel.b < rd.tokens.length - 1 && rd.tokens[sel.b + 1].p === rd.tokens[sel.b].p;
+  s.innerHTML = '<div class="in">' +
+    '<div class="top"><span class="phrase">' + esc(phrase) + '</span><button class="round" type="button" data-act="close-sheet" aria-label="Kapat">' + I.x + '</button></div>' +
+    '<div class="row-btns"><button class="mini" type="button" data-act="sel-prev"' + (canPrev ? "" : " disabled") + '>+ önceki kelime</button><button class="mini" type="button" data-act="sel-next"' + (canNext ? "" : " disabled") + '>+ sonraki kelime</button>' + (sel.b > sel.a ? '<button class="mini" type="button" data-act="sel-one">Tek kelime</button>' : "") + '</div>' +
+    '<p class="ctx">' + esc(ctx) + '</p>' +
+    '<div class="row-btns"><button class="mini" type="button" data-say="' + esc(phrase) + '">' + I.speak + 'Dinle</button><a class="mini" href="' + tureng(phrase) + '" target="_blank" rel="noopener">' + I.book + 'Tureng</a><a class="mini" href="' + cambridge(phrase) + '" target="_blank" rel="noopener">' + I.book + 'Cambridge</a></div>' +
+    (exist
+      ? '<p class="ctx" style="font-style:normal;color:var(--good)">Zaten defterinde' + (exist.tr ? ': ' + esc(exist.tr) : '') + '</p>'
+      : '<input id="s-tr" placeholder="Türkçe anlamı" value="' + esc(keepTr) + '" autocomplete="off"><button class="btn" type="button" data-act="add-word">Words\'e ekle</button>') +
+    '</div>';
+}
+function closeSheet(silent){ const s = $(".sheet"); if (s) s.remove(); sel = null; if (!silent) document.querySelectorAll(".w.sel").forEach(e => e.classList.remove("sel")); }
+
+/* ---------------- writing ---------------- */
+let saveT = null;
+function renderWriting(){
+  const k = dateKey(), w = writes[k] || {}, p = promptFor(k), tr = promptTr(p);
+  const n = countWords(w.text || ""), st = streak();
+  const past = Object.keys(writes).filter(d => d !== k && countWords(writes[d].text)).sort().reverse();
+  app.innerHTML = bar("Writing") +
+    '<div class="prompt"><small>Bugünün konusu · ' + prettyDate(k) + '</small><b>' + esc(p) + '</b>' + (tr ? '<span class="ts" style="color:var(--muted);font-size:14px">' + esc(tr) + '</span>' : '') +
+      (w.text ? '' : '<div class="row-btns"><button class="mini" type="button" data-act="next-prompt">Başka konu</button></div>') + '</div>' +
+    '<div class="use">' + todaysChunks(3).map(c => '<span class="tag" title="' + esc(c.tr) + '">' + esc(c.en) + '</span>').join("") + '</div>' +
+    '<textarea class="wbox" id="wbox" placeholder="Yazmaya başla… En fazla 250 kelime." spellcheck="true" autocapitalize="sentences">' + esc(w.text || "") + '</textarea>' +
+    '<div class="wfoot"><span class="count' + (n >= MAX_WORDS ? " full" : "") + '" id="wcount">' + n + ' / ' + MAX_WORDS + ' kelime</span>' +
+      '<span class="row-btns"><button class="mini" type="button" data-act="copy-writing">Kopyala</button></span></div>' +
+    '<p class="lead" style="font-size:13px;margin-top:10px">Yazdıkların otomatik kaydedilir. Düzeltme istersen "Kopyala"ya basıp Claude\'a yapıştır.' + (st ? ' Seri: ' + st + ' gün.' : '') + '</p>' +
+    (past.length ? '<div class="section-title">Önceki yazıların</div><ul class="cats">' + past.map(d => '<li><button type="button" data-go="write/' + d + '"><span class="ct"><b>' + prettyDate(d) + '</b><span>' + countWords(writes[d].text) + ' kelime · ' + esc((writes[d].prompt || "").slice(0, 60)) + '</span></span><span class="chev">' + I.chev + '</span></button></li>').join("") + '</ul>' : "");
+}
+function trimToMax(text){
+  const re = /\S+/g; let m, n = 0, end = text.length;
+  while ((m = re.exec(text))){ n++; if (n === MAX_WORDS){ end = m.index + m[0].length; break; } }
+  return n >= MAX_WORDS ? text.slice(0, end) : text;
+}
+function onWritingInput(e){
+  const ta = e.target; let text = ta.value;
+  if (countWords(text) > MAX_WORDS){ text = trimToMax(text); ta.value = text; toast("En fazla 250 kelime yazabilirsin"); }
+  const n = countWords(text), c = $("#wcount");
+  c.textContent = n + " / " + MAX_WORDS + " kelime"; c.classList.toggle("full", n >= MAX_WORDS);
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    const k = dateKey();
+    writes[k] = { text, prompt: promptFor(k), updatedAt: Date.now() };
+    if (!text.trim()) delete writes[k];
+    saveWrites();
+  }, 500);
+}
+function renderWritePast(k){
+  const w = writes[k]; if (!w){ go("writing"); return; }
+  app.innerHTML = bar(prettyDate(k)) +
+    '<div class="prompt"><small>Konu</small><b>' + esc(w.prompt || "") + '</b></div>' +
+    '<div class="past">' + esc(w.text) + '</div>' +
+    '<div class="wfoot"><span class="count">' + countWords(w.text) + ' kelime</span><span class="row-btns"><button class="mini" type="button" data-act="copy-past" data-id="' + k + '">Kopyala</button><button class="mini" type="button" data-say="' + esc(w.text) + '">' + I.speak + 'Dinle</button></span></div>';
+}
+async function copyText(text){
+  try { await navigator.clipboard.writeText(text); toast("Kopyalandı"); }
+  catch(e){ const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast("Kopyalandı"); } catch(_){ toast("Kopyalanamadı, metni elle seç"); } ta.remove(); }
+}
+
+/* ---------------- backup ---------------- */
+async function exportBackup(){
+  const d = new Date(), name = "my-notebook-yedek-" + dateKey() + ".json";
+  const blob = new Blob([JSON.stringify({ app: "kalip-defteri", version: 2, exportedAt: d.toISOString(), cards, texts, writes }, null, 2)], { type: "application/json" });
   try {
     const file = new File([blob], name, { type: "application/json" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "Kalıp Defteri yedeği" }); return; }
+    if (navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: "My Notebook yedeği" }); return; }
   } catch(e){ if (e && e.name === "AbortError") return; }
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-});
-$("#b-import").addEventListener("click", () => $("#file").click());
+}
 $("#file").addEventListener("change", async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
   try {
     const data = JSON.parse(await f.text());
-    const incoming = Array.isArray(data) ? data : data.cards;
-    if (!Array.isArray(incoming)) throw 0;
+    const inc = Array.isArray(data) ? data : data.cards;
+    if (!Array.isArray(inc)) throw 0;
     let added = 0;
-    for (const c of incoming){
-      if (!c || !c.en) continue;
-      const i = cards.findIndex(x => x.id === c.id);
-      if (i === -1){ cards.push(Object.assign({ id: uid() }, c)); added++; } else cards[i] = c;
-    }
-    save(); queue = null; renderStats(); renderList();
-    toast(added + " yeni kayıt yüklendi");
-  } catch(err){ toast("Bu dosya bir Kalıp Defteri yedeği değil"); }
+    for (const c of inc){ if (!c || !c.en) continue; const i = cards.findIndex(x => x.id === c.id); if (i === -1){ cards.push(Object.assign({ id: uid() }, c)); added++; } else cards[i] = c; }
+    if (Array.isArray(data.texts)) for (const t of data.texts){ if (t && t.id && !texts.some(x => x.id === t.id)) texts.push(t); }
+    if (data.writes && typeof data.writes === "object") for (const k in data.writes){ if (!writes[k]) writes[k] = data.writes[k]; }
+    saveCards(); saveTexts(); saveWrites(); queue = null; render();
+    toast(added + " yeni kart yüklendi");
+  } catch(err){ toast("Bu dosya bir My Notebook yedeği değil"); }
 });
 
-/* ---------- tabs & events ---------- */
-function setTab(t){
-  tab = t;
-  ["review", "add", "list"].forEach(n => $("#v-" + n).hidden = n !== t);
-  document.querySelectorAll("nav button").forEach(b => b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
-  if (t === "review"){ if (queue && !current()) queue = null; renderReview(); }
-  if (t === "list"){ armed = null; renderList(); }
-  window.scrollTo(0, 0);
-}
-document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => { if (b.dataset.tab !== "add" && editing) resetForm(); setTab(b.dataset.tab); }));
-document.querySelectorAll(".filters button").forEach(b => b.addEventListener("click", () => {
-  filter = b.dataset.f; document.querySelectorAll(".filters button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderList();
-}));
-$("#q").addEventListener("input", e => { query = e.target.value; renderList(); });
+/* ---------------- events ---------------- */
 document.addEventListener("click", e => {
-  const go = e.target.closest("[data-go]"); if (go) return setTab(go.dataset.go);
-  const gb = e.target.closest(".grade"); if (gb) return grade(+gb.dataset.g);
-  const a = e.target.closest("[data-act]");
-  if (!a){ if (armed){ armed = null; renderList(); } return; }
+  const t = e.target;
+  const sayB = t.closest("[data-say]"); if (sayB){ speak(sayB.dataset.say); return; }
+  const goB = t.closest("[data-go]");
+  if (goB){
+    if (goB.dataset.wt){ wordsTab = goB.dataset.wt; if (wordsTab === "review" && queue && !current()) queue = null; }
+    armed = null; go(goB.dataset.go); return;
+  }
+  const wt = t.closest("[data-wt]");
+  if (wt){ wordsTab = wt.dataset.wt; if (wordsTab !== "add") editing = null; if (wordsTab === "review" && queue && !current()) queue = null; armed = null; renderWords(); return; }
+  const wf = t.closest("[data-wf]"); if (wf){ wFilter = wf.dataset.wf; renderWordList(); return; }
+  const gb = t.closest(".grade"); if (gb){ grade(+gb.dataset.g); return; }
+  const w = t.closest(".w");
+  if (w && rd){ const i = +w.dataset.i; sel = { a: i, b: i }; openSheet(); return; }
+  const a = t.closest("[data-act]");
+  if (!a){ if (armed){ armed = null; if (route === "words" && wordsTab === "list") renderWordList(); else render(); } return; }
   const act = a.dataset.act, id = a.dataset.id;
-  if (act === "reveal"){ revealed = true; renderReview(); }
-  else if (act === "speak"){ const c = current(); if (c) speak(c.en); }
-  else if (act === "dir"){ dir = dir === "en" ? "tr" : "en"; try { localStorage.setItem(KEY + "-dir", dir); } catch(e){} renderReview(); }
-  else if (act === "restart"){ queue = null; renderReview(); }
-  else if (act === "say"){ const c = cards.find(x => x.id === id); if (c) speak(c.en); }
-  else if (act === "edit") startEdit(id);
-  else if (act === "del"){
-    if (armed !== id){ armed = id; renderList(); return; }
-    armed = null; cards = cards.filter(x => x.id !== id); save(); renderStats(); renderList(); toast("Silindi");
+  switch (act){
+    case "reveal": revealed = true; renderReview(); break;
+    case "dir": prefs.dir = prefs.dir === "tr" ? "en" : "tr"; savePrefs(); renderReview(); break;
+    case "restart": queue = null; renderReview(); break;
+    case "edit": editing = id; wordsTab = "add"; if (route !== "words") go("words"); else renderWords(); break;
+    case "cancel-edit": editing = null; wordsTab = "list"; renderWords(); break;
+    case "del":
+      if (armed !== id){ armed = id; render(); return; }
+      armed = null; cards = cards.filter(x => x.id !== id); saveCards(); toast("Silindi"); render(); break;
+    case "form-say": { const v = $("#f-en").value.trim(); if (v) speak(v); else toast("Önce İngilizcesini yaz"); break; }
+    case "form-dict": { const v = $("#f-en").value.trim(); if (v) window.open(tureng(v), "_blank", "noopener"); else toast("Önce İngilizcesini yaz"); break; }
+    case "toggle-chunk": openChunks.has(id) ? openChunks.delete(id) : openChunks.add(id); render(); break;
+    case "review-chunk": addChunkToReview(id); saveCards(); toast("Tekrara eklendi"); render(); break;
+    case "unreview-chunk": cards = cards.filter(c => c.chunkId !== id); saveCards(); toast("Tekrardan çıkarıldı"); render(); break;
+    case "review-cat": {
+      if (armed !== "cat" + id){ armed = "cat" + id; render(); return; }
+      armed = null; const c = DATA.categories.find(x => String(x.id) === id); let n = 0;
+      c.items.forEach(i => { if (!chunkCard(i.id)){ addChunkToReview(i.id); n++; } }); saveCards(); toast(n + " kalıp tekrara eklendi"); render(); break;
+    }
+    case "toggle-group": openGroup = openGroup === +id ? null : +id; render(); break;
+    case "del-text":
+      if (armed !== "t" + id){ armed = "t" + id; render(); return; }
+      armed = null; texts = texts.filter(x => x.id !== id); saveTexts(); toast("Metin silindi"); go("reading"); break;
+    case "close-sheet": closeSheet(); break;
+    case "sel-prev": sel.a--; openSheet(); break;
+    case "sel-next": sel.b++; openSheet(); break;
+    case "sel-one": sel.b = sel.a; openSheet(); break;
+    case "add-word": {
+      const phrase = selPhrase(), tr = ($("#s-tr").value || "").trim();
+      const multi = sel.b > sel.a;
+      cards.push(newCard({ en: multi ? phrase : phrase.toLowerCase().replace(/^i$/, "I"), tr, note: sentenceOf(rd.tokens[sel.a]), type: multi ? "kalip" : "kelime" }));
+      saveCards();
+      const txt = texts.find(x => x.id === rd.id); if (txt){ txt.added = (txt.added || 0) + 1; saveTexts(); }
+      if (!multi) document.querySelectorAll(".w").forEach(el => { if (fold(el.textContent) === fold(phrase)) el.classList.add("known"); });
+      toast(tr ? "Words'e eklendi" : "Eklendi. Türkçesini sonra Words'ten yazabilirsin");
+      closeSheet(); break;
+    }
+    case "next-prompt": { const k = dateKey(); prefs.promptOffset = { [k]: ((prefs.promptOffset && prefs.promptOffset[k]) || 0) + 1 }; savePrefs(); renderWriting(); break; }
+    case "copy-writing": { const v = $("#wbox").value.trim(); if (!v) return toast("Henüz bir şey yazmadın"); copyText("Today's topic: " + promptFor(dateKey()) + "\n\n" + v); break; }
+    case "copy-past": copyText("Topic: " + (writes[id].prompt || "") + "\n\n" + writes[id].text); break;
+    case "export": exportBackup(); break;
+    case "import": $("#file").click(); break;
   }
 });
+document.addEventListener("submit", e => {
+  e.preventDefault();
+  if (e.target.id === "f") submitForm();
+  if (e.target.id === "tf"){
+    const title = $("#t-title").value.trim(), body = $("#t-body").value.trim(), id = $("#t-id").value;
+    if (!body){ toast("Metni yapıştırmalısın"); return; }
+    if (id){ const t = texts.find(x => x.id === id); Object.assign(t, { title, body, updatedAt: Date.now() }); saveTexts(); go("read/" + id); }
+    else { const t = { id: uid(), title, body, createdAt: Date.now(), updatedAt: Date.now(), added: 0 }; texts.push(t); saveTexts(); go("read/" + t.id); }
+  }
+});
+document.addEventListener("input", e => {
+  if (e.target.id === "wq"){ wQuery = e.target.value; const pos = e.target.selectionStart; renderWordList(); const q = $("#wq"); q.focus(); try { q.setSelectionRange(pos, pos); } catch(_){} }
+  if (e.target.id === "wbox") onWritingInput(e);
+});
 document.addEventListener("keydown", e => {
-  if (tab !== "review" || e.target.closest("input,textarea")) return;
+  if (route !== "words" || wordsTab !== "review" || e.target.closest("input,textarea")) return;
   if (!revealed && (e.key === " " || e.key === "Enter") && current()){ e.preventDefault(); revealed = true; renderReview(); }
   else if (revealed && /^[1-4]$/.test(e.key)) grade(+e.key - 1);
 });
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible"){ renderStats(); if (tab === "review" && !revealed && (!queue || !current())){ queue = null; renderReview(); } }
+  if (document.visibilityState === "visible" && (route === "" || (route === "words" && wordsTab === "review" && !revealed))){ if (queue && !current()) queue = null; render(); }
 });
 
-renderStats(); renderReview();
+parseHash(); render();
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 })();
 </script>
