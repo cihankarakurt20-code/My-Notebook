@@ -278,9 +278,9 @@ let writes = read(KEY + "-writes", {}); if (typeof writes !== "object" || !write
 let notes = read(KEY + "-notes", []); if (!Array.isArray(notes)) notes = [];
 let prefs = read(KEY + "-prefs", {}); if (typeof prefs !== "object" || !prefs) prefs = {};
 if (!prefs.dir) { try { prefs.dir = localStorage.getItem(KEY + "-dir") || "en"; } catch(e){ prefs.dir = "en"; } }
-const saveCards = () => write(KEY, cards);
-const saveTexts = () => write(KEY + "-texts", texts);
-const saveWrites = () => write(KEY + "-writes", writes);
+const saveCards = () => { const r = write(KEY, cards); queueSnapshot(); return r; };
+const saveTexts = () => { const r = write(KEY + "-texts", texts); queueSnapshot(); return r; };
+const saveWrites = () => { const r = write(KEY + "-writes", writes); queueSnapshot(); return r; };
 const saveNotes = () => write(KEY + "-notes", notes);
 const savePrefs = () => write(KEY + "-prefs", prefs);
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
@@ -302,6 +302,33 @@ function openDB(){
 async function mediaPut(id, blob){ const db = await openDB(); return new Promise((res, rej) => { const tx = db.transaction("media", "readwrite"); tx.objectStore("media").put(blob, id); tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error); }); }
 async function mediaGet(id){ const db = await openDB(); return new Promise((res, rej) => { const r = db.transaction("media").objectStore("media").get(id); r.onsuccess = () => res(r.result || null); r.onerror = () => rej(r.error); }); }
 async function mediaDel(id){ const db = await openDB(); return new Promise(res => { const tx = db.transaction("media", "readwrite"); tx.objectStore("media").delete(id); tx.oncomplete = () => res(); tx.onerror = () => res(); }); }
+/* a small summary the notifications read (the service worker can't see normal storage) */
+let snapT = null;
+function queueSnapshot(){ clearTimeout(snapT); snapT = setTimeout(writeSnapshot, 600); }
+function writeSnapshot(){
+  try {
+    const now = Date.now(), prompts = {};
+    for (let i = 0; i < 3; i++){ const k = dateKey(now + i * DAY); prompts[k] = promptFor(k); }
+    const wc = {}; for (const k in writes){ const n = countWords(writes[k].text || ""); if (n) wc[k] = n; }
+    const snap = {
+      updatedAt: now,
+      cards: cards.map(c => ({ en: c.en, tr: c.tr || "", type: c.type || "kalip", due: c.due || 0, interval: c.interval || 0, chunkId: c.chunkId || null })),
+      writes: wc, prompts,
+      texts: texts.map(t => ({ id: t.id, title: t.title || "", updatedAt: t.updatedAt || t.createdAt || 0 })),
+    };
+    const r = indexedDB.open("my-notebook-meta", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onsuccess = () => { try { r.result.transaction("kv", "readwrite").objectStore("kv").put(snap, "snapshot"); } catch(e){} };
+  } catch(e){}
+  updateBadge();
+}
+function updateBadge(){
+  try {
+    if (!navigator.setAppBadge || !("Notification" in window) || Notification.permission !== "granted") return;
+    const due = cards.filter(c => (c.due || 0) <= Date.now()).length;
+    (due ? navigator.setAppBadge(due) : navigator.clearAppBadge()).catch(() => {});
+  } catch(e){}
+}
 const urlCache = new Map();
 async function mediaURL(id){
   if (urlCache.has(id)) return urlCache.get(id);
@@ -501,7 +528,7 @@ function streak(){
 /* ---------------- routing ---------------- */
 let route = "", params = "";
 function go(h){ if (location.hash.slice(1) === h) render(); else location.hash = h; }
-const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "", speaking: "" };
+const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "", speaking: "", notify: "" };
 function parseHash(){ const h = decodeURIComponent(location.hash.slice(1)); const i = h.indexOf("/"); route = i === -1 ? h : h.slice(0, i); params = i === -1 ? "" : h.slice(i + 1); }
 window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); closeViewer(); render(); window.scrollTo(0, 0); });
 function bar(title){
@@ -521,6 +548,7 @@ function render(){
   if (route === "write") return renderWritePast(params);
   if (route === "notes") return renderNotes();
   if (route === "speaking") return renderSpeaking();
+  if (route === "notify") return renderNotify();
   renderHome();
 }
 
@@ -547,7 +575,8 @@ function renderHome(){
       tile("speaking", "speaking", "Speaking", "Talk with ChatGPT using what you've learned") +
       tile("daily", "daily", "Daily", tc ? "Today's phrase: " + esc(tc.en) : "Everyday phrases") +
     '</div>' +
-    '<div class="backup"><p>Everything is saved on this phone. Make a backup now and then so nothing is lost if you change phones. Videos are not included in backups.</p><div class="row-btns"><button class="btn light" type="button" data-act="export">Back up</button><button class="btn light" type="button" data-act="import">Restore backup</button></div></div>';
+    '<button class="notes-link" type="button" data-go="notify" style="margin-top:18px;padding:14px 2px;border-top:1px solid var(--line)"><span>Notifications · ' + notifyStatusShort() + '</span>' + I.chev + '</button>' +
+    '<div class="backup" style="margin-top:0"><p>Everything is saved on this phone. Make a backup now and then so nothing is lost if you change phones. Videos are not included in backups.</p><div class="row-btns"><button class="btn light" type="button" data-act="export">Back up</button><button class="btn light" type="button" data-act="import">Restore backup</button></div></div>';
   hydrateComposer();
 }
 
@@ -857,6 +886,53 @@ function renderSpeaking(){
     '<details class="preview"><summary>See what gets copied</summary><pre>' + esc(practicePrompt()) + '</pre></details>';
 }
 
+/* ---------------- notifications ---------------- */
+const VAPID_PUBLIC = "BDvWzK-Fha44dTKVh2VgYpp29oIOR-2_k3AdliZ1usdOMG5PSyu-iiOpFPoRyK33DLv-zoQGBi_hIXzJke_CBnQ";
+const SCHEDULE = [[9, "09:00", "Today's chunk"], [14, "14:00", "Chunk practice"], [16, "16:00", "Reading"], [21, "21:00", "Writing"], [22, "22:00", "Review your chunks"], [23, "23:00", "Writing, or one more page"], [0, "00:00", "Say your chunks out loud"]];
+const pushSupported = () => "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+const pushOn = () => pushSupported() && Notification.permission === "granted" && !!prefs.pushSetup;
+const notifyStatusShort = () => pushOn() ? "On" : "Off";
+function b64uToBytes(s){ s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; const b = atob(s), o = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) o[i] = b.charCodeAt(i); return o; }
+function renderNotify(){
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  let body;
+  if (!pushSupported()){
+    body = '<div class="today"><h2>Open the app from your Home Screen</h2><p>' + (ios && !IS_APP ? "iPhone only allows notifications for apps added to the Home Screen. Close this page and open My Notebook from its icon." : "This browser can't show notifications.") + '</p></div>';
+  } else if (Notification.permission === "denied"){
+    body = '<div class="today"><h2>Notifications are blocked</h2><p>Turn them on in iPhone Settings → Notifications → My Notebook, then come back here.</p></div>';
+  } else if (!pushOn()){
+    body = '<p class="lead" style="margin:0 0 14px">Get reminders for your chunks, writing and reading at the times below.</p>' +
+      '<button class="btn" type="button" data-act="push-on" style="width:100%">Turn on notifications</button>';
+  } else {
+    body = '<div class="today" style="margin-bottom:14px"><h2>Notifications are on for this phone</h2><p>Copy the setup code and paste it into SETUP_CODE in Cloudflare. You only need to do this once, and again if you ever reinstall the app.</p></div>' +
+      '<div class="row-btns"><button class="btn" type="button" data-act="push-copy">Copy setup code</button><button class="btn light" type="button" data-act="push-off">Turn off</button></div>' +
+      '<div class="section-title">Preview a notification</div><p class="lead" style="font-size:14px;margin:0 0 8px">Shows on this phone right away, written from your own notebook.</p>' +
+      '<div class="chips">' + SCHEDULE.map(s => '<button type="button" data-act="push-sample" data-id="' + s[0] + '">' + s[1] + '</button>').join("") + '</div>';
+  }
+  app.innerHTML = bar("Notifications") + body +
+    '<div class="section-title">Schedule</div><ul class="items">' + SCHEDULE.map(s => '<li class="item" style="flex-direction:row;gap:14px;align-items:center"><b style="font-variant-numeric:tabular-nums;width:52px">' + s[1] + '</b><span>' + s[2] + '</span></li>').join("") + '</ul>';
+}
+async function enablePush(){
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted"){ render(); return; }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToBytes(VAPID_PUBLIC) });
+    prefs.pushSetup = JSON.stringify({ subscription: sub.toJSON(), app: location.origin + location.pathname });
+    savePrefs(); writeSnapshot(); toast("Notifications are on"); render();
+  } catch(e){ toast("Couldn't turn on notifications (" + (e && e.message || e) + ")", 4000); render(); }
+}
+async function disablePush(){
+  try { const reg = await navigator.serviceWorker.ready; const sub = await reg.pushManager.getSubscription(); if (sub) await sub.unsubscribe(); } catch(e){}
+  delete prefs.pushSetup; savePrefs(); try { navigator.clearAppBadge && navigator.clearAppBadge(); } catch(e){}
+  toast("Notifications are off"); render();
+}
+async function samplePush(slot){
+  try { writeSnapshot(); await new Promise(r => setTimeout(r, 300)); const reg = await navigator.serviceWorker.ready; reg.active.postMessage({ type: "sample", slot }); toast("Sent. Look at the top of your screen."); }
+  catch(e){ toast("Couldn't show the preview"); }
+}
+
 /* ---------------- reading ---------------- */
 function renderReading(){
   const list = texts.slice().sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
@@ -1075,6 +1151,10 @@ document.addEventListener("click", async e => {
     case "next-prompt": { const k = dateKey(); prefs.promptOffset = { [k]: ((prefs.promptOffset && prefs.promptOffset[k]) || 0) + 1 }; savePrefs(); renderWriting(); break; }
     case "copy-writing": { const v = $("#wbox").value.trim(); if (!v) return toast("You haven't written anything yet"); copyText("Today's topic: " + promptFor(dateKey()) + "\n\n" + v); break; }
     case "copy-past": copyText("Topic: " + (writes[id].prompt || "") + "\n\n" + writes[id].text); break;
+    case "push-on": enablePush(); break;
+    case "push-off": disablePush(); break;
+    case "push-copy": copyText(prefs.pushSetup || "", "Setup code copied. Paste it into SETUP_CODE in Cloudflare."); break;
+    case "push-sample": samplePush(+id); break;
     case "copy-practice-only": copyText(practicePrompt(), "Copied. Paste it into ChatGPT and send."); break;
     case "export": exportBackup(); break;
     case "import": $("#file").click(); break;
@@ -1128,12 +1208,30 @@ document.addEventListener("keydown", e => {
   if (!revealed && (e.key === " " || e.key === "Enter") && current()){ e.preventDefault(); revealed = true; renderReview(); }
   else if (revealed && /^[1-4]$/.test(e.key)) grade(+e.key - 1);
 });
+/* if iPhone ever renews the notification address, keep the setup code current and say so */
+async function checkSubscription(){
+  if (!pushOn()) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uToBytes(VAPID_PUBLIC) });
+    const old = JSON.parse(prefs.pushSetup);
+    if (old.subscription.endpoint !== sub.endpoint){
+      prefs.pushSetup = JSON.stringify({ subscription: sub.toJSON(), app: location.origin + location.pathname }); savePrefs();
+      toast("Notification setup changed. Open Notifications and copy the setup code to Cloudflare again.", 6000);
+    }
+  } catch(e){}
+}
 document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") updateBadge();
   if (document.visibilityState === "visible" && route === "words" && wordsTab === "review" && !revealed){ if (queue && !current()) queue = null; render(); }
 });
 
-parseHash(); render();
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+parseHash(); render(); writeSnapshot(); checkSubscription();
+if ("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+  navigator.serviceWorker.addEventListener("message", e => { if (e.data && "go" in e.data) go(e.data.go); });
+}
 })();
 </script>
 </body>
