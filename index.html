@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kalıp Defteri</title>
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kalıp Defteri">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --bg:#ffffff; --ink:#111111; --muted:#6b6b6b; --line:#e8e8e8; --soft:#f6f6f6;
+  --accent:#2a55e5; --again:#d0342c; --hard:#b26b00; --good:#1f8a4c; --easy:#2a55e5;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+
+.wrap{max-width:560px;margin:0 auto;
+  padding-top:calc(16px + env(safe-area-inset-top,0px));
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));
+  padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:0 0 14px}
+.stats{display:flex;gap:22px;padding:0 0 14px;margin:0 0 18px;border-bottom:1px solid var(--line)}
+.stat b{display:block;font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted)}
+
+/* review */
+.rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.progress{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
+.card{border:1px solid var(--line);border-radius:16px;min-height:280px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card-top{display:flex;justify-content:space-between;align-items:center}
+.front{font-size:26px;font-weight:700;line-height:1.25;margin:4px 0 0;overflow-wrap:anywhere}
+.ans{font-size:19px;font-weight:600;margin:0;overflow-wrap:anywhere;padding-top:14px;border-top:1px solid var(--line)}
+.note{margin:0;color:var(--muted);font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
+.speak{border:1px solid var(--line);background:var(--bg);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;padding:0}
+.speak svg{width:18px;height:18px}
+.reveal{margin-top:auto;border:0;border-radius:12px;padding:14px;background:var(--ink);color:#fff;font-weight:600}
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.grade{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 2px;display:flex;flex-direction:column;align-items:center;font-weight:600;font-size:15px}
+.grade small{font-weight:400;font-size:12px;color:var(--muted)}
+.grade[data-g="0"]{color:var(--again)}.grade[data-g="1"]{color:var(--hard)}.grade[data-g="2"]{color:var(--good)}.grade[data-g="3"]{color:var(--easy)}
+.hint{color:var(--muted);font-size:13px;text-align:center;margin:12px 0 0}
+.done{text-align:center;padding:48px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.done h2{font-size:21px;margin:0}
+.done p{margin:0;color:var(--muted);max-width:34ch}
+
+.btn{border:0;border-radius:12px;padding:13px 18px;background:var(--ink);color:#fff;font-weight:600}
+.btn.light{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.row-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* form */
+form{display:flex;flex-direction:column;gap:16px}
+h2.t{font-size:19px;margin:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:12px;background:var(--soft)}
+.seg label{text-align:center;padding:9px;border-radius:9px;font-weight:600;font-size:15px;color:var(--muted);position:relative}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:14px;font-weight:600}
+.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;background:var(--bg)}
+.field textarea{min-height:80px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+
+/* list */
+.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:16px;background:var(--soft)}
+.filters{display:flex;gap:6px;margin:10px 0 4px}
+.filters button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600}
+.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.items{list-style:none;margin:0;padding:0}
+.item{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.item .en{font-weight:600;font-size:17px;overflow-wrap:anywhere}
+.item .nt{color:var(--muted);font-size:14px;font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
+.item .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px}
+.item .due{font-size:13px;color:var(--muted)}
+.item .acts{margin-left:auto;display:flex;gap:6px}
+.mini{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
+.mini.del{color:var(--again)}
+.mini.del.armed{background:var(--again);color:#fff;border-color:var(--again)}
+.empty{color:var(--muted);text-align:center;padding:32px 0}
+.backup{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.backup p{margin:0;font-size:14px;color:var(--muted)}
+.backup .row-btns{justify-content:flex-start}
+
+/* tab bar */
+nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);z-index:10;
+  padding:6px max(12px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+nav .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav button{border:0;background:none;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:600;color:#9a9a9a}
+nav button svg{width:24px;height:24px}
+nav button[aria-current="page"]{color:var(--ink)}
+.badge{background:var(--again);color:#fff;border-radius:999px;font-size:11px;padding:0 6px;margin-left:3px;font-variant-numeric:tabular-nums}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(80px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:20;max-width:calc(100% - 32px);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kalıp Defteri</h1>
+  <div class="stats">
+    <div class="stat"><b id="s-due">0</b><span>Bugün tekrar</span></div>
+    <div class="stat"><b id="s-total">0</b><span>Toplam</span></div>
+    <div class="stat"><b id="s-solid">0</b><span>Kalıcı</span></div>
+  </div>
+
+  <section id="v-review"></section>
+
+  <section id="v-add" hidden>
+    <form id="f" autocomplete="off" novalidate>
+      <h2 class="t" id="f-title">Yeni ekle</h2>
+      <div class="seg">
+        <label><input type="radio" name="type" id="t-kalip" value="kalip" checked>Kalıp / cümle</label>
+        <label><input type="radio" name="type" id="t-kelime" value="kelime">Kelime</label>
+      </div>
+      <div class="field"><label for="f-en">İngilizcesi</label><input id="f-en" placeholder="I'm looking forward to …" autocapitalize="sentences"></div>
+      <div class="field"><label for="f-tr">Türkçe anlamı</label><input id="f-tr" placeholder="… için sabırsızlanıyorum"></div>
+      <div class="field"><label for="f-note">Örnek cümle veya not</label><textarea id="f-note" placeholder="I'm looking forward to seeing you."></textarea></div>
+      <div class="row-btns" style="justify-content:stretch">
+        <button class="btn" type="submit" id="f-save" style="flex:1">Kaydet</button>
+        <button class="btn light" type="button" id="f-cancel" hidden>Vazgeç</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="v-list" hidden>
+    <input class="search" id="q" type="search" placeholder="Ara">
+    <div class="filters">
+      <button type="button" data-f="all" aria-pressed="true">Hepsi</button>
+      <button type="button" data-f="kalip" aria-pressed="false">Kalıplar</button>
+      <button type="button" data-f="kelime" aria-pressed="false">Kelimeler</button>
+    </div>
+    <ul class="items" id="items"></ul>
+    <div class="backup">
+      <p>Kayıtların bu telefonda saklanıyor. Ara sıra yedek alırsan telefon değişse bile kaybolmaz.</p>
+      <div class="row-btns">
+        <button class="btn light" type="button" id="b-export">Yedek al</button>
+        <button class="btn light" type="button" id="b-import">Yedekten yükle</button>
+        <input type="file" id="file" accept="application/json,.json" hidden>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav>
+  <div class="in">
+    <button type="button" data-tab="review" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="15" height="12" rx="2"/><path d="M7 21h12a2 2 0 0 0 2-2V9"/></svg>
+      <span>Tekrar<span class="badge" id="b-due" hidden></span></span>
+    </button>
+    <button type="button" data-tab="add">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+      <span>Ekle</span>
+    </button>
+    <button type="button" data-tab="list">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+      <span>Defter</span>
+    </button>
+  </div>
+</nav>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const KEY = "kalip-defteri-v1", DAY = 86400000;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fold = s => String(s ?? "").toLowerCase().replace(/ı/g,"i").normalize("NFD").replace(/[̀-ͯ]/g,"");
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+/* ---------- storage ---------- */
+let cards = [];
+function load(){ try { cards = JSON.parse(localStorage.getItem(KEY) || "[]"); if (!Array.isArray(cards)) cards = []; } catch(e){ cards = []; } }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(cards)); return true; } catch(e){ toast("Kaydedilemedi: telefonda yer kalmamış olabilir"); return false; } }
+load();
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+/* ---------- scheduling ---------- */
+function startOfDay(t){ const d = new Date(t); d.setHours(4,0,0,0); if (d.getTime() > t) d.setDate(d.getDate() - 1); return d.getTime(); }
+function schedule(c, g, now){
+  let ease = c.ease || 2.5, interval = c.interval || 0, reps = c.reps || 0, lapses = c.lapses || 0;
+  if (g === 0) return { ease: Math.max(1.3, ease - 0.2), interval: 0, reps: 0, lapses: lapses + 1, due: now + 10 * 60000, minutes: 10 };
+  if (g === 1){ interval = reps === 0 ? 1 : Math.max(interval + 1, Math.round(interval * 1.2)); ease = Math.max(1.3, ease - 0.15); }
+  if (g === 2){ interval = reps === 0 ? 1 : reps === 1 ? 3 : Math.max(interval + 1, Math.round(interval * ease)); }
+  if (g === 3){ interval = reps === 0 ? 3 : Math.max(interval + 2, Math.round(interval * ease * 1.3)); ease += 0.15; }
+  return { ease: Math.round(ease * 100) / 100, interval, reps: reps + 1, lapses, due: startOfDay(now) + interval * DAY };
+}
+function fmtInterval(s){
+  if (s.minutes) return s.minutes + " dk";
+  const d = s.interval;
+  if (d < 30) return d + " gün";
+  if (d < 365) return Math.round(d / 30) + " ay";
+  return Math.round(d / 36.5) / 10 + " yıl";
+}
+function fmtDue(due){
+  const now = Date.now();
+  if (!due || due <= now) return "tekrar zamanı";
+  if (due - now < 3600000) return Math.ceil((due - now) / 60000) + " dk sonra";
+  const days = Math.round((startOfDay(due) - startOfDay(now)) / DAY);
+  if (days <= 0) return "bugün";
+  if (days === 1) return "yarın";
+  if (days < 30) return days + " gün sonra";
+  return Math.round(days / 30) + " ay sonra";
+}
+const isDue = c => (c.due || 0) <= Date.now();
+
+/* ---------- ui helpers ---------- */
+let toastT;
+function toast(m){ const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
+function speak(text){
+  try {
+    if (!("speechSynthesis" in window)) return toast("Bu cihazda sesli okuma yok");
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = 0.92;
+    const v = speechSynthesis.getVoices().find(v => /^en[-_]US/i.test(v.lang)) || speechSynthesis.getVoices().find(v => /^en/i.test(v.lang));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch(e){ toast("Sesli okuma çalışmadı"); }
+}
+const speakIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const typeTag = c => '<span class="tag">' + (c.type === "kelime" ? "Kelime" : "Kalıp") + '</span>';
+
+function renderStats(){
+  const due = cards.filter(isDue).length;
+  $("#s-due").textContent = due;
+  $("#s-total").textContent = cards.length;
+  $("#s-solid").textContent = cards.filter(c => (c.interval || 0) >= 21).length;
+  const b = $("#b-due"); b.textContent = due; b.hidden = due === 0;
+}
+
+/* ---------- review ---------- */
+let tab = "review", queue = null, pos = 0, revealed = false, doneCount = 0;
+let dir = "en"; try { dir = localStorage.getItem(KEY + "-dir") || "en"; } catch(e){}
+function buildQueue(){ queue = cards.filter(isDue).sort((a, b) => (a.due || 0) - (b.due || 0)).map(c => c.id); pos = 0; revealed = false; doneCount = 0; }
+function current(){ while (queue && pos < queue.length){ const c = cards.find(x => x.id === queue[pos]); if (c) return c; pos++; } return null; }
+function renderReview(){
+  const v = $("#v-review");
+  if (!cards.length){
+    v.innerHTML = '<div class="done"><h2>Defterin boş</h2><p>Bugün öğrendiğin ilk kalıbı ekle. Ertesi gün tekrar karşına çıkacak.</p><button class="btn" type="button" data-go="add">İlk kaydı ekle</button></div>';
+    return;
+  }
+  if (!queue) buildQueue();
+  const c = current();
+  if (!c){
+    const dueNow = cards.filter(isDue).length;
+    const next = cards.filter(x => !isDue(x)).sort((a, b) => a.due - b.due)[0];
+    v.innerHTML = '<div class="done"><h2>' + (doneCount ? "Bugünlük bu kadar" : "Şu an tekrar edilecek kart yok") + '</h2><p>' +
+      (doneCount ? doneCount + " kart tekrar ettin. " : "") +
+      (dueNow ? dueNow + " kart yeniden hazır." : next ? "Sıradaki kart " + fmtDue(next.due) + "." : "") + '</p><div class="row-btns">' +
+      (dueNow ? '<button class="btn" type="button" data-act="restart">Devam et</button>' : "") +
+      '<button class="btn light" type="button" data-go="add">Yeni ekle</button></div></div>';
+    return;
+  }
+  const en = dir === "en";
+  const now = Date.now();
+  v.innerHTML =
+    '<div class="rhead"><span class="progress">' + (pos + 1) + " / " + queue.length + '</span><button class="chip" type="button" data-act="dir">' + (en ? "EN → TR" : "TR → EN") + '</button></div>' +
+    '<div class="card"><div class="card-top">' + typeTag(c) +
+      (en || revealed ? '<button class="speak" type="button" data-act="speak" aria-label="Sesli oku">' + speakIcon + '</button>' : "") + '</div>' +
+      '<p class="front">' + esc(en ? c.en : (c.tr || c.en)) + '</p>' +
+      (revealed
+        ? '<p class="ans">' + esc(en ? (c.tr || "—") : c.en) + '</p>' + (c.note ? '<p class="note">' + esc(c.note) + '</p>' : "")
+        : '<button class="reveal" type="button" data-act="reveal">Cevabı göster</button>') +
+    '</div>' +
+    (revealed
+      ? '<div class="grades">' + ["Bilemedim", "Zor", "İyi", "Kolay"].map((l, g) => '<button class="grade" type="button" data-g="' + g + '">' + l + '<small>' + fmtInterval(schedule(c, g, now)) + '</small></button>').join("") + '</div><p class="hint">Alttaki süre, kartın tekrar ne zaman geleceğini gösterir.</p>'
+      : '<p class="hint">Önce kendin hatırlamaya çalış, sonra cevaba bak.</p>');
+}
+function grade(g){
+  const c = current(); if (!c) return;
+  const s = schedule(c, g, Date.now()); delete s.minutes;
+  Object.assign(c, s); save();
+  if (g === 0) queue.push(c.id);
+  pos++; revealed = false; doneCount++;
+  renderReview(); renderStats();
+}
+
+/* ---------- list ---------- */
+let filter = "all", query = "", armed = null, editing = null;
+function renderList(){
+  const q = fold(query.trim());
+  const list = cards.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+    .filter(c => (filter === "all" || (c.type || "kalip") === filter) && (!q || fold(c.en).includes(q) || fold(c.tr).includes(q) || fold(c.note).includes(q)));
+  $("#items").innerHTML = list.length ? list.map(c =>
+    '<li class="item"><span class="en">' + esc(c.en) + '</span>' + (c.tr ? '<span>' + esc(c.tr) + '</span>' : "") +
+    (c.note ? '<span class="nt">' + esc(c.note) + '</span>' : "") +
+    '<div class="meta">' + typeTag(c) + '<span class="due">' + fmtDue(c.due) + '</span><span class="acts">' +
+    '<button class="mini" type="button" data-act="say" data-id="' + c.id + '">Dinle</button>' +
+    '<button class="mini" type="button" data-act="edit" data-id="' + c.id + '">Düzenle</button>' +
+    '<button class="mini del' + (armed === c.id ? " armed" : "") + '" type="button" data-act="del" data-id="' + c.id + '">' + (armed === c.id ? "Emin misin?" : "Sil") + '</button></span></div></li>'
+  ).join("") : '<li class="empty">' + (cards.length ? "Aramaya uyan kayıt yok." : "Henüz kayıt yok.") + '</li>';
+}
+
+/* ---------- form ---------- */
+function resetForm(){ editing = null; $("#f").reset(); $("#t-kalip").checked = true; $("#f-title").textContent = "Yeni ekle"; $("#f-save").textContent = "Kaydet"; $("#f-cancel").hidden = true; }
+function startEdit(id){
+  const c = cards.find(x => x.id === id); if (!c) return;
+  editing = id; $("#t-" + (c.type === "kelime" ? "kelime" : "kalip")).checked = true;
+  $("#f-en").value = c.en || ""; $("#f-tr").value = c.tr || ""; $("#f-note").value = c.note || "";
+  $("#f-title").textContent = "Kaydı düzenle"; $("#f-save").textContent = "Değişiklikleri kaydet"; $("#f-cancel").hidden = false;
+  setTab("add");
+}
+$("#f").addEventListener("submit", e => {
+  e.preventDefault();
+  const en = $("#f-en").value.trim(), tr = $("#f-tr").value.trim(), note = $("#f-note").value.trim();
+  const type = document.querySelector('input[name="type"]:checked').value;
+  if (!en){ toast("İngilizcesini yazmalısın"); $("#f-en").focus(); return; }
+  if (editing){
+    const c = cards.find(x => x.id === editing); if (c) Object.assign(c, { en, tr, note, type });
+    if (save()) toast("Güncellendi"); resetForm(); setTab("list");
+  } else {
+    const now = Date.now();
+    cards.push({ id: uid(), en, tr, note, type, createdAt: now, due: now, interval: 0, ease: 2.5, reps: 0, lapses: 0 });
+    if (save()) toast("Deftere eklendi");
+    resetForm(); $("#f-en").focus();
+  }
+  if (queue && pos === 0 && doneCount === 0) queue = null;
+  renderStats();
+});
+$("#f-cancel").addEventListener("click", () => { resetForm(); setTab("list"); });
+
+/* ---------- backup ---------- */
+$("#b-export").addEventListener("click", async () => {
+  const d = new Date(), name = "kalip-defteri-yedek-" + d.toISOString().slice(0, 10) + ".json";
+  const blob = new Blob([JSON.stringify({ app: "kalip-defteri", version: 1, exportedAt: d.toISOString(), cards }, null, 2)], { type: "application/json" });
+  try {
+    const file = new File([blob], name, { type: "application/json" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "Kalıp Defteri yedeği" }); return; }
+  } catch(e){ if (e && e.name === "AbortError") return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+});
+$("#b-import").addEventListener("click", () => $("#file").click());
+$("#file").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    const incoming = Array.isArray(data) ? data : data.cards;
+    if (!Array.isArray(incoming)) throw 0;
+    let added = 0;
+    for (const c of incoming){
+      if (!c || !c.en) continue;
+      const i = cards.findIndex(x => x.id === c.id);
+      if (i === -1){ cards.push(Object.assign({ id: uid() }, c)); added++; } else cards[i] = c;
+    }
+    save(); queue = null; renderStats(); renderList();
+    toast(added + " yeni kayıt yüklendi");
+  } catch(err){ toast("Bu dosya bir Kalıp Defteri yedeği değil"); }
+});
+
+/* ---------- tabs & events ---------- */
+function setTab(t){
+  tab = t;
+  ["review", "add", "list"].forEach(n => $("#v-" + n).hidden = n !== t);
+  document.querySelectorAll("nav button").forEach(b => b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  if (t === "review"){ if (queue && !current()) queue = null; renderReview(); }
+  if (t === "list"){ armed = null; renderList(); }
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => { if (b.dataset.tab !== "add" && editing) resetForm(); setTab(b.dataset.tab); }));
+document.querySelectorAll(".filters button").forEach(b => b.addEventListener("click", () => {
+  filter = b.dataset.f; document.querySelectorAll(".filters button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderList();
+}));
+$("#q").addEventListener("input", e => { query = e.target.value; renderList(); });
+document.addEventListener("click", e => {
+  const go = e.target.closest("[data-go]"); if (go) return setTab(go.dataset.go);
+  const gb = e.target.closest(".grade"); if (gb) return grade(+gb.dataset.g);
+  const a = e.target.closest("[data-act]");
+  if (!a){ if (armed){ armed = null; renderList(); } return; }
+  const act = a.dataset.act, id = a.dataset.id;
+  if (act === "reveal"){ revealed = true; renderReview(); }
+  else if (act === "speak"){ const c = current(); if (c) speak(c.en); }
+  else if (act === "dir"){ dir = dir === "en" ? "tr" : "en"; try { localStorage.setItem(KEY + "-dir", dir); } catch(e){} renderReview(); }
+  else if (act === "restart"){ queue = null; renderReview(); }
+  else if (act === "say"){ const c = cards.find(x => x.id === id); if (c) speak(c.en); }
+  else if (act === "edit") startEdit(id);
+  else if (act === "del"){
+    if (armed !== id){ armed = id; renderList(); return; }
+    armed = null; cards = cards.filter(x => x.id !== id); save(); renderStats(); renderList(); toast("Silindi");
+  }
+});
+document.addEventListener("keydown", e => {
+  if (tab !== "review" || e.target.closest("input,textarea")) return;
+  if (!revealed && (e.key === " " || e.key === "Enter") && current()){ e.preventDefault(); revealed = true; renderReview(); }
+  else if (revealed && /^[1-4]$/.test(e.key)) grade(+e.key - 1);
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible"){ renderStats(); if (tab === "review" && !revealed && (!queue || !current())){ queue = null; renderReview(); } }
+});
+
+renderStats(); renderReview();
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+})();
+</script>
+</body>
+</html>
