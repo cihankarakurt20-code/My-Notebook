@@ -1,6 +1,6 @@
 // Uygulamayı internetsiz de açılabilir yapar.
 // İnternet varken her açılışta en yeni sürümü alır, yokken kayıtlı kopyayı açar.
-const CACHE = "kalip-defteri-v3";
+const CACHE = "kalip-defteri-v4";
 const FILES = ["./", "./index.html", "./chunks.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
 
 self.addEventListener("install", e => {
@@ -18,11 +18,15 @@ self.addEventListener("activate", e => {
 // Önce internetten yenisini dener, olmazsa kayıtlı kopyayı açar.
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+  // Ses dosyaları ve sözlük gibi başka sitelere giden isteklere karışma.
+  if (new URL(e.request.url).origin !== self.location.origin) return;
   e.respondWith(
     fetch(e.request)
       .then(res => {
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
+        if (res.ok && res.status === 200){
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+        }
         return res;
       })
       .catch(() => caches.match(e.request).then(r => r || caches.match("./index.html")))

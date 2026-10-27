@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>My Notebook</title>
 <meta name="theme-color" content="#ffffff">
+<meta name="referrer" content="no-referrer">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -256,7 +257,43 @@ function pickVoice(){
   return en.find(v => /en[-_]US/i.test(v.lang) && v.localService) || en.find(v => /en[-_]US/i.test(v.lang)) || en.find(v => /en[-_]GB/i.test(v.lang)) || en[0] || null;
 }
 const forSpeech = s => String(s).replace(/\.\.\.|…/g, " ").replace(/\s\/\s/g, ", ").replace(/[()]/g, "").replace(/\s+/g, " ").trim();
+/* In the installed app some phones refuse the built-in speech engine (or mute it with the silent switch),
+   so the app plays the sentence as an audio file instead. The web version keeps the built-in engine. */
+const IS_APP = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+let player = null, playToken = 0;
+const ttsUrl = t => "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=" + encodeURIComponent(t);
+function splitForTts(text){
+  const parts = [];
+  (text.match(/[^.!?]+[.!?]*\s*/g) || [text]).forEach(s => {
+    s = s.trim(); if (!s) return;
+    while (s.length > 180){ let cut = s.lastIndexOf(" ", 180); if (cut < 60) cut = 180; parts.push(s.slice(0, cut)); s = s.slice(cut).trim(); }
+    if (parts.length && (parts[parts.length - 1] + " " + s).length <= 180) parts[parts.length - 1] += " " + s; else parts.push(s);
+  });
+  return parts;
+}
+function playAudio(text){
+  const parts = splitForTts(forSpeech(text));
+  if (!parts.length) return Promise.resolve();
+  try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch(e){}
+  if (!player){ player = new Audio(); player.preload = "auto"; }
+  const a = player, token = ++playToken;
+  a.pause();
+  return new Promise((resolve, reject) => {
+    let i = 0;
+    a.onended = () => { if (token !== playToken) return; i++; if (i < parts.length){ a.src = ttsUrl(parts[i]); a.play().catch(reject); } else resolve(); };
+    a.onerror = () => { if (token === playToken) reject(new Error("audio")); };
+    a.src = ttsUrl(parts[0]);
+    const p = a.play(); if (p && p.catch) p.catch(reject);
+  });
+}
 function speak(text){
+  if (IS_APP && navigator.onLine !== false){
+    playAudio(text).catch(() => speakSynth(text));
+    return;
+  }
+  speakSynth(text);
+}
+function speakSynth(text){
   const synth = window.speechSynthesis;
   if (!synth || typeof SpeechSynthesisUtterance === "undefined"){ toast("Bu tarayıcı sesli okumayı desteklemiyor. Sözlükteki ses düğmesini kullan."); return; }
   const say = () => {
