@@ -4,234 +4,299 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>My Notebook</title>
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0b0b0c">
 <meta name="referrer" content="no-referrer">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="My Notebook">
+<link rel="preload" href="display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
+/* Layout: black base, pastel blocks with big squircle corners, black type on colour; one phone column. */
+@font-face{font-family:"Display";font-style:normal;font-weight:200 800;font-display:swap;src:url(display-latin-ext.woff2) format("woff2");unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Display";font-style:normal;font-weight:200 800;font-display:swap;src:url(display-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
-  --bg:#ffffff; --ink:#111111; --muted:#6b6b6b; --faint:#9a9a9a; --line:#e8e8e8; --soft:#f6f6f6;
-  --accent:#2a55e5; --again:#d0342c; --hard:#b26b00; --good:#1f8a4c; --easy:#2a55e5;
-  --t-words:#eaf0ff; --t-chunks:#e9f6ee; --t-reading:#fff3e3; --t-writing:#f3ecff; --t-daily:#fdeeee; --t-speaking:#e6f6f7;
-  color-scheme:light;
+  --bg:#0b0b0c; --surface:#19191b; --surface2:#242427; --line:#303034;
+  --ink:#f4f2ee; --muted:#a3a1a8; --faint:#6f6d75; --on:#111111; --on-muted:rgba(17,17,17,.62);
+  --yellow:#f2ec7a; --lav:#cfc7fa; --pink:#eec3da; --sky:#afc6e6; --orange:#ef7e52; --mint:#6fe3a0;
+  --sage:#86b59b; --brown:#b88a77; --red:#ec5b33; --blue:#8aa3f2;
+  --good:#6fe3a0; --again:#ec5b33;
+  --f-display:"Display","Arial Black",-apple-system,BlinkMacSystemFont,sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r-xl:30px; --r-lg:22px; --r-md:16px;
+  color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+:focus-visible{outline:2px solid var(--yellow);outline-offset:2px;border-radius:8px}
 [hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.tile,.pillrow,.btn,.fab,.grade{transition:transform .12s ease}.tile:active,.pillrow:active,.btn:active,.fab:active,.grade:active{transform:scale(.97)}}
 
 .wrap{max-width:600px;margin:0 auto;
-  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
-.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;min-height:52px}
-.bar h1{font-size:20px;font-weight:700;margin:0;letter-spacing:-.01em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.back{border:0;background:var(--soft);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;padding:0;flex:none}
+.wrap.home{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;min-height:56px}
+.bar h1{font-family:var(--f-display);font-size:26px;font-weight:800;margin:0;letter-spacing:-.02em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.back{border:0;background:var(--surface2);color:var(--ink);border-radius:999px;width:40px;height:40px;display:grid;place-items:center;padding:0;flex:none}
 .back svg{width:20px;height:20px}
-.home-title{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0}
 .lead{color:var(--muted);margin:2px 0 0;font-size:15px}
 
 /* home */
-.due-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;margin:0 0 14px;border:0;width:100%;text-align:left}
-.due-strip b{font-size:17px}
-.due-strip span{font-size:14px;opacity:.85}
-.due-strip .go{background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;flex:none;opacity:1}
-.due-strip.calm{background:var(--soft);color:var(--ink)}
-.due-strip.calm .go{background:var(--ink);color:#fff}
+.home-head{padding-top:calc(20px + env(safe-area-inset-top,0px));margin-bottom:18px}
+.dateline{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.home-title{font-family:var(--f-display);font-size:clamp(44px,13vw,60px);font-weight:800;letter-spacing:-.035em;line-height:.9;margin:0}
+.hero{display:grid;grid-template-columns:1fr auto;align-items:end;gap:6px 12px;width:100%;border:0;text-align:left;border-radius:var(--r-xl);padding:18px 20px 20px;margin:0 0 12px;background:var(--red);color:var(--on)}
+.hero.calm{background:var(--mint)}
+.hero .lbl{grid-column:1/-1;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--on-muted)}
+.hero .num{font-family:var(--f-display);font-weight:800;font-size:76px;line-height:.85;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.hero .big{font-family:var(--f-display);font-weight:800;font-size:34px;line-height:.95;letter-spacing:-.03em}
+.hero .sub{display:block;font-size:15px;font-weight:600;margin-top:6px}
+.hero .go{background:var(--mint);color:var(--on);border-radius:999px;padding:12px 20px;font-family:var(--f-display);font-weight:800;font-size:17px;white-space:nowrap}
+.hero.calm .go{background:var(--on);color:var(--mint)}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tile{border:1px solid var(--line);background:var(--bg);border-radius:18px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:10px;aspect-ratio:1/1;min-width:0}
-.tile.wide{grid-column:1/-1;aspect-ratio:auto;flex-direction:row;align-items:center}
-.tile .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none}
-.tile .ic svg{width:24px;height:24px}
-.tile .tt{font-size:20px;font-weight:700;margin-top:auto;line-height:1.2}
-.tile.wide .tt{margin-top:0}
-.tile .ts{font-size:13px;color:var(--muted);line-height:1.35}
-.tile:active{transform:scale(.98)}
-.tile .txt{min-width:0}
-.backup{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
-.backup p{margin:0;font-size:14px;color:var(--muted)}
+.tile{border:0;border-radius:var(--r-xl);padding:16px 16px 18px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;gap:10px;aspect-ratio:1/1;min-width:0;color:var(--on)}
+.tile .tt{display:block;font-size:19px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+.tile .ts{display:block;font-size:13px;line-height:1.3;color:var(--on-muted);margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tile .ic{width:48px;height:48px;display:block}
+.tile .ic svg{width:48px;height:48px;display:block}
+.c-yellow{background:var(--yellow)} .c-lav{background:var(--lav)} .c-mint{background:var(--mint)} .c-sky{background:var(--sky)}
+.c-orange{background:var(--orange)} .c-pink{background:var(--pink)} .c-sage{background:var(--sage)} .c-brown{background:var(--brown)} .c-blue{background:var(--blue)}
+.settings{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
+.settings button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600}
+.settings .on{color:var(--mint)}
+.thoughts-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:34px 0 12px}
+.thoughts-head h2{font-family:var(--f-display);font-weight:800;font-size:32px;letter-spacing:-.03em;margin:0;line-height:1}
+.thoughts-head button{border:0;background:none;color:var(--muted);font-weight:600;font-size:14px;padding:4px 0}
+.think-empty{border:1.5px dashed var(--line);border-radius:var(--r-lg);padding:20px;color:var(--muted);font-size:15px;text-align:center}
 
-/* composer + notes */
-.composer{border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:16px 0 8px;display:flex;flex-direction:column;gap:10px}
-.composer textarea{border:0;resize:none;width:100%;min-height:48px;font-size:17px;line-height:1.45;padding:2px 0;background:transparent;overflow:hidden}
-.composer textarea:focus{outline:none}
-.composer .tools{display:flex;align-items:center;gap:6px}
+/* floating buttons */
+.fabs{position:fixed;z-index:20;right:max(16px,calc(env(safe-area-inset-right,0px) + 12px));bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:12px}
+.fab{border:0;padding:0;border-radius:999px;display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 3px var(--bg)}
+.fab.add{width:56px;height:56px;background:var(--yellow);color:var(--on)}
+.fab.add svg{width:26px;height:26px}
+.fab.think{width:66px;height:66px;overflow:hidden;background:#16805c}
+.fab.think img{width:100%;height:100%;display:block}
+
+/* overlays (thought composer, quick add) */
+.overlay{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+.panel{width:100%;max-width:600px;max-height:92%;overflow:auto;background:var(--surface);border-radius:28px 28px 0 0;
+  padding:18px max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.panel-head{display:flex;align-items:center;gap:10px}
+.panel-head h2{flex:1;margin:0;font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1.1}
+.round{border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:999px;width:38px;height:38px;display:grid;place-items:center;padding:0;text-decoration:none;flex:none}
+.round svg{width:18px;height:18px}
+
+/* thought composer */
+.composer{display:flex;flex-direction:column;gap:12px}
+.composer textarea{border:0;resize:none;width:100%;min-height:110px;font-size:18px;line-height:1.45;padding:14px 16px;border-radius:var(--r-md);background:var(--surface2);color:var(--ink)}
+.composer textarea:focus{outline:2px solid var(--line)}
+.composer .tools{display:flex;align-items:center;gap:8px}
 .composer .tools .sp{flex:1}
-.ibtn{border:0;background:var(--soft);border-radius:999px;height:34px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--ink)}
-.ibtn svg{width:18px;height:18px}
-.post{border:0;background:var(--ink);color:#fff;border-radius:999px;height:34px;padding:0 16px;font-weight:700;font-size:14px}
+.ibtn{border:0;background:var(--surface2);border-radius:999px;height:42px;padding:0 16px;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:var(--ink)}
+.ibtn svg{width:19px;height:19px}
+.post{border:0;background:var(--mint);color:var(--on);border-radius:999px;height:42px;padding:0 22px;font-family:var(--f-display);font-weight:800;font-size:16px}
 .post:disabled{opacity:.35}
 .thumbs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
-.thumb{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;background:var(--soft);flex:none}
+.thumb{position:relative;width:76px;height:76px;border-radius:14px;overflow:hidden;background:var(--surface2);flex:none}
 .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
-.thumb .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:999px;border:0;background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center;padding:0}
+.thumb .rm{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:999px;border:0;background:rgba(0,0,0,.65);color:#fff;display:grid;place-items:center;padding:0}
 .thumb .rm svg{width:12px;height:12px}
-.thumb .vtag{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px}
 .busy{font-size:13px;color:var(--muted)}
-.notes-link{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;padding:6px 2px 14px;font-size:14px;font-weight:600;color:var(--muted)}
-.note-card{border-bottom:1px solid var(--line);padding:16px 0;display:flex;flex-direction:column;gap:10px}
-.note-card .when{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
-.note-card .body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:17px;line-height:1.5}
+
+/* thought cards */
+.note-card{border-radius:var(--r-lg);padding:16px 16px 18px;margin-bottom:10px;display:flex;flex-direction:column;gap:10px;color:var(--on)}
+.note-card .when{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--on-muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.note-card .body{white-space:pre-wrap;overflow-wrap:anywhere;font-size:18px;line-height:1.45;font-weight:500}
+.note-card .mini{background:rgba(0,0,0,.08);border-color:rgba(0,0,0,.15);color:var(--on);text-transform:none;letter-spacing:0}
+.note-card .mini.del{color:#9b2d10}
+.note-card .mini.del.armed{background:var(--on);color:#fff}
 .media{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .media.one{grid-template-columns:1fr}
-.media .m{border-radius:12px;overflow:hidden;background:var(--soft);aspect-ratio:1/1;border:0;padding:0;display:block;width:100%}
-.media.one .m{aspect-ratio:auto;max-height:480px}
+.media .m{border-radius:14px;overflow:hidden;background:rgba(0,0,0,.1);aspect-ratio:1/1;border:0;padding:0;display:block;width:100%}
+.media.one .m{aspect-ratio:auto;max-height:460px}
 .media img{width:100%;height:100%;object-fit:cover;display:block}
-.media.one img{object-fit:contain;max-height:480px;background:var(--soft)}
+.media.one img{object-fit:contain;max-height:460px}
 .media video{width:100%;height:100%;display:block;background:#000;object-fit:contain}
-.media .missing{display:grid;place-items:center;color:var(--muted);font-size:13px;padding:12px;text-align:center}
-.note-edit{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:17px;min-height:100px}
-.viewer{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.92);display:grid;place-items:center;padding:calc(20px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px))}
+.media .missing{display:grid;place-items:center;color:var(--on-muted);font-size:13px;padding:12px;text-align:center}
+.note-edit{width:100%;border:0;border-radius:12px;padding:10px 12px;font-size:17px;min-height:100px;background:rgba(255,255,255,.55);color:var(--on)}
+.viewer{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.94);display:grid;place-items:center;padding:calc(20px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px))}
 .viewer img{max-width:100%;max-height:100%;object-fit:contain}
-.viewer button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));width:40px;height:40px;border-radius:999px;border:0;background:rgba(255,255,255,.15);color:#fff;display:grid;place-items:center}
+.viewer button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));width:42px;height:42px;border-radius:999px;border:0;background:rgba(255,255,255,.15);color:#fff;display:grid;place-items:center}
 .viewer button svg{width:20px;height:20px}
 
 /* shared */
-.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted);white-space:nowrap}
-.tag.ok{background:#e9f6ee;color:var(--good)}
-.btn{border:0;border-radius:12px;padding:12px 18px;background:var(--ink);color:#fff;font-weight:600}
-.btn.light{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.tag.t-kelime{background:var(--sky);color:var(--on)} .tag.t-kalip{background:var(--pink);color:var(--on)} .tag.t-chunk{background:var(--mint);color:var(--on)}
+.tag.ok{background:var(--mint);color:var(--on)}
+.btn{border:0;border-radius:999px;padding:14px 22px;background:var(--mint);color:var(--on);font-family:var(--f-display);font-weight:800;font-size:17px;letter-spacing:-.01em}
+.btn.light{background:transparent;color:var(--ink);border:1.5px solid var(--line);font-family:var(--f-body);font-weight:600;font-size:16px}
 .btn:disabled{opacity:.45}
 .row-btns{display:flex;gap:8px;flex-wrap:wrap}
-.mini{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:5px;text-decoration:none;white-space:nowrap}
+.mini{border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap}
 .mini svg{width:15px;height:15px}
-.mini.del{color:var(--again)}
-.mini.del.armed{background:var(--again);color:#fff;border-color:var(--again)}
-.mini.on{background:#e9f6ee;color:var(--good);border-color:#cfe9d9}
-.mini.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mini:disabled{opacity:.4}
+.mini.del{color:#ff8a66}
+.mini.del.armed{background:var(--again);color:var(--on);border-color:var(--again)}
+.mini.on{background:rgba(111,227,160,.14);color:var(--mint);border-color:rgba(111,227,160,.35)}
+.mini.primary{background:var(--mint);color:var(--on);border-color:var(--mint)}
 .empty{color:var(--muted);text-align:center;padding:32px 10px}
-.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:4px;border-radius:12px;background:var(--soft);margin-bottom:16px}
-.seg button,.seg label{border:0;background:none;text-align:center;padding:8px 4px;border-radius:9px;font-weight:600;font-size:15px;color:var(--muted);position:relative}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:5px;border-radius:999px;background:var(--surface);margin-bottom:16px}
+.seg button,.seg label{border:0;background:none;text-align:center;padding:9px 4px;border-radius:999px;font-weight:700;font-size:15px;color:var(--muted);position:relative}
 .seg input{position:absolute;opacity:0;pointer-events:none}
-.seg [aria-pressed="true"],.seg label:has(input:checked){background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.badge{background:var(--again);color:#fff;border-radius:999px;font-size:11px;padding:0 6px;margin-left:4px;font-variant-numeric:tabular-nums}
-.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:16px;background:var(--soft)}
-.filters{display:flex;gap:6px;margin:10px 0 4px;flex-wrap:wrap}
-.filters button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600}
-.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
-.section-title{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+.seg [aria-pressed="true"],.seg label:has(input:checked){background:var(--ink);color:var(--on)}
+.badge{background:var(--again);color:var(--on);border-radius:999px;font-size:11px;font-weight:800;padding:1px 7px;margin-left:5px;font-variant-numeric:tabular-nums}
+.search{width:100%;border:0;border-radius:999px;padding:13px 18px;font-size:16px;background:var(--surface);color:var(--ink)}
+.filters{display:flex;gap:6px;margin:12px 0 8px;flex-wrap:wrap}
+.filters button,.chips button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600}
+.filters button[aria-pressed="true"],.chips button[aria-pressed="true"]{background:var(--yellow);color:var(--on);border-color:var(--yellow)}
+.section-title{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px}
 
 /* review */
 .rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.progress{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
-.chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
-.card{border:1px solid var(--line);border-radius:16px;min-height:270px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.progress{font-family:var(--f-display);font-weight:800;font-size:18px;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700}
+.card{border-radius:var(--r-xl);min-height:280px;padding:20px 20px 22px;display:flex;flex-direction:column;gap:12px;color:var(--on);background:var(--sky)}
+.card.t-kalip{background:var(--pink)} .card.t-chunk{background:var(--mint)}
+.card .tag{background:rgba(0,0,0,.12);color:var(--on)}
+.card .round{background:transparent;border-color:rgba(0,0,0,.22);color:var(--on)}
 .card-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.card-top .row-btns{gap:6px}
-.front{font-size:26px;font-weight:700;line-height:1.25;margin:4px 0 0;overflow-wrap:anywhere}
-.ans{font-size:19px;font-weight:600;margin:0;overflow-wrap:anywhere;padding-top:12px;border-top:1px solid var(--line)}
-.note{margin:0;color:var(--muted);font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
-.round{border:1px solid var(--line);background:var(--bg);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;padding:0;text-decoration:none;flex:none}
-.round svg{width:18px;height:18px}
-.reveal{margin-top:auto;border:0;border-radius:12px;padding:14px;background:var(--ink);color:#fff;font-weight:600}
-.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-.grade{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 2px;display:flex;flex-direction:column;align-items:center;font-weight:600;font-size:15px}
-.grade small{font-weight:400;font-size:12px;color:var(--muted)}
-.grade[data-g="0"]{color:var(--again)}.grade[data-g="1"]{color:var(--hard)}.grade[data-g="2"]{color:var(--good)}.grade[data-g="3"]{color:var(--easy)}
+.front{font-family:var(--f-display);font-size:clamp(28px,8vw,36px);font-weight:800;line-height:1.05;letter-spacing:-.025em;margin:6px 0 0;overflow-wrap:anywhere}
+.ans{font-size:20px;font-weight:700;margin:0;overflow-wrap:anywhere;padding-top:14px;border-top:1.5px solid rgba(0,0,0,.15)}
+.note{margin:0;color:var(--on-muted);font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
+.reveal{margin-top:auto;border:0;border-radius:999px;padding:15px;background:var(--on);color:var(--ink);font-family:var(--f-display);font-weight:800;font-size:17px}
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.grade{border:0;border-radius:var(--r-md);padding:12px 2px 10px;display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:15px;color:var(--on)}
+.grade small{font-weight:600;font-size:12px;color:var(--on-muted)}
+.grade[data-g="0"]{background:var(--red)}.grade[data-g="1"]{background:var(--yellow)}.grade[data-g="2"]{background:var(--mint)}.grade[data-g="3"]{background:var(--lav)}
 .hint{color:var(--muted);font-size:13px;text-align:center;margin:12px 0 0}
-.done{text-align:center;padding:40px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
-.done h2{font-size:21px;margin:0}
+.done{text-align:center;padding:40px 10px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.done h2{font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:-.025em;line-height:1.05;margin:0}
 .done p{margin:0;color:var(--muted);max-width:34ch}
 .done .row-btns{justify-content:center}
+
+/* tell a friend */
+.friend{background:var(--surface);border-radius:var(--r-xl);padding:16px;margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.friend h3{margin:0;font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:-.02em}
+.friend .fh{margin:0;font-size:14px;color:var(--muted)}
+.friend .fh b{color:var(--ink)}
+.bubbles{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.bubble{max-width:88%;background:var(--blue);color:var(--on);border-radius:20px 20px 6px 20px;padding:9px 14px;font-size:16px;line-height:1.4;overflow-wrap:anywhere;display:flex;gap:8px;align-items:flex-start}
+.bubble span{flex:1;min-width:0}
+.bubble button{border:0;background:none;padding:2px 0 0;color:var(--on-muted);display:grid;place-items:center;flex:none}
+.bubble button svg{width:16px;height:16px}
+.bubble-time{font-size:11px;color:var(--faint);margin:-2px 4px 0 0}
+.say-row{display:flex;gap:8px;align-items:flex-end}
+.say-row textarea{flex:1;min-width:0;border:0;border-radius:20px;background:var(--surface2);color:var(--ink);padding:11px 16px;font-size:16px;line-height:1.4;resize:none;min-height:46px;max-height:160px}
+.say-row textarea:focus{outline:2px solid var(--line)}
+.send{border:0;width:46px;height:46px;border-radius:999px;background:var(--blue);color:var(--on);display:grid;place-items:center;flex:none;padding:0}
+.send svg{width:20px;height:20px}
+.send:disabled{opacity:.35}
 
 /* forms */
 form{display:flex;flex-direction:column;gap:16px}
 .field{display:flex;flex-direction:column;gap:6px}
-.field label{font-size:14px;font-weight:600}
-.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;background:var(--bg)}
-.field textarea{min-height:80px;resize:vertical}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+.field label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.field input,.field textarea{width:100%;border:1.5px solid transparent;border-radius:var(--r-md);padding:13px 16px;font-size:17px;background:var(--surface2);color:var(--ink)}
+.field textarea{min-height:84px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--yellow)}
+.panel .seg{background:var(--surface2);margin:0}
 
 /* lists */
-.items{list-style:none;margin:0;padding:0}
-.item{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px;min-width:0}
-.item .en{font-weight:600;font-size:17px;overflow-wrap:anywhere}
+.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.item{padding:14px 16px;border-radius:var(--r-lg);background:var(--surface);display:flex;flex-direction:column;gap:3px;min-width:0}
+.item .en{font-weight:700;font-size:18px;overflow-wrap:anywhere}
 .item .nt{color:var(--muted);font-size:14px;font-style:italic;white-space:pre-wrap;overflow-wrap:anywhere}
-.item .meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px}
+.item .said{align-self:flex-start;max-width:100%;margin-top:4px;background:rgba(138,163,242,.16);color:#c7d3ff;border-radius:14px 14px 14px 4px;padding:6px 12px;font-size:14px;overflow-wrap:anywhere}
+.item .meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px}
 .item .due{font-size:13px;color:var(--muted)}
 .item .acts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
-.cats{list-style:none;margin:0;padding:0}
-.cats > li > button{width:100%;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;padding:14px 0;display:flex;align-items:center;gap:12px}
-.cats .num{width:30px;height:30px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
+.cats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.cats > li > button{width:100%;border:0;border-radius:999px;text-align:left;padding:14px 18px 14px 14px;display:flex;align-items:center;gap:12px;color:var(--on);background:var(--c,var(--surface))}
+.cats .num{width:34px;height:34px;border-radius:999px;background:var(--on);color:var(--c,var(--ink));display:grid;place-items:center;font-size:14px;font-weight:800;flex:none;font-variant-numeric:tabular-nums}
 .cats .ct{flex:1;min-width:0}
-.cats .ct b{display:block;font-weight:600;font-size:16px;line-height:1.3}
-.cats .ct span{font-size:13px;color:var(--muted)}
-.cats .chev{color:var(--faint);flex:none}
-.prog{height:3px;border-radius:2px;background:var(--soft);margin-top:6px;overflow:hidden}
-.prog i{display:block;height:100%;background:var(--good)}
+.cats .ct b{display:block;font-weight:700;font-size:17px;line-height:1.2;letter-spacing:-.01em}
+.cats .ct span{font-size:13px;color:var(--on-muted);line-height:1.3}
+.cats .cnt{font-family:var(--f-display);font-weight:800;font-size:20px;flex:none;font-variant-numeric:tabular-nums}
+.cats .chev{color:var(--on);flex:none;display:grid}
+.cats li:nth-child(8n+1){--c:var(--yellow)} .cats li:nth-child(8n+2){--c:var(--mint)} .cats li:nth-child(8n+3){--c:var(--orange)} .cats li:nth-child(8n+4){--c:var(--blue)}
+.cats li:nth-child(8n+5){--c:var(--pink)} .cats li:nth-child(8n+6){--c:var(--red)} .cats li:nth-child(8n+7){--c:var(--sky)} .cats li:nth-child(8n+8){--c:var(--lav)}
+.prog{height:4px;border-radius:2px;background:rgba(0,0,0,.14);margin-top:6px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--on)}
+.grp-body{padding:4px 4px 10px 8px}
 
 /* chunk item */
 .ch{border-bottom:1px solid var(--line)}
-.ch-head{width:100%;border:0;background:none;text-align:left;padding:13px 0;display:flex;align-items:flex-start;gap:10px}
+.ch-head{width:100%;border:0;background:none;text-align:left;padding:14px 0;display:flex;align-items:flex-start;gap:10px;color:var(--ink)}
 .ch-head .t{flex:1;min-width:0}
-.ch-head b{display:block;font-size:17px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.ch-head b{display:block;font-size:18px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
 .ch-head .t > span{font-size:14px;color:var(--muted)}
-.ch-head .st{flex:none;margin-top:2px}
-.ch-body{padding:0 0 14px;display:flex;flex-direction:column;gap:10px}
+.ch-head .st{flex:none;margin-top:3px}
+.ch-body{padding:0 0 16px;display:flex;flex-direction:column;gap:10px}
 .exs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.exs li{display:flex;gap:8px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:8px 10px}
+.exs li{display:flex;gap:8px;align-items:flex-start;background:var(--surface);border-radius:var(--r-md);padding:10px 12px}
 .exs li span{flex:1;min-width:0;overflow-wrap:anywhere}
 .exs .say{border:0;background:none;padding:2px;color:var(--muted);flex:none;display:grid;place-items:center}
 .exs .say svg{width:17px;height:17px}
-.today{background:var(--soft);border-radius:16px;padding:14px 16px;margin-bottom:6px}
-.today h2{font-size:15px;margin:0 0 4px}
-.today p{margin:0;font-size:14px;color:var(--muted)}
+.today{background:var(--yellow);color:var(--on);border-radius:var(--r-xl);padding:18px 20px;margin-bottom:8px}
+.today h2{font-family:var(--f-display);font-weight:800;font-size:26px;letter-spacing:-.025em;line-height:1.05;margin:0 0 6px}
+.today p{margin:0;font-size:15px;color:var(--on-muted)}
 
 /* speaking */
-.steps{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-direction:column;gap:12px;counter-reset:s}
 .steps li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
-.steps li::before{counter-increment:s;content:counter(s);width:24px;height:24px;border-radius:999px;background:var(--ink);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex:none;margin-top:1px}
+.steps li::before{counter-increment:s;content:counter(s);width:28px;height:28px;border-radius:999px;background:var(--lav);color:var(--on);font-family:var(--f-display);font-size:15px;font-weight:800;display:grid;place-items:center;flex:none}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
-.chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600}
-.chips button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
-.incl{background:var(--soft);border-radius:14px;padding:12px 14px;font-size:14px;display:flex;flex-direction:column;gap:6px;margin-top:6px}
-.incl b{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.incl{background:var(--surface);border-radius:var(--r-lg);padding:14px 16px;font-size:14px;display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.incl b{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .incl span{overflow-wrap:anywhere}
 .cta{display:block;width:100%;text-align:center;text-decoration:none;margin-top:18px}
 details.preview{margin-top:14px}
 details.preview summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--muted)}
-details.preview pre{white-space:pre-wrap;font-family:inherit;font-size:14px;background:var(--soft);border-radius:12px;padding:12px;margin:8px 0 0;overflow-wrap:anywhere}
+details.preview pre{white-space:pre-wrap;font-family:inherit;font-size:14px;background:var(--surface);border-radius:var(--r-md);padding:14px;margin:8px 0 0;overflow-wrap:anywhere}
 
 /* reading */
-.reader{font-size:19px;line-height:1.75}
+.reader{font-size:20px;line-height:1.75}
 .reader p{margin:0 0 1em}
-.w{border-radius:4px;cursor:pointer}
-.w.known{text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--good);text-underline-offset:4px}
-.w.sel{background:#ffe57a}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -8px 30px rgba(0,0,0,.08);border-radius:18px 18px 0 0;
-  padding:14px max(18px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px))}
+.w{border-radius:5px;cursor:pointer}
+.w.known{text-decoration:underline;text-decoration-style:dotted;text-decoration-color:var(--mint);text-decoration-thickness:2px;text-underline-offset:5px}
+.w.sel{background:var(--yellow);color:var(--on)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--surface);box-shadow:0 -10px 30px rgba(0,0,0,.5);border-radius:28px 28px 0 0;
+  padding:16px max(18px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px))}
 .sheet .in{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
 .sheet .top{display:flex;align-items:center;gap:8px}
-.sheet .phrase{font-size:22px;font-weight:700;flex:1;min-width:0;overflow-wrap:anywhere}
+.sheet .phrase{font-family:var(--f-display);font-size:28px;font-weight:800;letter-spacing:-.02em;flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.05}
 .sheet .ctx{font-size:14px;color:var(--muted);font-style:italic;margin:0;overflow-wrap:anywhere}
-.sheet input{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:17px}
-.sheet input:focus{outline:none;border-color:var(--ink)}
-.reader-pad{height:300px}
+.sheet input{width:100%;border:1.5px solid transparent;border-radius:var(--r-md);padding:12px 16px;font-size:17px;background:var(--surface2);color:var(--ink)}
+.sheet input:focus{outline:none;border-color:var(--yellow)}
+.reader-pad{height:320px}
 
 /* writing */
-.prompt{background:var(--soft);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
-.prompt small{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-.prompt b{font-size:18px;line-height:1.35}
-.prompt .row-btns{margin-top:4px}
+.prompt{background:var(--pink);color:var(--on);border-radius:var(--r-xl);padding:18px 20px;display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.prompt small{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--on-muted)}
+.prompt b{font-family:var(--f-display);font-size:24px;font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.prompt .tr{color:var(--on-muted);font-size:14px}
+.prompt .row-btns{margin-top:6px}
+.prompt .mini{background:rgba(0,0,0,.08);border-color:rgba(0,0,0,.18);color:var(--on)}
 .use{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
-.use .tag{background:#f3ecff;color:#5b3cc4;font-size:13px;padding:3px 10px}
-.wbox{width:100%;min-height:260px;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:17px;line-height:1.6;resize:vertical}
-.wbox:focus{outline:none;border-color:var(--ink)}
+.use .tag{background:var(--lav);color:var(--on);font-size:13px;padding:4px 12px}
+.wbox{width:100%;min-height:260px;border:1.5px solid transparent;border-radius:var(--r-lg);padding:16px;font-size:17px;line-height:1.6;resize:vertical;background:var(--surface);color:var(--ink)}
+.wbox:focus{outline:none;border-color:var(--pink)}
 .wfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
 .count{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
-.count.full{color:var(--again);font-weight:700}
+.count.full{color:var(--orange);font-weight:700}
 .past{white-space:pre-wrap;font-size:17px;line-height:1.6;overflow-wrap:anywhere}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:50;width:max-content;max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--on);padding:11px 18px;border-radius:999px;font-size:14px;font-weight:700;z-index:50;width:max-content;max-width:calc(100% - 32px);text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .toast.up{bottom:calc(250px + env(safe-area-inset-bottom,0px))}
+.toast.top{bottom:auto;top:calc(16px + env(safe-area-inset-top,0px))}
 </style>
 </head>
 <body>
@@ -239,7 +304,6 @@ details.preview pre{white-space:pre-wrap;font-family:inherit;font-size:14px;back
 <div class="toast" id="toast" hidden></div>
 <input type="file" id="file" accept="application/json,.json" hidden>
 <input type="file" id="pick-photo" accept="image/*" multiple hidden>
-<input type="file" id="pick-video" accept="video/*" hidden>
 
 <script src="chunks.js"></script>
 <script>
@@ -351,12 +415,20 @@ const I = {
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
   x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   photo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>',
+  t_daily: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/></svg>',
+  t_speaking: '<svg viewBox="0 0 24 24"><rect x="7.5" y="1" width="9" height="14.5" rx="4.5" fill="currentColor"/><path d="M4 11.5a8 8 0 0 0 16 0M12 19.5v3" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>',
+  t_chunks: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="1.5" y="2.5" width="10" height="9" rx="3"/><rect x="12.5" y="2.5" width="10" height="9" rx="3"/><rect x="1.5" y="12.5" width="21" height="9" rx="3"/></svg>',
+  t_words: '<svg viewBox="0 0 24 24"><rect x="1.5" y="6.5" width="16" height="15" rx="3.5" fill="currentColor"/><path d="M7 3h11.5A3.5 3.5 0 0 1 22 6.5V16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>',
+  t_reading: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 4.3c3.4-1.6 7-1.3 9.7.9v16c-2.7-2.1-6.3-2.4-9.7-.9z"/><path d="M22.5 4.3c-3.4-1.6-7-1.3-9.7.9v16c2.7-2.1 6.3-2.4 9.7-.9z"/></svg>',
+  t_writing: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.2 2.8a3 3 0 0 1 4.2 0l.8.8a3 3 0 0 1 0 4.2L9.4 19.6 2 22l2.4-7.4z"/></svg>',
+  plusBig: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg>',
+  send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
   video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="M16 10l6-3v10l-6-3z"/></svg>',
 };
 
 /* ---------------- toast ---------------- */
 let toastT;
-function toast(m, ms = 2400){ const t = $("#toast"); t.textContent = m; t.hidden = false; t.classList.toggle("up", !!$(".sheet")); clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, ms); }
+function toast(m, ms = 2400){ const t = $("#toast"); t.textContent = m; t.hidden = false; t.classList.toggle("up", !!$(".sheet")); t.classList.toggle("top", !!$(".overlay")); clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, ms); }
 
 /* ---------------- speech ---------------- */
 let voices = [];
@@ -530,13 +602,14 @@ let route = "", params = "";
 function go(h){ if (location.hash.slice(1) === h) render(); else location.hash = h; }
 const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "", speaking: "", notify: "" };
 function parseHash(){ const h = decodeURIComponent(location.hash.slice(1)); const i = h.indexOf("/"); route = i === -1 ? h : h.slice(0, i); params = i === -1 ? "" : h.slice(i + 1); }
-window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); closeViewer(); render(); window.scrollTo(0, 0); });
+window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); closeViewer(); closeOverlay(); render(); window.scrollTo(0, 0); });
 function bar(title){
   return '<div class="bar"><button class="back" type="button" data-go="' + esc(PARENT[route] || "") + '" aria-label="Back">' + I.back + '</button><h1>' + esc(title) + '</h1></div>';
 }
 
 /* ---------------- render ---------------- */
 function render(){
+  app.className = "wrap";
   if (route === "words") return renderWords();
   if (route === "chunks") return renderChunks();
   if (route === "chunk") return renderChunkCat(params);
@@ -553,40 +626,88 @@ function render(){
 }
 
 /* ---------------- home ---------------- */
+const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 function renderHome(){
   const due = dueCount();
   const inReview = cards.filter(c => c.type === "chunk").length;
   const tk = dateKey(), wroteToday = writes[tk] && countWords(writes[tk].text) > 0, st = streak();
   const tc = todaysChunks(1)[0];
-  const tile = (r, ic, title, sub, wide) =>
-    '<button class="tile' + (wide ? " wide" : "") + '" type="button" data-go="' + r + '"><span class="ic" style="background:var(--t-' + ic + ')">' + I[ic] + '</span><span class="txt"><span class="tt">' + title + '</span><br><span class="ts">' + sub + '</span></span></button>';
+  const d = new Date();
+  const tile = (r, color, ic, title, sub) =>
+    '<button class="tile c-' + color + '" type="button" data-go="' + r + '"><span><span class="tt">' + title + '</span><span class="ts">' + sub + '</span></span><span class="ic">' + I[ic] + '</span></button>';
+  app.className = "wrap home";
   app.innerHTML =
-    '<div style="padding-top:calc(22px + env(safe-area-inset-top,0px))"><h1 class="home-title">My Notebook</h1><p class="lead">Your words, chunks, reading and writing.</p></div>' +
-    composerHTML() +
-    (notes.length ? '<button class="notes-link" type="button" data-go="notes"><span>Your notes · ' + notes.length + '</span>' + I.chev + '</button>' : '<div style="height:6px"></div>') +
+    '<header class="home-head"><p class="dateline">' + DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + '</p><h1 class="home-title">My<br>Notebook</h1></header>' +
     (due
-      ? '<button class="due-strip" type="button" data-go="words" data-wt="review"><span><b>' + plural(due, "card") + '</b><br><span>waiting for review today</span></span><span class="go">Start</span></button>'
-      : '<button class="due-strip calm" type="button" data-go="words" data-wt="' + (cards.length ? "review" : "add") + '"><span><b>' + (cards.length ? "All done for today" : "Your notebook is empty") + '</b><br><span>' + (cards.length ? "You can add a new word or phrase" : "Add your first word or phrase") + '</span></span><span class="go">' + (cards.length ? "Add" : "Start") + '</span></button>') +
+      ? '<button class="hero" type="button" data-go="words" data-wt="review"><span class="lbl">Review</span><span><span class="num">' + pad(due) + '</span><span class="sub">' + (due === 1 ? "card" : "cards") + ' waiting today</span></span><span class="go">Start</span></button>'
+      : '<button class="hero calm" type="button" data-act="quick-add"><span class="lbl">Review</span><span><span class="big">' + (cards.length ? "All caught up" : "Let's begin") + '</span><span class="sub">' + (cards.length ? "Add something new you learned today" : "Add your first word or phrase") + '</span></span><span class="go">Add</span></button>') +
     '<div class="tiles">' +
-      tile("words", "words", "Words", plural(cards.length, "card") + (due ? " · " + due + " due" : "")) +
-      tile("chunks", "chunks", "Chunks", Object.keys(CHUNKS).length + " chunks · " + inReview + " in review") +
-      tile("reading", "reading", "Reading", texts.length ? plural(texts.length, "text") : "Add a text to read") +
-      tile("writing", "writing", "Writing", wroteToday ? "Done today" + (st > 1 ? " · " + st + "-day streak" : "") : (st ? st + "-day streak · not done today" : "Today's topic is ready")) +
-      tile("speaking", "speaking", "Speaking", "Talk with ChatGPT using what you've learned") +
-      tile("daily", "daily", "Daily", tc ? "Today's phrase: " + esc(tc.en) : "Everyday phrases") +
+      tile("daily", "yellow", "t_daily", "Daily", tc ? "Today: " + esc(tc.en) : "Everyday phrases") +
+      tile("speaking", "lav", "t_speaking", "Speaking", "Talk with ChatGPT") +
+      tile("chunks", "mint", "t_chunks", "Chunks", Object.keys(CHUNKS).length + " chunks · " + inReview + " in review") +
+      tile("words", "sky", "t_words", "Words", plural(cards.length, "card") + (due ? " · " + due + " due" : "")) +
+      tile("reading", "orange", "t_reading", "Reading", texts.length ? plural(texts.length, "text") : "Add a text to read") +
+      tile("writing", "pink", "t_writing", "Writing", wroteToday ? "Done today" + (st > 1 ? " · " + st + "-day streak" : "") : (st ? st + "-day streak · write today" : "Today's topic is ready")) +
     '</div>' +
-    '<button class="notes-link" type="button" data-go="notify" style="margin-top:18px;padding:14px 2px;border-top:1px solid var(--line)"><span>Notifications · ' + notifyStatusShort() + '</span>' + I.chev + '</button>' +
-    '<div class="backup" style="margin-top:0"><p>Everything is saved on this phone. Make a backup now and then so nothing is lost if you change phones. Videos are not included in backups.</p><div class="row-btns"><button class="btn light" type="button" data-act="export">Back up</button><button class="btn light" type="button" data-act="import">Restore backup</button></div></div>';
-  hydrateComposer();
+    '<div class="settings"><button type="button" data-go="notify">Notifications · <span class="' + (pushOn() ? "on" : "") + '">' + notifyStatusShort() + '</span></button><button type="button" data-act="export">Back up</button><button type="button" data-act="import">Restore</button></div>' +
+    '<div class="thoughts-head"><h2>My Thoughts</h2>' + (notes.length > HOME_NOTES ? '<button type="button" data-go="notes">See all ' + notes.length + '</button>' : (notes.length ? '<span class="lead" style="font-size:14px">' + notes.length + '</span>' : '')) + '</div>' +
+    (notes.length ? notes.slice(0, HOME_NOTES).map(noteHTML).join("") : '<div class="think-empty">Tap the round <b>md</b> button to write what\'s on your mind.</div>') +
+    '<div class="fabs"><button class="fab add" type="button" data-act="quick-add" aria-label="Add something you learned">' + I.plusBig + '</button>' +
+    '<button class="fab think" type="button" data-act="think" aria-label="What\'s on your mind?"><img src="icon-192.png" alt=""></button></div>';
+  hydrateMedia();
+}
+const HOME_NOTES = 5;
+
+/* ---------------- overlays (bottom sheets) ---------------- */
+function openOverlay(html){
+  closeOverlay();
+  const o = document.createElement("div"); o.className = "overlay";
+  o.innerHTML = '<div class="panel" role="dialog" aria-modal="true">' + html + '</div>';
+  document.body.appendChild(o); document.body.style.overflow = "hidden";
+  return o;
+}
+function closeOverlay(){ const o = $(".overlay"); if (o) o.remove(); document.body.style.overflow = ""; }
+const panelHead = t => '<div class="panel-head"><h2>' + t + '</h2><button class="round" type="button" data-act="close-overlay" aria-label="Close">' + I.x + '</button></div>';
+
+/* quick add: something you just learned */
+function cardFields(c, t){
+  return '<div class="seg"><label><input type="radio" name="type" value="kelime"' + (t === "kelime" ? " checked" : "") + '>Word</label><label><input type="radio" name="type" value="kalip"' + (t === "kalip" ? " checked" : "") + '>Phrase / sentence</label>' + (t === "chunk" ? '<label><input type="radio" name="type" value="chunk" checked>Chunk</label>' : "") + '</div>' +
+    '<div class="field"><label for="f-en">English</label><input id="f-en" value="' + esc(c ? c.en : "") + '" placeholder="reluctant" autocapitalize="off"></div>' +
+    '<div class="row-btns"><button class="mini" type="button" data-act="form-say">' + I.speak + 'Listen</button><button class="mini" type="button" data-act="form-dict">' + I.book + 'Look it up</button></div>' +
+    '<div class="field"><label for="f-tr">Turkish meaning</label><input id="f-tr" value="' + esc(c ? c.tr : "") + '" placeholder="isteksiz, gönülsüz"></div>' +
+    '<div class="field"><label for="f-note">Example sentence or note</label><textarea id="f-note" placeholder="She was reluctant to ask for help.">' + esc(c ? c.note : "") + '</textarea></div>';
+}
+function openQuickAdd(){
+  openOverlay(panelHead("Add what you learned") +
+    '<form id="qa" autocomplete="off" novalidate>' + cardFields(null, prefs.lastType || "kelime") + '<button class="btn" type="submit">Save</button></form>');
+  setTimeout(() => { const i = $("#f-en"); if (i) i.focus(); }, 60);
+}
+function readCardForm(form){
+  const en = $("#f-en").value.trim(), tr = $("#f-tr").value.trim(), note = $("#f-note").value.trim();
+  const type = form.querySelector('input[name="type"]:checked').value;
+  if (!en){ toast("Type the English first"); $("#f-en").focus(); return null; }
+  return { en, tr, note, type };
+}
+function addLearned(v){
+  if (cards.some(c => fold(c.en) === fold(v.en))){ toast("That's already in your notebook"); return false; }
+  cards.push(newCard(v)); saveCards();
+  if (v.type !== "chunk"){ prefs.lastType = v.type; savePrefs(); }
+  if (queue && pos === 0 && doneCount === 0) queue = null;
+  return true;
 }
 
-/* ---------------- notes ("What's on your mind?") ---------------- */
+/* ---------------- thoughts ("What's on your mind?") ---------------- */
 let draft = { text: read(KEY + "-draft", ""), media: [] }, posting = false, editingNote = null;
 function composerHTML(){
-  return '<div class="composer"><textarea id="nt" rows="2" placeholder="What\'s on your mind?">' + esc(draft.text) + '</textarea>' +
+  return '<div class="composer"><textarea id="nt" rows="4" placeholder="Write it in English if you can…">' + esc(draft.text) + '</textarea>' +
     '<div class="thumbs" id="nthumbs"' + (draft.media.length ? "" : " hidden") + '></div>' +
-    '<div class="tools"><button class="ibtn" type="button" data-act="pick-photo">' + I.photo + 'Photo</button><button class="ibtn" type="button" data-act="pick-video">' + I.video + 'Video</button><span class="sp"></span>' +
+    '<div class="tools"><button class="ibtn" type="button" data-act="pick-photo">' + I.photo + 'Photo</button><span class="sp"></span>' +
     '<span class="busy" id="nbusy" hidden>Saving…</span><button class="post" type="button" data-act="post" id="npost"' + (canPost() ? "" : " disabled") + '>Post</button></div></div>';
+}
+function openThink(){
+  openOverlay(panelHead("What's on your mind?") + composerHTML());
+  hydrateComposer();
+  setTimeout(() => { const t = $("#nt"); if (t) t.focus(); }, 60);
 }
 const canPost = () => !posting && (draft.text.trim() || draft.media.length);
 function hydrateComposer(){
@@ -594,11 +715,10 @@ function hydrateComposer(){
   const box = $("#nthumbs"); if (!box) return;
   box.hidden = !draft.media.length;
   box.innerHTML = draft.media.map((m, i) =>
-    '<div class="thumb">' + (m.type === "video" ? '<video src="' + m.url + '#t=0.1" muted playsinline preload="metadata"></video><span class="vtag">VIDEO</span>' : '<img src="' + m.url + '" alt="">') +
-    '<button class="rm" type="button" data-act="rm-draft" data-id="' + i + '" aria-label="Remove">' + I.x + '</button></div>').join("");
+    '<div class="thumb"><img src="' + m.url + '" alt=""><button class="rm" type="button" data-act="rm-draft" data-id="' + i + '" aria-label="Remove">' + I.x + '</button></div>').join("");
   const p = $("#npost"); if (p) p.disabled = !canPost();
 }
-function autoGrow(ta){ ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 320) + "px"; }
+function autoGrow(ta){ ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight + 2, 320) + "px"; }
 async function compressImage(file){
   try {
     const bmp = await createImageBitmap(file);
@@ -609,12 +729,12 @@ async function compressImage(file){
     return blob && blob.size < file.size ? blob : file;
   } catch(e){ return file; }
 }
-async function addFiles(files, type){
+async function addFiles(files){
   for (const f of files){
-    if (draft.media.length >= MAX_MEDIA){ toast("You can add up to " + MAX_MEDIA + " photos or videos to one note"); break; }
-    if (type === "video" && f.size > MAX_VIDEO_MB * 1024 * 1024){ toast("This video is too big (max " + MAX_VIDEO_MB + " MB). Try a shorter one."); continue; }
-    const blob = type === "image" ? await compressImage(f) : f;
-    draft.media.push({ type, blob, mime: blob.type || f.type, url: URL.createObjectURL(blob) });
+    if (draft.media.length >= MAX_MEDIA){ toast("You can add up to " + MAX_MEDIA + " photos to one thought"); break; }
+    if (!/^image\//.test(f.type || "image/")) continue;
+    const blob = await compressImage(f);
+    draft.media.push({ type: "image", blob, mime: blob.type || f.type, url: URL.createObjectURL(blob) });
   }
   hydrateComposer();
 }
@@ -627,21 +747,23 @@ async function postNote(){
   } catch(e){
     for (const m of media){ urlCache.delete(m.id); await mediaDel(m.id); }
     posting = false; if (busy) busy.hidden = true; hydrateComposer();
-    toast("Couldn't save the media. Your phone may be out of space.", 3500); return;
+    toast("Couldn't save the photo. Your phone may be out of space.", 3500); return;
   }
   notes.unshift({ id: uid(), text: draft.text.trim(), media, createdAt: Date.now() });
   if (!saveNotes()){ notes.shift(); posting = false; return; }
   draft = { text: "", media: [] }; write(KEY + "-draft", ""); posting = false;
-  toast("Posted"); render();
+  closeOverlay(); toast("Posted"); render();
 }
+const NOTE_COLORS = ["yellow", "mint", "lav", "pink", "sky", "orange", "sage"];
+function noteColor(id){ let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return NOTE_COLORS[h % NOTE_COLORS.length]; }
 function noteHTML(n){
   const media = n.media || [];
   const editing = editingNote === n.id;
-  return '<div class="note-card"><div class="when"><span>' + when(n.createdAt) + (n.editedAt ? " · edited" : "") + '</span><span class="row-btns">' +
+  return '<div class="note-card c-' + noteColor(n.id) + '"><div class="when"><span>' + when(n.createdAt) + (n.editedAt ? " · edited" : "") + '</span><span class="row-btns">' +
       (editing ? "" : '<button class="mini" type="button" data-act="edit-note" data-id="' + n.id + '">Edit</button>') +
       '<button class="mini del' + (armed === "n" + n.id ? " armed" : "") + '" type="button" data-act="del-note" data-id="' + n.id + '">' + (armed === "n" + n.id ? "Sure?" : "Delete") + '</button></span></div>' +
     (editing
-      ? '<textarea class="note-edit" id="ne-' + n.id + '">' + esc(n.text) + '</textarea><div class="row-btns"><button class="mini primary" type="button" data-act="save-note" data-id="' + n.id + '">Save</button><button class="mini" type="button" data-act="cancel-note">Cancel</button></div>'
+      ? '<textarea class="note-edit" id="ne-' + n.id + '">' + esc(n.text) + '</textarea><div class="row-btns"><button class="mini primary" type="button" data-act="save-note" data-id="' + n.id + '" style="background:var(--on);color:var(--ink)">Save</button><button class="mini" type="button" data-act="cancel-note">Cancel</button></div>'
       : (n.text ? '<div class="body">' + esc(n.text) + '</div>' : "")) +
     (media.length ? '<div class="media' + (media.length === 1 ? " one" : "") + '">' + media.map(m =>
       m.type === "video"
@@ -658,12 +780,31 @@ async function hydrateMedia(){
   }
 }
 function renderNotes(){
-  app.innerHTML = bar("Notes") + composerHTML() +
+  app.innerHTML = bar("My Thoughts") +
+    '<button class="btn" type="button" data-act="think" style="width:100%;margin-bottom:14px">Write a thought</button>' +
     (notes.length ? notes.map(noteHTML).join("") : '<div class="empty">Nothing here yet. Write down whatever is on your mind, in English if you can.</div>');
-  hydrateComposer(); hydrateMedia();
+  hydrateMedia();
 }
 function openViewer(url){ closeViewer(); const v = document.createElement("div"); v.className = "viewer"; v.innerHTML = '<img src="' + url + '" alt=""><button type="button" data-act="close-viewer" aria-label="Close">' + I.x + '</button>'; document.body.appendChild(v); }
 function closeViewer(){ const v = $(".viewer"); if (v) v.remove(); }
+
+/* ---------------- tell a friend ---------------- */
+const sayDrafts = {};
+function friendHTML(c){
+  const said = c.said || [];
+  const shown = said.slice(-3);
+  return '<section class="friend"><h3>Tell a friend</h3><p class="fh">Write a message to a friend using <b>' + esc(c.en) + '</b>.</p>' +
+    (shown.length ? '<div class="bubbles">' + (said.length > 3 ? '<span class="bubble-time">' + (said.length - 3) + ' earlier</span>' : '') +
+      shown.map(s => '<div class="bubble"><span>' + esc(s.t) + '</span><button type="button" data-say="' + esc(s.t) + '" aria-label="Listen">' + I.speak + '</button></div><span class="bubble-time">' + when(s.at) + '</span>').join("") + '</div>' : '') +
+    '<div class="say-row"><textarea id="say" rows="1" placeholder="Type your message…" autocapitalize="sentences">' + esc(sayDrafts[c.id] || "") + '</textarea>' +
+    '<button class="send" type="button" data-act="say-send" aria-label="Save message"' + ((sayDrafts[c.id] || "").trim() ? "" : " disabled") + '>' + I.send + '</button></div></section>';
+}
+function addSaid(c, text){
+  if (!c || !text) return;
+  c.said = (c.said || []).concat({ t: text, at: Date.now() });
+  delete sayDrafts[c.id];
+  saveCards();
+}
 
 /* ---------------- words ---------------- */
 let wordsTab = "review", queue = null, pos = 0, revealed = false, doneCount = 0;
@@ -699,19 +840,21 @@ function renderReview(){
   const showEnglish = en || revealed;
   v.innerHTML =
     '<div class="rhead"><span class="progress">' + (pos + 1) + " / " + queue.length + '</span><button class="chip" type="button" data-act="dir">' + (en ? "EN → TR" : "TR → EN") + '</button></div>' +
-    '<div class="card"><div class="card-top"><span class="tag">' + typeLabel(c.type) + '</span>' +
+    '<div class="card t-' + (c.type || "kalip") + '"><div class="card-top"><span class="tag">' + typeLabel(c.type) + '</span>' +
       (showEnglish ? '<span class="row-btns"><a class="round" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Open in dictionary">' + I.book + '</a><button class="round" type="button" data-say="' + esc(c.en) + '" aria-label="Listen">' + I.speak + '</button></span>' : "") + '</div>' +
       '<p class="front">' + esc(en ? c.en : (c.tr || c.en)) + '</p>' +
       (revealed
         ? '<p class="ans">' + esc(en ? (c.tr || "—") : c.en) + '</p>' + (c.note ? '<p class="note">' + esc(c.note) + '</p>' : "")
         : '<button class="reveal" type="button" data-act="reveal">Show answer</button>') +
     '</div>' +
+    (revealed ? friendHTML(c) : "") +
     (revealed
       ? '<div class="grades">' + ["Again", "Hard", "Good", "Easy"].map((l, g) => '<button class="grade" type="button" data-g="' + g + '">' + l + '<small>' + fmtInterval(schedule(c, g, now)) + '</small></button>').join("") + '</div><p class="hint">The time under each button is when you\'ll see this card again.</p>'
       : '<p class="hint">Try to remember it first, then check the answer.</p>');
 }
 function grade(g){
   const c = current(); if (!c) return;
+  const ta = $("#say"); if (ta && ta.value.trim()) addSaid(c, ta.value.trim());
   const s = schedule(c, g, Date.now()); delete s.minutes;
   Object.assign(c, s); saveCards();
   if (g === 0) queue.push(c.id);
@@ -720,14 +863,8 @@ function grade(g){
 }
 function renderAddForm(){
   const c = editing ? cards.find(x => x.id === editing) : null;
-  const t = c ? (c.type || "kalip") : "kelime";
   $("#wbody").innerHTML =
-    '<form id="f" autocomplete="off" novalidate>' +
-      '<div class="seg" style="margin:0"><label><input type="radio" name="type" value="kelime"' + (t === "kelime" ? " checked" : "") + '>Word</label><label><input type="radio" name="type" value="kalip"' + (t === "kalip" ? " checked" : "") + '>Phrase / sentence</label>' + (t === "chunk" ? '<label><input type="radio" name="type" value="chunk" checked>Chunk</label>' : "") + '</div>' +
-      '<div class="field"><label for="f-en">English</label><input id="f-en" value="' + esc(c ? c.en : "") + '" placeholder="reluctant" autocapitalize="off"></div>' +
-      '<div class="row-btns"><button class="mini" type="button" data-act="form-say">' + I.speak + 'Listen</button><button class="mini" type="button" data-act="form-dict">' + I.book + 'Look it up</button></div>' +
-      '<div class="field"><label for="f-tr">Turkish meaning</label><input id="f-tr" value="' + esc(c ? c.tr : "") + '" placeholder="isteksiz, gönülsüz"></div>' +
-      '<div class="field"><label for="f-note">Example sentence or note</label><textarea id="f-note" placeholder="She was reluctant to ask for help.">' + esc(c ? c.note : "") + '</textarea></div>' +
+    '<form id="f" autocomplete="off" novalidate>' + cardFields(c, c ? (c.type || "kalip") : (prefs.lastType || "kelime")) +
       '<div class="row-btns"><button class="btn" type="submit" style="flex:1">' + (c ? "Save changes" : "Save") + '</button>' + (c ? '<button class="btn light" type="button" data-act="cancel-edit">Cancel</button>' : "") + '</div>' +
     '</form>';
 }
@@ -744,24 +881,20 @@ function renderWordList(){
 function wordItem(c){
   return '<li class="item"><span class="en">' + esc(c.en) + '</span>' + (c.tr ? '<span>' + esc(c.tr) + '</span>' : "") +
     (c.note ? '<span class="nt">' + esc(c.note) + '</span>' : "") +
-    '<div class="meta"><span class="tag">' + typeLabel(c.type) + '</span><span class="due">' + fmtDue(c.due) + '</span><span class="acts">' +
+    (c.said && c.said.length ? '<span class="said">' + esc(c.said[c.said.length - 1].t) + '</span>' : "") +
+    '<div class="meta"><span class="tag t-' + (c.type || "kalip") + '">' + typeLabel(c.type) + '</span><span class="due">' + fmtDue(c.due) + '</span><span class="acts">' +
     '<button class="mini" type="button" data-say="' + esc(c.en) + '" aria-label="Listen">' + I.speak + '</button>' +
     '<a class="mini" href="' + tureng(c.en) + '" target="_blank" rel="noopener" aria-label="Dictionary">' + I.book + '</a>' +
     '<button class="mini" type="button" data-act="edit" data-id="' + c.id + '">Edit</button>' +
     '<button class="mini del' + (armed === c.id ? " armed" : "") + '" type="button" data-act="del" data-id="' + c.id + '">' + (armed === c.id ? "Sure?" : "Delete") + '</button></span></div></li>';
 }
-function submitForm(){
-  const en = $("#f-en").value.trim(), tr = $("#f-tr").value.trim(), note = $("#f-note").value.trim();
-  const type = document.querySelector('input[name="type"]:checked').value;
-  if (!en){ toast("Type the English first"); $("#f-en").focus(); return; }
+function submitForm(form){
+  const v = readCardForm(form); if (!v) return;
   if (editing){
-    const c = cards.find(x => x.id === editing); if (c) Object.assign(c, { en, tr, note, type });
+    const c = cards.find(x => x.id === editing); if (c) Object.assign(c, v);
     saveCards(); toast("Saved"); editing = null; wordsTab = "list"; renderWords();
-  } else {
-    if (cards.some(c => fold(c.en) === fold(en))){ toast("That's already in your notebook"); return; }
-    cards.push(newCard({ en, tr, note, type })); saveCards(); toast("Added to your notebook");
-    if (queue && pos === 0 && doneCount === 0) queue = null;
-    renderWords(); $("#f-en").focus();
+  } else if (addLearned(v)){
+    toast("Added to your notebook"); renderWords(); $("#f-en").focus();
   }
 }
 
@@ -785,11 +918,10 @@ function renderChunks(){
   app.innerHTML = bar("Chunks") +
     '<p class="lead" style="margin:0 0 6px">Pick 5–10 chunks a day, say the examples out loud and add them to your review.</p>' +
     '<ul class="cats">' +
-      (mine.length ? '<li><button type="button" data-go="chunk/mine"><span class="num">★</span><span class="ct"><b>My phrases</b><span>' + plural(mine.length, "phrase") + '</span></span><span class="chev">' + I.chev + '</span></button></li>' : "") +
+      (mine.length ? '<li><button type="button" data-go="chunk/mine"><span class="num">★</span><span class="ct"><b>My phrases</b><span>Saved by you</span></span><span class="cnt">' + mine.length + '</span></button></li>' : "") +
       DATA.categories.map(c => {
         const n = c.items.filter(i => chunkCard(i.id)).length;
-        return '<li><button type="button" data-go="chunk/' + c.id + '"><span class="num">' + c.id + '</span><span class="ct"><b>' + esc(c.title) + '</b><span>' + c.items.length + ' chunks' + (n ? ' · ' + n + ' in review' : '') + '</span>' +
-          (n ? '<div class="prog"><i style="width:' + Math.round(n / c.items.length * 100) + '%"></i></div>' : '') + '</span><span class="chev">' + I.chev + '</span></button></li>';
+        return '<li><button type="button" data-go="chunk/' + c.id + '"><span class="num">' + c.id + '</span><span class="ct"><b>' + esc(c.title) + '</b>' + (n ? '<span>' + n + ' in review</span><div class="prog"><i style="width:' + Math.round(n / c.items.length * 100) + '%"></i></div>' : '') + '</span><span class="cnt">' + c.items.length + '</span></button></li>';
       }).join("") +
     '</ul>';
 }
@@ -823,7 +955,7 @@ function renderDaily(){
       const items = g.ids.map(id => CHUNKS[id]).filter(Boolean);
       const open = openGroup === i;
       return '<li><button type="button" data-act="toggle-group" data-id="' + i + '" aria-expanded="' + open + '"><span class="ct"><b>' + esc(g.title) + '</b><span>' + esc(g.desc) + ' · ' + items.length + '</span></span><span class="chev" style="transform:rotate(' + (open ? 90 : 0) + 'deg)">' + I.chev + '</span></button>' +
-        (open ? '<div style="padding-left:8px">' + items.map(chunkItem).join("") + '</div>' : "") + '</li>';
+        (open ? '<div class="grp-body">' + items.map(chunkItem).join("") + '</div>' : "") + '</li>';
     }).join("") + '</ul>';
 }
 
@@ -1016,7 +1148,7 @@ function renderWriting(){
   const n = countWords(w.text || ""), st = streak();
   const past = Object.keys(writes).filter(d => d !== k && countWords(writes[d].text)).sort().reverse();
   app.innerHTML = bar("Writing") +
-    '<div class="prompt"><small>Today\'s topic · ' + prettyDate(k) + '</small><b>' + esc(p) + '</b>' + (tr ? '<span style="color:var(--muted);font-size:14px">' + esc(tr) + '</span>' : '') +
+    '<div class="prompt"><small>Today\'s topic · ' + prettyDate(k) + '</small><b>' + esc(p) + '</b>' + (tr ? '<span class="tr">' + esc(tr) + '</span>' : '') +
       (w.text ? '' : '<div class="row-btns"><button class="mini" type="button" data-act="next-prompt">Another topic</button></div>') + '</div>' +
     '<div class="use">' + todaysChunks(3).map(c => '<span class="tag" title="' + esc(c.tr) + '">' + esc(c.en) + '</span>').join("") + '</div>' +
     '<textarea class="wbox" id="wbox" placeholder="Start writing… 250 words max." spellcheck="true" autocapitalize="sentences">' + esc(w.text || "") + '</textarea>' +
@@ -1159,9 +1291,12 @@ document.addEventListener("click", async e => {
     case "export": exportBackup(); break;
     case "import": $("#file").click(); break;
     case "pick-photo": $("#pick-photo").click(); break;
-    case "pick-video": $("#pick-video").click(); break;
     case "rm-draft": { const m = draft.media.splice(+id, 1)[0]; if (m) URL.revokeObjectURL(m.url); hydrateComposer(); break; }
     case "post": postNote(); break;
+    case "think": openThink(); break;
+    case "quick-add": openQuickAdd(); break;
+    case "close-overlay": closeOverlay(); break;
+    case "say-send": { const c = current(), ta = $("#say"); if (c && ta && ta.value.trim()){ addSaid(c, ta.value.trim()); toast("Saved"); renderReview(); } break; }
     case "view": { const u = await mediaURL(id); if (u) openViewer(u); break; }
     case "close-viewer": closeViewer(); break;
     case "edit-note": editingNote = id; armed = null; render(); { const ta = $("#ne-" + id); if (ta){ ta.focus(); } } break;
@@ -1180,12 +1315,13 @@ document.addEventListener("click", async e => {
     }
   }
 });
-document.addEventListener("click", e => { if (e.target.classList && e.target.classList.contains("viewer")) closeViewer(); });
-$("#pick-photo").addEventListener("change", e => { const f = [...e.target.files]; e.target.value = ""; addFiles(f, "image"); });
-$("#pick-video").addEventListener("change", e => { const f = [...e.target.files]; e.target.value = ""; addFiles(f, "video"); });
+document.addEventListener("click", e => { if (e.target.classList && e.target.classList.contains("viewer")) closeViewer(); if (e.target.classList && e.target.classList.contains("overlay")) closeOverlay(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape"){ closeOverlay(); closeViewer(); } });
+$("#pick-photo").addEventListener("change", e => { const f = [...e.target.files]; e.target.value = ""; addFiles(f); });
 document.addEventListener("submit", e => {
   e.preventDefault();
-  if (e.target.id === "f") submitForm();
+  if (e.target.id === "f") submitForm(e.target);
+  if (e.target.id === "qa"){ const v = readCardForm(e.target); if (v && addLearned(v)){ closeOverlay(); toast("Added. You'll see it in your review."); render(); } }
   if (e.target.id === "tf"){
     const title = $("#t-title").value.trim(), body = $("#t-body").value.trim(), id = $("#t-id").value;
     if (!body){ toast("Paste the text first"); return; }
@@ -1197,6 +1333,7 @@ let draftT = null;
 document.addEventListener("input", e => {
   if (e.target.id === "wq"){ wQuery = e.target.value; const p = e.target.selectionStart; renderWordList(); const q = $("#wq"); q.focus(); try { q.setSelectionRange(p, p); } catch(_){} }
   if (e.target.id === "wbox") onWritingInput(e);
+  if (e.target.id === "say"){ const c = current(); if (c) sayDrafts[c.id] = e.target.value; autoGrow(e.target); const b = $('[data-act="say-send"]'); if (b) b.disabled = !e.target.value.trim(); }
   if (e.target.id === "nt"){
     draft.text = e.target.value; autoGrow(e.target);
     const p = $("#npost"); if (p) p.disabled = !canPost();

@@ -1,7 +1,7 @@
 // Makes the app open without internet, and shows the notifications.
 // With internet it always fetches the newest version; offline it opens the saved copy.
-const CACHE = "kalip-defteri-v6";
-const FILES = ["./", "./index.html", "./chunks.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
+const CACHE = "kalip-defteri-v7";
+const FILES = ["./", "./index.html", "./chunks.js", "./display-latin.woff2", "./display-latin-ext.woff2", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
 try { importScripts("chunks.js"); } catch (e) {}
 
 self.addEventListener("install", e => {
