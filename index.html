@@ -1357,7 +1357,11 @@ document.addEventListener("visibilitychange", () => {
 
 parseHash(); render(); writeSnapshot(); checkSubscription();
 if ("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").catch(() => {});
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(reg => reg.update()).catch(() => {});
+  /* when a new version takes over, reload once so it shows straight away */
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadController && !reloaded && !$(".overlay") && !$(".sheet")){ reloaded = true; location.reload(); } });
   navigator.serviceWorker.addEventListener("message", e => { if (e.data && "go" in e.data) go(e.data.go); });
 }
 })();

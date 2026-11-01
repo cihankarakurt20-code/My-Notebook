@@ -1,11 +1,11 @@
 // Makes the app open without internet, and shows the notifications.
 // With internet it always fetches the newest version; offline it opens the saved copy.
-const CACHE = "kalip-defteri-v8";
+const CACHE = "kalip-defteri-v10";
 const FILES = ["./", "./index.html", "./chunks.js", "./display-latin.woff2", "./display-latin-ext.woff2", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
 try { importScripts("chunks.js"); } catch (e) {}
 
 self.addEventListener("install", e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", e => {
@@ -20,8 +20,10 @@ self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
   // Leave requests to other sites (sound, dictionaries) alone.
   if (new URL(e.request.url).origin !== self.location.origin) return;
+  // "no-cache" = always ask GitHub whether the file changed, so updates show up right away.
+  const fresh = new Request(e.request.url, { cache: "no-cache", credentials: "same-origin" });
   e.respondWith(
-    fetch(e.request)
+    fetch(fresh)
       .then(res => {
         if (res.ok && res.status === 200) {
           const copy = res.clone();
