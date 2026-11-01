@@ -86,7 +86,8 @@ a{color:inherit}
 .fab{border:0;padding:0;border-radius:999px;display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 3px var(--bg)}
 .fab.add{width:56px;height:56px;background:var(--yellow);color:var(--on)}
 .fab.add svg{width:26px;height:26px}
-.fab.think{width:66px;height:66px;background:var(--lav);color:var(--on);font-family:var(--f-display);font-weight:800;font-size:27px;letter-spacing:-.04em;line-height:1;padding-bottom:3px}
+.fab.think{width:66px;height:66px;background:var(--lav);color:var(--on)}
+.fab.think svg{width:36px;height:36px;margin:2px 0 0 2px}
 .thoughts-row{width:100%;border:0;border-radius:var(--r-xl);background:var(--lav);color:var(--on);text-align:left;margin-top:22px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .thoughts-row b{display:block;font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1.05}
 .thoughts-row > span > span{display:block;font-size:14px;color:var(--on-muted);margin-top:4px}
@@ -658,9 +659,9 @@ function renderHome(){
       tile("writing", "pink", "t_writing", "Writing", wroteToday ? "Done today" + (st > 1 ? " · " + st + "-day streak" : "") : (st ? st + "-day streak · write today" : "Today's topic is ready")) +
     '</div>' +
     '<div class="settings"><button type="button" data-go="notify">Notifications · <span class="' + (pushOn() ? "on" : "") + '">' + notifyStatusShort() + '</span></button><button type="button" data-act="export">Back up</button><button type="button" data-act="import">Restore</button></div>' +
-    '<button class="thoughts-row" type="button" data-go="notes"><span><b>My Thoughts</b><span>' + (notes.length ? "Latest: " + when(notes[0].createdAt) : "Nothing yet. Tap mt to write one.") + '</span></span><span class="cnt">' + notes.length + '</span></button>' +
+    '<button class="thoughts-row" type="button" data-go="notes"><span><b>My Thoughts</b><span>' + (notes.length ? "Latest: " + when(notes[0].createdAt) : "Nothing yet. Tap the cloud to write one.") + '</span></span><span class="cnt">' + notes.length + '</span></button>' +
     '<div class="fabs"><button class="fab add" type="button" data-act="quick-add" aria-label="Add something you learned">' + I.plusBig + '</button>' +
-    '<button class="fab think" type="button" data-act="think" aria-label="What\'s on your mind?">mt</button></div>';
+    '<button class="fab think" type="button" data-act="think" aria-label="What\'s on your mind?"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.6 15.2h9.9a4.3 4.3 0 0 0 .9-8.5 5.4 5.4 0 0 0-10.2-1.4 5 5 0 0 0-.6 9.9z"/><circle cx="7.4" cy="18.6" r="1.75"/><circle cx="4.3" cy="21.4" r="1.15"/></svg></button></div>';
 }
 const HOME_NOTES = 5;
 
