@@ -66,6 +66,10 @@ a{color:inherit}
 .tile .tt{display:block;font-size:19px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
 .tile .ts{display:block;font-size:13px;line-height:1.3;color:var(--on-muted);margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .tile .ic{width:48px;height:48px;display:block}
+.tile.wide{grid-column:1/-1;aspect-ratio:auto;flex-direction:row;align-items:flex-end;min-height:150px}
+.tile.wide .tt{font-family:var(--f-display);font-weight:800;font-size:40px;letter-spacing:-.03em;line-height:1}
+.tile.wide .ts{font-size:14px;margin-top:8px;-webkit-line-clamp:3}
+.tile.wide .ic{width:64px;height:64px;flex:none}.tile.wide .ic svg{width:64px;height:64px}
 .tile .ic svg{width:48px;height:48px;display:block}
 .c-yellow{background:var(--yellow)} .c-lav{background:var(--lav)} .c-mint{background:var(--mint)} .c-sky{background:var(--sky)}
 .c-orange{background:var(--orange)} .c-pink{background:var(--pink)} .c-sage{background:var(--sage)} .c-brown{background:var(--brown)} .c-blue{background:var(--blue)}
@@ -82,8 +86,11 @@ a{color:inherit}
 .fab{border:0;padding:0;border-radius:999px;display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 0 3px var(--bg)}
 .fab.add{width:56px;height:56px;background:var(--yellow);color:var(--on)}
 .fab.add svg{width:26px;height:26px}
-.fab.think{width:66px;height:66px;overflow:hidden;background:#16805c}
-.fab.think img{width:100%;height:100%;display:block}
+.fab.think{width:66px;height:66px;background:var(--lav);color:var(--on);font-family:var(--f-display);font-weight:800;font-size:27px;letter-spacing:-.04em;line-height:1;padding-bottom:3px}
+.thoughts-row{width:100%;border:0;border-radius:var(--r-xl);background:var(--lav);color:var(--on);text-align:left;margin-top:22px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.thoughts-row b{display:block;font-family:var(--f-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1.05}
+.thoughts-row > span > span{display:block;font-size:14px;color:var(--on-muted);margin-top:4px}
+.thoughts-row .cnt{font-family:var(--f-display);font-weight:800;font-size:40px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 
 /* overlays (thought composer, quick add) */
 .overlay{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
@@ -600,8 +607,11 @@ function streak(){
 /* ---------------- routing ---------------- */
 let route = "", params = "";
 function go(h){ if (location.hash.slice(1) === h) render(); else location.hash = h; }
-const PARENT = { words: "", chunks: "", chunk: "chunks", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "", speaking: "", notify: "" };
-function parseHash(){ const h = decodeURIComponent(location.hash.slice(1)); const i = h.indexOf("/"); route = i === -1 ? h : h.slice(0, i); params = i === -1 ? "" : h.slice(i + 1); }
+const PARENT = { learn: "", chunk: "learn/library", daily: "", reading: "", read: "reading", readedit: "reading", writing: "", write: "writing", notes: "", speaking: "", notify: "" };
+function parseHash(){ const h = decodeURIComponent(location.hash.slice(1)); const i = h.indexOf("/"); route = i === -1 ? h : h.slice(0, i); params = i === -1 ? "" : h.slice(i + 1);
+  if (route === "words"){ route = "learn"; params = params || "review"; }   /* old links and notifications */
+  if (route === "chunks"){ route = "learn"; params = "library"; }
+}
 window.addEventListener("hashchange", () => { parseHash(); closeSheet(true); closeViewer(); closeOverlay(); render(); window.scrollTo(0, 0); });
 function bar(title){
   return '<div class="bar"><button class="back" type="button" data-go="' + esc(PARENT[route] || "") + '" aria-label="Back">' + I.back + '</button><h1>' + esc(title) + '</h1></div>';
@@ -610,8 +620,7 @@ function bar(title){
 /* ---------------- render ---------------- */
 function render(){
   app.className = "wrap";
-  if (route === "words") return renderWords();
-  if (route === "chunks") return renderChunks();
+  if (route === "learn") return renderLearn();
   if (route === "chunk") return renderChunkCat(params);
   if (route === "daily") return renderDaily();
   if (route === "reading") return renderReading();
@@ -639,22 +648,19 @@ function renderHome(){
   app.innerHTML =
     '<header class="home-head"><p class="dateline">' + DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + '</p><h1 class="home-title">My<br>Notebook</h1></header>' +
     (due
-      ? '<button class="hero" type="button" data-go="words" data-wt="review"><span class="lbl">Review</span><span><span class="num">' + pad(due) + '</span><span class="sub">' + (due === 1 ? "card" : "cards") + ' waiting today</span></span><span class="go">Start</span></button>'
+      ? '<button class="hero" type="button" data-go="learn/review"><span class="lbl">Review</span><span><span class="num">' + pad(due) + '</span><span class="sub">' + (due === 1 ? "card" : "cards") + ' waiting today</span></span><span class="go">Start</span></button>'
       : '<button class="hero calm" type="button" data-act="quick-add"><span class="lbl">Review</span><span><span class="big">' + (cards.length ? "All caught up" : "Let's begin") + '</span><span class="sub">' + (cards.length ? "Add something new you learned today" : "Add your first word or phrase") + '</span></span><span class="go">Add</span></button>') +
     '<div class="tiles">' +
       tile("daily", "yellow", "t_daily", "Daily", tc ? "Today: " + esc(tc.en) : "Everyday phrases") +
       tile("speaking", "lav", "t_speaking", "Speaking", "Talk with ChatGPT") +
-      tile("chunks", "mint", "t_chunks", "Chunks", Object.keys(CHUNKS).length + " chunks · " + inReview + " in review") +
-      tile("words", "sky", "t_words", "Words", plural(cards.length, "card") + (due ? " · " + due + " due" : "")) +
+      tile("learn/review", "mint wide", "t_chunks", "Learn", (due ? due + " to review · " : "") + cards.length + " in my list · " + Object.keys(CHUNKS).length + " in the library") +
       tile("reading", "orange", "t_reading", "Reading", texts.length ? plural(texts.length, "text") : "Add a text to read") +
       tile("writing", "pink", "t_writing", "Writing", wroteToday ? "Done today" + (st > 1 ? " · " + st + "-day streak" : "") : (st ? st + "-day streak · write today" : "Today's topic is ready")) +
     '</div>' +
     '<div class="settings"><button type="button" data-go="notify">Notifications · <span class="' + (pushOn() ? "on" : "") + '">' + notifyStatusShort() + '</span></button><button type="button" data-act="export">Back up</button><button type="button" data-act="import">Restore</button></div>' +
-    '<div class="thoughts-head"><h2>My Thoughts</h2>' + (notes.length > HOME_NOTES ? '<button type="button" data-go="notes">See all ' + notes.length + '</button>' : (notes.length ? '<span class="lead" style="font-size:14px">' + notes.length + '</span>' : '')) + '</div>' +
-    (notes.length ? notes.slice(0, HOME_NOTES).map(noteHTML).join("") : '<div class="think-empty">Tap the round <b>md</b> button to write what\'s on your mind.</div>') +
+    '<button class="thoughts-row" type="button" data-go="notes"><span><b>My Thoughts</b><span>' + (notes.length ? "Latest: " + when(notes[0].createdAt) : "Nothing yet. Tap mt to write one.") + '</span></span><span class="cnt">' + notes.length + '</span></button>' +
     '<div class="fabs"><button class="fab add" type="button" data-act="quick-add" aria-label="Add something you learned">' + I.plusBig + '</button>' +
-    '<button class="fab think" type="button" data-act="think" aria-label="What\'s on your mind?"><img src="icon-192.png" alt=""></button></div>';
-  hydrateMedia();
+    '<button class="fab think" type="button" data-act="think" aria-label="What\'s on your mind?">mt</button></div>';
 }
 const HOME_NOTES = 5;
 
@@ -677,10 +683,11 @@ function cardFields(c, t){
     '<div class="field"><label for="f-tr">Turkish meaning</label><input id="f-tr" value="' + esc(c ? c.tr : "") + '" placeholder="isteksiz, gönülsüz"></div>' +
     '<div class="field"><label for="f-note">Example sentence or note</label><textarea id="f-note" placeholder="She was reluctant to ask for help.">' + esc(c ? c.note : "") + '</textarea></div>';
 }
-function openQuickAdd(){
-  openOverlay(panelHead("Add what you learned") +
-    '<form id="qa" autocomplete="off" novalidate>' + cardFields(null, prefs.lastType || "kelime") + '<button class="btn" type="submit">Save</button></form>');
-  setTimeout(() => { const i = $("#f-en"); if (i) i.focus(); }, 60);
+function openQuickAdd(c){
+  openOverlay(panelHead(c ? "Edit" : "Add what you learned") +
+    '<form id="qa" autocomplete="off" novalidate>' + cardFields(c, c ? (c.type || "kalip") : (prefs.lastType || "kelime")) + '<button class="btn" type="submit">' + (c ? "Save changes" : "Save") + '</button></form>');
+  editing = c ? c.id : null;
+  if (!c) setTimeout(() => { const i = $("#f-en"); if (i) i.focus(); }, 60);
 }
 function readCardForm(form){
   const en = $("#f-en").value.trim(), tr = $("#f-tr").value.trim(), note = $("#f-note").value.trim();
@@ -807,24 +814,26 @@ function addSaid(c, text){
 }
 
 /* ---------------- words ---------------- */
-let wordsTab = "review", queue = null, pos = 0, revealed = false, doneCount = 0;
+let learnTab = "review", queue = null, pos = 0, revealed = false, doneCount = 0;
 let wFilter = "all", wQuery = "", armed = null, editing = null;
+const LEARN_TABS = ["review", "list", "library"];
 function buildQueue(){ queue = cards.filter(isDue).sort((a, b) => (a.due || 0) - (b.due || 0)).map(c => c.id); pos = 0; revealed = false; doneCount = 0; }
 function current(){ while (queue && pos < queue.length){ const c = cards.find(x => x.id === queue[pos]); if (c) return c; pos++; } return null; }
-function renderWords(){
+function setLearnTab(t){ if (!LEARN_TABS.includes(t)) t = "review"; learnTab = t; params = t; if (t === "review" && queue && !current()) queue = null; }
+function renderLearn(){
+  setLearnTab(params || learnTab);
   const due = dueCount();
-  app.innerHTML = bar("Words") +
-    '<div class="seg" role="group"><button type="button" data-wt="review" aria-pressed="' + (wordsTab === "review") + '">Review' + (due ? '<span class="badge">' + due + '</span>' : '') + '</button>' +
-    '<button type="button" data-wt="add" aria-pressed="' + (wordsTab === "add") + '">' + (editing ? "Edit" : "Add") + '</button>' +
-    '<button type="button" data-wt="list" aria-pressed="' + (wordsTab === "list") + '">List</button></div>' +
+  const tab = (k, l) => '<button type="button" data-wt="' + k + '" aria-pressed="' + (learnTab === k) + '">' + l + '</button>';
+  app.innerHTML = bar("Learn") +
+    '<div class="seg" role="group">' + tab("review", "Review" + (due ? '<span class="badge">' + due + '</span>' : '')) + tab("list", "My List") + tab("library", "Library") + '</div>' +
     '<div id="wbody"></div>';
-  if (wordsTab === "review") renderReview();
-  else if (wordsTab === "add") renderAddForm();
-  else renderWordList();
+  if (learnTab === "review") renderReview();
+  else if (learnTab === "list") renderWordList();
+  else renderLibrary();
 }
 function renderReview(){
   const v = $("#wbody"); if (!v) return;
-  if (!cards.length){ v.innerHTML = '<div class="done"><h2>Your notebook is empty</h2><p>Add a word, or add some chunks to your review from the Chunks section.</p><div class="row-btns"><button class="btn" type="button" data-wt="add">Add a word</button><button class="btn light" type="button" data-go="chunks">Chunks</button></div></div>'; return; }
+  if (!cards.length){ v.innerHTML = '<div class="done"><h2>Nothing to review yet</h2><p>Add a word you learned, or pick some chunks from the Library.</p><div class="row-btns"><button class="btn" type="button" data-act="quick-add">Add a word</button><button class="btn light" type="button" data-wt="library">Open Library</button></div></div>'; return; }
   if (!queue) buildQueue();
   const c = current();
   if (!c){
@@ -832,8 +841,8 @@ function renderReview(){
     const next = cards.filter(x => !isDue(x)).sort((a, b) => a.due - b.due)[0];
     v.innerHTML = '<div class="done"><h2>' + (doneCount ? "That's it for today" : "Nothing to review right now") + '</h2><p>' +
       (doneCount ? "You reviewed " + plural(doneCount, "card") + ". " : "") + (dueNow ? plural(dueNow, "card") + " ready again." : next ? "Next card " + fmtDue(next.due) + "." : "") + '</p><div class="row-btns">' +
-      (dueNow ? '<button class="btn" type="button" data-act="restart">Keep going</button>' : "") +
-      '<button class="btn light" type="button" data-wt="add">Add new</button></div></div>';
+      (dueNow ? '<button class="btn" type="button" data-act="restart">Keep going</button>' : '<button class="btn" type="button" data-wt="library">Find new chunks</button>') +
+      '<button class="btn light" type="button" data-act="quick-add">Add new</button></div></div>';
     return;
   }
   const en = prefs.dir !== "tr", now = Date.now();
@@ -859,14 +868,7 @@ function grade(g){
   Object.assign(c, s); saveCards();
   if (g === 0) queue.push(c.id);
   pos++; revealed = false; doneCount++;
-  renderWords();
-}
-function renderAddForm(){
-  const c = editing ? cards.find(x => x.id === editing) : null;
-  $("#wbody").innerHTML =
-    '<form id="f" autocomplete="off" novalidate>' + cardFields(c, c ? (c.type || "kalip") : (prefs.lastType || "kelime")) +
-      '<div class="row-btns"><button class="btn" type="submit" style="flex:1">' + (c ? "Save changes" : "Save") + '</button>' + (c ? '<button class="btn light" type="button" data-act="cancel-edit">Cancel</button>' : "") + '</div>' +
-    '</form>';
+  renderLearn();
 }
 function renderWordList(){
   const q = fold(wQuery.trim());
@@ -874,7 +876,7 @@ function renderWordList(){
     .filter(c => (wFilter === "all" || (c.type || "kalip") === wFilter) && (!q || fold(c.en).includes(q) || fold(c.tr).includes(q) || fold(c.note).includes(q)));
   const f = (k, l) => '<button type="button" data-wf="' + k + '" aria-pressed="' + (wFilter === k) + '">' + l + '</button>';
   $("#wbody").innerHTML =
-    '<input class="search" id="wq" type="search" placeholder="Search" value="' + esc(wQuery) + '">' +
+    '<div style="display:flex;gap:8px;align-items:center"><input class="search" id="wq" type="search" placeholder="Search your list" value="' + esc(wQuery) + '"><button class="round" type="button" data-act="quick-add" aria-label="Add new" style="width:48px;height:48px;background:var(--yellow);color:var(--on);border:0">' + I.plus + '</button></div>' +
     '<div class="filters">' + f("all", "All") + f("kelime", "Words") + f("kalip", "Phrases") + f("chunk", "Chunks") + '</div>' +
     '<ul class="items" id="witems">' + (list.length ? list.map(wordItem).join("") : '<li class="empty">' + (cards.length ? "Nothing matches your search." : "Nothing here yet.") + '</li>') + '</ul>';
 }
@@ -888,16 +890,6 @@ function wordItem(c){
     '<button class="mini" type="button" data-act="edit" data-id="' + c.id + '">Edit</button>' +
     '<button class="mini del' + (armed === c.id ? " armed" : "") + '" type="button" data-act="del" data-id="' + c.id + '">' + (armed === c.id ? "Sure?" : "Delete") + '</button></span></div></li>';
 }
-function submitForm(form){
-  const v = readCardForm(form); if (!v) return;
-  if (editing){
-    const c = cards.find(x => x.id === editing); if (c) Object.assign(c, v);
-    saveCards(); toast("Saved"); editing = null; wordsTab = "list"; renderWords();
-  } else if (addLearned(v)){
-    toast("Added to your notebook"); renderWords(); $("#f-en").focus();
-  }
-}
-
 /* ---------------- chunks ---------------- */
 const openChunks = new Set();
 function chunkItem(ch){
@@ -913,26 +905,18 @@ function chunkItem(ch){
         '</div></div>'
       : "") + '</div>';
 }
-function renderChunks(){
-  const mine = cards.filter(c => c.type === "kalip");
-  app.innerHTML = bar("Chunks") +
-    '<p class="lead" style="margin:0 0 6px">Pick 5–10 chunks a day, say the examples out loud and add them to your review.</p>' +
-    '<ul class="cats">' +
-      (mine.length ? '<li><button type="button" data-go="chunk/mine"><span class="num">★</span><span class="ct"><b>My phrases</b><span>Saved by you</span></span><span class="cnt">' + mine.length + '</span></button></li>' : "") +
-      DATA.categories.map(c => {
-        const n = c.items.filter(i => chunkCard(i.id)).length;
-        return '<li><button type="button" data-go="chunk/' + c.id + '"><span class="num">' + c.id + '</span><span class="ct"><b>' + esc(c.title) + '</b>' + (n ? '<span>' + n + ' in review</span><div class="prog"><i style="width:' + Math.round(n / c.items.length * 100) + '%"></i></div>' : '') + '</span><span class="cnt">' + c.items.length + '</span></button></li>';
-      }).join("") +
-    '</ul>';
+function renderLibrary(){
+  $("#wbody").innerHTML =
+    '<p class="lead" style="margin:0 0 12px">355 everyday chunks. Pick 5–10 a day, say the examples out loud and add the useful ones to your review.</p>' +
+    '<ul class="cats">' + DATA.categories.map(c => {
+      const n = c.items.filter(i => chunkCard(i.id)).length;
+      return '<li><button type="button" data-go="chunk/' + c.id + '"><span class="num">' + c.id + '</span><span class="ct"><b>' + esc(c.title) + '</b>' + (n ? '<span>' + n + ' in review</span><div class="prog"><i style="width:' + Math.round(n / c.items.length * 100) + '%"></i></div>' : '') + '</span><span class="cnt">' + c.items.length + '</span></button></li>';
+    }).join("") + '</ul>';
 }
 function renderChunkCat(id){
-  if (id === "mine"){
-    const mine = cards.filter(c => c.type === "kalip").sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-    app.innerHTML = bar("My phrases") + '<p class="lead" style="margin:0 0 6px">Phrases you saved in Words.</p><ul class="items">' + (mine.length ? mine.map(wordItem).join("") : '<li class="empty">You haven\'t saved any phrases yet.</li>') + '</ul>';
-    return;
-  }
+  if (id === "mine"){ wFilter = "kalip"; go("learn/list"); return; }
   const c = DATA.categories.find(x => String(x.id) === String(id));
-  if (!c){ go("chunks"); return; }
+  if (!c){ go("learn/library"); return; }
   const left = c.items.filter(i => !chunkCard(i.id)).length;
   app.innerHTML = bar(c.title) + '<p class="lead" style="margin:0 0 6px">' + esc(c.desc) + ' Tap a chunk to see examples.</p>' +
     c.items.map(chunkItem).join("") +
@@ -1227,11 +1211,15 @@ document.addEventListener("click", async e => {
   const sayB = t.closest("[data-say]"); if (sayB){ speak(sayB.dataset.say); return; }
   const goB = t.closest("[data-go]");
   if (goB){
-    if (goB.dataset.wt){ wordsTab = goB.dataset.wt; if (wordsTab === "review" && queue && !current()) queue = null; }
     armed = null; editingNote = null; go(goB.dataset.go); return;
   }
   const wt = t.closest("[data-wt]");
-  if (wt){ wordsTab = wt.dataset.wt; if (wordsTab !== "add") editing = null; if (wordsTab === "review" && queue && !current()) queue = null; armed = null; renderWords(); return; }
+  if (wt){
+    armed = null; const tab = wt.dataset.wt;
+    if (route === "learn"){ setLearnTab(tab); try { history.replaceState(null, "", "#learn/" + learnTab); } catch(_){} renderLearn(); window.scrollTo(0, 0); }
+    else go("learn/" + tab);
+    return;
+  }
   const wf = t.closest("[data-wf]"); if (wf){ wFilter = wf.dataset.wf; renderWordList(); return; }
   const tp = t.closest("[data-topic]"); if (tp){ prefs.speakTopic = tp.dataset.topic; savePrefs(); renderSpeaking(); return; }
   const lv = t.closest("[data-level]"); if (lv){ prefs.level = lv.dataset.level; savePrefs(); renderSpeaking(); return; }
@@ -1241,14 +1229,13 @@ document.addEventListener("click", async e => {
   const w = t.closest(".w");
   if (w && rd){ const i = +w.dataset.i; sel = { a: i, b: i }; openSheet(); return; }
   const a = t.closest("[data-act]");
-  if (!a){ if (armed){ armed = null; if (route === "words" && wordsTab === "list") renderWordList(); else render(); } return; }
+  if (!a){ if (armed){ armed = null; if (route === "learn" && learnTab === "list") renderWordList(); else render(); } return; }
   const act = a.dataset.act, id = a.dataset.id;
   switch (act){
     case "reveal": revealed = true; renderReview(); break;
     case "dir": prefs.dir = prefs.dir === "tr" ? "en" : "tr"; savePrefs(); renderReview(); break;
     case "restart": queue = null; renderReview(); break;
-    case "edit": editing = id; wordsTab = "add"; if (route !== "words") go("words"); else renderWords(); break;
-    case "cancel-edit": editing = null; wordsTab = "list"; renderWords(); break;
+    case "edit": openQuickAdd(cards.find(x => x.id === id)); break;
     case "del":
       if (armed !== id){ armed = id; render(); return; }
       armed = null; cards = cards.filter(x => x.id !== id); saveCards(); toast("Deleted"); render(); break;
@@ -1320,8 +1307,11 @@ document.addEventListener("keydown", e => { if (e.key === "Escape"){ closeOverla
 $("#pick-photo").addEventListener("change", e => { const f = [...e.target.files]; e.target.value = ""; addFiles(f); });
 document.addEventListener("submit", e => {
   e.preventDefault();
-  if (e.target.id === "f") submitForm(e.target);
-  if (e.target.id === "qa"){ const v = readCardForm(e.target); if (v && addLearned(v)){ closeOverlay(); toast("Added. You'll see it in your review."); render(); } }
+  if (e.target.id === "qa"){
+    const v = readCardForm(e.target); if (!v) return;
+    if (editing){ const c = cards.find(x => x.id === editing); if (c) Object.assign(c, v); saveCards(); editing = null; closeOverlay(); toast("Saved"); render(); }
+    else if (addLearned(v)){ closeOverlay(); toast("Added. You'll see it in your review."); render(); }
+  }
   if (e.target.id === "tf"){
     const title = $("#t-title").value.trim(), body = $("#t-body").value.trim(), id = $("#t-id").value;
     if (!body){ toast("Paste the text first"); return; }
@@ -1341,7 +1331,7 @@ document.addEventListener("input", e => {
   }
 });
 document.addEventListener("keydown", e => {
-  if (route !== "words" || wordsTab !== "review" || e.target.closest("input,textarea")) return;
+  if (route !== "learn" || learnTab !== "review" || $(".overlay") || e.target.closest("input,textarea")) return;
   if (!revealed && (e.key === " " || e.key === "Enter") && current()){ e.preventDefault(); revealed = true; renderReview(); }
   else if (revealed && /^[1-4]$/.test(e.key)) grade(+e.key - 1);
 });
@@ -1361,7 +1351,7 @@ async function checkSubscription(){
 }
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") updateBadge();
-  if (document.visibilityState === "visible" && route === "words" && wordsTab === "review" && !revealed){ if (queue && !current()) queue = null; render(); }
+  if (document.visibilityState === "visible" && route === "learn" && learnTab === "review" && !revealed){ if (queue && !current()) queue = null; render(); }
 });
 
 parseHash(); render(); writeSnapshot(); checkSubscription();

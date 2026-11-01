@@ -1,6 +1,6 @@
 // Makes the app open without internet, and shows the notifications.
 // With internet it always fetches the newest version; offline it opens the saved copy.
-const CACHE = "kalip-defteri-v7";
+const CACHE = "kalip-defteri-v8";
 const FILES = ["./", "./index.html", "./chunks.js", "./display-latin.woff2", "./display-latin-ext.woff2", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./icon-maskable-512.png"];
 try { importScripts("chunks.js"); } catch (e) {}
 
@@ -96,7 +96,7 @@ function buildNotification(slot, snap, now = Date.now()) {
       const c = pool[(dayNo(now) * 7 + 3) % pool.length];
       if (!c) return reading();
       const cat = c.chunkId && byId[c.chunkId] ? byId[c.chunkId].cat : (c.cat || null);
-      return { title: "Chunk practice", body: "Make your own sentence with “" + c.en + "”" + (c.tr ? " (" + c.tr + ")" : "") + ". Say it out loud twice.", url: cat ? "#chunk/" + cat : "#chunks" };
+      return { title: "Chunk practice", body: "Make your own sentence with “" + c.en + "”" + (c.tr ? " (" + c.tr + ")" : "") + ". Say it out loud twice.", url: cat ? "#chunk/" + cat : "#learn/library" };
     }
     case 16:
       return reading();
@@ -104,8 +104,8 @@ function buildNotification(slot, snap, now = Date.now()) {
       if (!wrote) return { title: "Writing time", body: "Today's topic: " + prompt + (tc[0] ? "\nTry to use “" + tc[0].en + "”." : ""), url: "#writing" };
       return { title: "Nice writing today", body: "You wrote " + wrote + " words. Read it out loud once and improve one sentence.", url: "#writing" };
     case 22:
-      if (due) return { title: due + (due === 1 ? " card is" : " cards are") + " waiting", body: "Review your chunks and words before bed. It takes about 5 minutes.", url: "#words" };
-      return { title: "Reviews done", body: "Add 5 new chunks so you have something to review tomorrow.", url: "#chunks" };
+      if (due) return { title: due + (due === 1 ? " card is" : " cards are") + " waiting", body: "Review your chunks and words before bed. It takes about 5 minutes.", url: "#learn/review" };
+      return { title: "Reviews done", body: "Add 5 new chunks so you have something to review tomorrow.", url: "#learn/library" };
     case 23:
       if (!wrote) return { title: "Writing: last hour", body: streak ? "Your " + streak + "-day streak ends at midnight. A short paragraph is enough." : "Write 3–4 sentences about your day before midnight.", url: "#writing" };
       return Object.assign(reading(), { title: "One more page?" });
